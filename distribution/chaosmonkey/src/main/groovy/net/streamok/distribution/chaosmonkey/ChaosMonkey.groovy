@@ -5,6 +5,7 @@ import io.vertx.core.Vertx
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric
 import static org.assertj.core.api.Assertions.assertThat
 
 class ChaosMonkey {
@@ -16,10 +17,16 @@ class ChaosMonkey {
     }
 
     void run() {
+        accessConfigurationServiceApi()
+    }
+
+    private void accessConfigurationServiceApi() {
         def latch = new CountDownLatch(1)
+        def key = randomAlphanumeric(20)
+        def value = randomAlphanumeric(20)
         String response
-        vertx.createHttpClient().getNow(8080, 'localhost', '/configuration/put?key=foo&value=bar') {
-            vertx.createHttpClient().getNow(8080, 'localhost', '/configuration/get?key=foo') {
+        vertx.createHttpClient().getNow(8080, 'localhost', "/configuration/put?key=${key}&value=${value}") {
+            vertx.createHttpClient().getNow(8080, 'localhost', "/configuration/get?key=${key}") {
                 it.bodyHandler {
                     response = it.toString()
                     latch.countDown()
@@ -27,7 +34,7 @@ class ChaosMonkey {
             }
         }
         latch.await(5, TimeUnit.SECONDS)
-        assertThat(response).isEqualTo('bar')
+        assertThat(response).isEqualTo(value)
     }
 
 }

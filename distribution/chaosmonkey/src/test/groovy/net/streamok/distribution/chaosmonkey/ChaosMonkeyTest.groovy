@@ -7,7 +7,7 @@ import org.junit.Test
 class ChaosMonkeyTest {
 
     @Test
-    void should() {
+    void shouldSurviveMonkeyRun() {
         StreamokNode.main()
         new ChaosMonkey(Vertx.vertx()).run()
     }

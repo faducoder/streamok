@@ -15,6 +15,7 @@
     <name>${artifactId}</name>
 
     <properties>
+        <streamok.version>0.0.0-SNAPSHOT</streamok.version>
         <vertx.version>3.3.3</vertx.version>
 
         <!-- Plugins versions -->
@@ -40,6 +41,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Internal dependencies -->
+            <dependency>
+                <groupId>net.streamok</groupId>
+                <artifactId>streamok-distribution-node</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
+
+            <!-- External dependencies -->
             <dependency>
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-core</artifactId>
@@ -52,13 +61,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <scm>
-        <connection>scm:git:git@github.com:smolok/smolok.git</connection>
-        <developerConnection>scm:git:git@github.com:smolok/smolok.git</developerConnection>
-        <url>git@github.com:smolok/smolok.git</url>
-        <tag>HEAD</tag>
-    </scm>
 
     <distributionManagement>
         <snapshotRepository>
