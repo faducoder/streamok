@@ -30,4 +30,8 @@ class FiberContext {
         fiberNode.dependencies[key]
     }
 
+    def <T> T dependency(Class<T> type) {
+        fiberNode.dependencies.values().find { type.isAssignableFrom(it.getClass()) }
+    }
+
 }

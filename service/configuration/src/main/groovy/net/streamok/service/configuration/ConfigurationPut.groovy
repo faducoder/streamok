@@ -16,8 +16,7 @@ class ConfigurationPut implements FiberDefinition {
         { fiberContext ->
             def key = fiberContext.header('key').toString()
             def value = fiberContext.header('value').toString()
-            def store = fiberContext.dependency('configuration.store') as Map
-            store[key] = value
+            fiberContext.dependency(Map)[key] = value
             fiberContext.reply(null)
         }
     }

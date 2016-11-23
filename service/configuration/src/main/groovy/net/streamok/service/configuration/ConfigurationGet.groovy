@@ -15,8 +15,8 @@ class ConfigurationGet implements FiberDefinition {
     Fiber handler() {
         { fiberContext ->
             def key = fiberContext.header('key').toString()
-            def store = fiberContext.dependency('configuration.store') as Map
-            fiberContext.reply(store[key])
+            def value = fiberContext.dependency(Map)[key]
+            fiberContext.reply(value)
         }
     }
 
