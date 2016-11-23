@@ -5,17 +5,12 @@
 
     <parent>
         <groupId>net.streamok</groupId>
-        <artifactId>streamok</artifactId>
+        <artifactId>streamok-fiber</artifactId>
         <version>0.0.0-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
 
-    <artifactId>streamok-fiber</artifactId>
+    <artifactId>streamok-fiber-node</artifactId>
     <name>${artifactId}</name>
-
-    <modules>
-        <module>node</module>
-    </modules>
 
     <licenses>
         <license>
@@ -30,6 +25,31 @@
             <email>hekonsek@gmail.com</email>
         </developer>
     </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>2.4.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-unit</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <properties>
         <!-- General build rules -->
