@@ -1,6 +1,7 @@
 package net.streamok.fiber.node
 
 import io.vertx.core.json.Json
+import net.streamok.fiber.node.api.FiberDefinition
 
 class FiberDefinitionFactory {
 

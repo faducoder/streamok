@@ -1,7 +1,7 @@
 package net.streamok.fiber.node
 
-import io.vertx.core.Handler
-import io.vertx.core.eventbus.Message
+import net.streamok.fiber.node.api.Fiber
+import net.streamok.fiber.node.api.FiberDefinition
 
 class GroovyClosureFiberDefinition implements FiberDefinition {
 
@@ -25,7 +25,7 @@ class GroovyClosureFiberDefinition implements FiberDefinition {
     }
 
     @Override
-    Handler<Message> handler() {
+    Fiber handler() {
         closure
     }
 
