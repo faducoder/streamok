@@ -13,7 +13,7 @@ class ConfigurationPut implements FiberDefinition {
 
     @Override
     Fiber handler() {
-        { FiberContext fiberContext ->
+        { fiberContext ->
             def key = fiberContext.header('key').toString()
             def value = fiberContext.header('value').toString()
             def store = fiberContext.dependency('configuration.store') as Map

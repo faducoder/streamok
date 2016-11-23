@@ -13,7 +13,7 @@ class ConfigurationGet implements FiberDefinition {
 
     @Override
     Fiber handler() {
-        { FiberContext fiberContext ->
+        { fiberContext ->
             def key = fiberContext.header('key').toString()
             def store = fiberContext.dependency('configuration.store') as Map
             fiberContext.reply(store[key])
