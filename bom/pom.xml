@@ -3,19 +3,29 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.streamok</groupId>
-    <artifactId>streamok</artifactId>
-    <version>0.0.0-SNAPSHOT</version>
+    <parent>
+        <groupId>net.streamok</groupId>
+        <artifactId>streamok</artifactId>
+        <version>0.0.0-SNAPSHOT</version>
+    </parent>
     <packaging>pom</packaging>
 
+    <artifactId>streamok-bom</artifactId>
     <name>${artifactId}</name>
-    <description>streamok</description>
-    <url>https://github.com/smolok/smolok</url>
 
-    <modules>
-        <module>bom</module>
-        <module>fiber</module>
-    </modules>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Henryk Konsek</name>
+            <email>hekonsek@gmail.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <!-- General build rules -->
@@ -24,6 +34,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Plugins versions -->
+        <docker-maven-plugin.version>0.15.9</docker-maven-plugin.version>
         <groovy-eclipse-batch.version>2.4.3-01</groovy-eclipse-batch.version>
         <groovy-eclipse-compiler.version>2.9.2-01</groovy-eclipse-compiler.version>
         <groovydoc-maven-plugin.version>1.3</groovydoc-maven-plugin.version>
@@ -43,9 +54,47 @@
         <timestamp>${maven.build.timestamp}</timestamp>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:smolok/smolok.git</connection>
+        <developerConnection>scm:git:git@github.com:smolok/smolok.git</developerConnection>
+        <url>git@github.com:smolok/smolok.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                    <configuration>
+                        <images>
+                            <image>
+                                <name>smolok/${image.target}</name>
+                                <build>
+                                    <from>smolok/fatjar:${project.version}</from>
+                                    <tags>
+                                        <tag>latest</tag>
+                                        <tag>${project.version}</tag>
+                                        <tag>${timestamp}</tag>
+                                    </tags>
+                                </build>
+                            </image>
+                        </images>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.servicemix.tooling</groupId>
                     <artifactId>depends-maven-plugin</artifactId>
@@ -285,39 +334,5 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
-
-    <!-- Meta information required for Sonatype release -->
-
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <name>Henryk Konsek</name>
-            <email>hekonsek@gmail.com</email>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:git:git@github.com:streamok/streamok.git</connection>
-        <developerConnection>scm:git:git@github.com:streamok/streamok.git</developerConnection>
-        <url>git@github.com:streamok/streamok.git</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
 </project>
