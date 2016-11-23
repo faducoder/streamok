@@ -4,6 +4,7 @@ import io.vertx.core.Vertx
 import net.streamok.fiber.node.api.DependencyProvider
 import net.streamok.fiber.node.api.FiberContext
 import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.FiberSuite
 
 class FiberNode {
 
@@ -11,16 +12,25 @@ class FiberNode {
 
     def dependencies = [:]
 
-    void addFiber(FiberDefinition fiberDefinition) {
+    FiberNode addFiber(FiberDefinition fiberDefinition) {
         vertx.eventBus().consumer(fiberDefinition.address()){fiberDefinition.handler().handle(new FiberContext(it, this))}
+        this
     }
 
-    void addDependency(DependencyProvider dependencyProvider) {
+    FiberNode addDependency(DependencyProvider dependencyProvider) {
         dependencies[dependencyProvider.key()] = dependencyProvider.dependency()
+        this
     }
 
-    void addEndpoint(Endpoint endpoint) {
+    FiberNode addEndpoint(Endpoint endpoint) {
         endpoint.connect(this)
+        this
+    }
+
+    FiberNode addSuite(FiberSuite fiberSuite) {
+        fiberSuite.dependencyProviders().each { addDependency(it) }
+        fiberSuite.fiberDefinitions().each { addFiber(it) }
+        this
     }
 
     Vertx vertx() {
