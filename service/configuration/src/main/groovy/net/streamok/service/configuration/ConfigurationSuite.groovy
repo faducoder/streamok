@@ -13,7 +13,7 @@ class ConfigurationSuite implements FiberSuite, FiberNodeAware {
 
     @Override
     List<FiberDefinition> fiberDefinitions() {
-        [new ConfigurationGet(), new ConfigurationPut()]
+        [new ConfigurationRead(), new ConfigurationWrite()]
     }
 
     @Override

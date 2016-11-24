@@ -8,6 +8,8 @@ import net.streamok.lib.mongo.EmbeddedMongo
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import static net.streamok.service.configuration.ConfigurationRead.configurationRead
+
 @RunWith(VertxUnitRunner)
 class ConfigurationSuiteTest {
 
@@ -18,8 +20,8 @@ class ConfigurationSuiteTest {
     @Test
     void shouldReadWrittenConfiguration(TestContext context) {
         def async = context.async()
-        bus.send('configuration.put', null, new DeliveryOptions().addHeader('key', 'foo').addHeader('value', 'bar')) {
-            bus.send('configuration.get', null, new DeliveryOptions().addHeader('key', 'foo')) {
+        bus.send('configuration.write', null, new DeliveryOptions().addHeader('key', 'foo').addHeader('value', 'bar')) {
+            bus.send(configurationRead, null, new DeliveryOptions().addHeader('key', 'foo')) {
                 context.assertEquals(it.result().body(), 'bar')
                 async.complete()
             }
@@ -29,9 +31,9 @@ class ConfigurationSuiteTest {
     @Test
     void shouldUpdateEntry(TestContext context) {
         def async = context.async()
-        bus.send('configuration.put', null, new DeliveryOptions().addHeader('key', 'foo').addHeader('value', 'bar')) {
-            bus.send('configuration.put', null, new DeliveryOptions().addHeader('key', 'foo').addHeader('value', 'baz')) {
-                bus.send('configuration.get', null, new DeliveryOptions().addHeader('key', 'foo')) {
+        bus.send('configuration.write', null, new DeliveryOptions().addHeader('key', 'foo').addHeader('value', 'bar')) {
+            bus.send('configuration.write', null, new DeliveryOptions().addHeader('key', 'foo').addHeader('value', 'baz')) {
+                bus.send(configurationRead, null, new DeliveryOptions().addHeader('key', 'foo')) {
                     context.assertEquals(it.result().body(), 'baz')
                     async.complete()
                 }

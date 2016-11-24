@@ -6,11 +6,13 @@ import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberContext
 import net.streamok.fiber.node.api.FiberDefinition
 
-class ConfigurationGet implements FiberDefinition {
+class ConfigurationRead implements FiberDefinition {
+
+    public static final String configurationRead = 'configuration.read'
 
     @Override
     String address() {
-        'configuration.get'
+        configurationRead
     }
 
     @Override

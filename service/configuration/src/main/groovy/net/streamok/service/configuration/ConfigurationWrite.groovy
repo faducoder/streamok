@@ -6,11 +6,11 @@ import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberContext
 import net.streamok.fiber.node.api.FiberDefinition
 
-class ConfigurationPut implements FiberDefinition {
+class ConfigurationWrite implements FiberDefinition {
 
     @Override
     String address() {
-        'configuration.put'
+        'configuration.write'
     }
 
     @Override

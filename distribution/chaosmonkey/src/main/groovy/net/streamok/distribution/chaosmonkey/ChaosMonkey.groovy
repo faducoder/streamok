@@ -3,8 +3,8 @@ package net.streamok.distribution.chaosmonkey
 import io.vertx.core.Vertx
 
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
+import static java.util.concurrent.TimeUnit.SECONDS
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric
 import static org.assertj.core.api.Assertions.assertThat
 
@@ -24,17 +24,15 @@ class ChaosMonkey {
         def latch = new CountDownLatch(1)
         def key = randomAlphanumeric(20)
         def value = randomAlphanumeric(20)
-        String response
-        vertx.createHttpClient().getNow(8080, 'localhost', "/configuration/put?key=${key}&value=${value}") {
-            vertx.createHttpClient().getNow(8080, 'localhost', "/configuration/get?key=${key}") {
+        vertx.createHttpClient().getNow(8080, 'localhost', "/configuration/write?key=${key}&value=${value}") {
+            vertx.createHttpClient().getNow(8080, 'localhost', "/configuration/read?key=${key}") {
                 it.bodyHandler {
-                    response = it.toString()
+                    assertThat(it.toString()).isEqualTo(value)
                     latch.countDown()
                 }
             }
         }
-        latch.await(5, TimeUnit.SECONDS)
-        assertThat(response).isEqualTo(value)
+        latch.await(5, SECONDS)
     }
 
 }
