@@ -62,65 +62,6 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>docker-maven-plugin</artifactId>
-                    <version>${docker-maven-plugin.version}</version>
-                    <configuration>
-                        <images>
-                            <image>
-                                <name>smolok/${image.target}</name>
-                                <build>
-                                    <from>smolok/fatjar:${project.version}</from>
-                                    <tags>
-                                        <tag>latest</tag>
-                                        <tag>${project.version}</tag>
-                                        <tag>${timestamp}</tag>
-                                    </tags>
-                                </build>
-                            </image>
-                        </images>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.servicemix.tooling</groupId>
-                    <artifactId>depends-maven-plugin</artifactId>
-                    <version>${depends-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>generate-depends-file</id>
-                            <goals>
-                                <goal>generate-depends-file</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot.version}</version>
-                    <executions>
-                        <execution>
-                            <configuration>
-                                <classifier>fat</classifier>
-                                <mainClass>${mainClass}</mainClass>
-                            </configuration>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -309,19 +250,5 @@
             </build>
         </profile>
     </profiles>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <!-- Groovy Maven plugin tries to download the artifacts from the dead Codehaus repository. -->
-            <id>codehaus.org</id>
-            <url>http://repository.codehaus.org</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
