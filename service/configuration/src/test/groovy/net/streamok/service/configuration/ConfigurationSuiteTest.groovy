@@ -1,27 +1,17 @@
 package net.streamok.service.configuration
 
-import de.flapdoodle.embed.mongo.MongodStarter
-import de.flapdoodle.embed.mongo.config.IMongodConfig
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder
-import de.flapdoodle.embed.mongo.config.Net
-import de.flapdoodle.embed.mongo.distribution.Version
-import de.flapdoodle.embed.process.runtime.Network
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.FiberNode
+import net.streamok.lib.mongo.EmbeddedMongo
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(VertxUnitRunner)
 class ConfigurationSuiteTest {
 
-    static IMongodConfig mongodConfig = new MongodConfigBuilder()
-            .version(Version.Main.PRODUCTION)
-            .net(new Net(27017, Network.localhostIsIPv6()))
-            .build();
-
-    static def xx = MongodStarter.getDefaultInstance().prepare(mongodConfig).start()
+    static def mongo = new EmbeddedMongo().start()
 
     static def bus = new FiberNode().addSuite(new ConfigurationSuite()).vertx().eventBus()
 

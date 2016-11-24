@@ -49,6 +49,11 @@
                 <artifactId>streamok-distribution-node</artifactId>
                 <version>${streamok.version}</version>
             </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
+                <artifactId>streamok-lib-mongo</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
 
             <!-- External dependencies -->
             <dependency>
