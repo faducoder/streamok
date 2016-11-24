@@ -29,6 +29,15 @@ class ConfigurationSuiteTest {
     }
 
     @Test
+    void shouldReadNullValue(TestContext context) {
+        def async = context.async()
+        bus.send(configurationRead, null, new DeliveryOptions().addHeader('key', 'invalidKey')) {
+            context.assertEquals(it.result().body(), null)
+            async.complete()
+        }
+    }
+
+    @Test
     void shouldUpdateEntry(TestContext context) {
         def async = context.async()
         bus.send('configuration.write', null, new DeliveryOptions().addHeader('key', 'foo').addHeader('value', 'bar')) {

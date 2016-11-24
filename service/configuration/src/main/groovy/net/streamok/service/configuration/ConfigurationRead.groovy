@@ -21,7 +21,12 @@ class ConfigurationRead implements FiberDefinition {
             def key = fiberContext.header('key').toString()
             def mongo = fiberContext.dependency(MongoClient)
             mongo.findOne('configuration', new JsonObject().put('key', key), null) {
-                fiberContext.reply(it.result().getString('value'))
+                def result =  it.result()
+                if(result) {
+                    fiberContext.reply(result.getString('value'))
+                } else {
+                    fiberContext.reply(null)
+                }
             }
         }
     }
