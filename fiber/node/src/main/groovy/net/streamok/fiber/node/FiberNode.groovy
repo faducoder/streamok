@@ -4,6 +4,7 @@ import io.vertx.core.Vertx
 import net.streamok.fiber.node.api.DependencyProvider
 import net.streamok.fiber.node.api.FiberContext
 import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.FiberNodeAware
 import net.streamok.fiber.node.api.FiberSuite
 
 class FiberNode {
@@ -28,6 +29,9 @@ class FiberNode {
     }
 
     FiberNode addSuite(FiberSuite fiberSuite) {
+        if(fiberSuite instanceof FiberNodeAware) {
+            fiberSuite.fiberNode(this)
+        }
         fiberSuite.dependencyProviders().each { addDependency(it) }
         fiberSuite.fiberDefinitions().each { addFiber(it) }
         this
