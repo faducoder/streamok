@@ -1,4 +1,4 @@
-package net.streamok.fiber.node
+package net.streamok.fiber.node.api
 
 interface Endpoint {
 

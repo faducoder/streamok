@@ -4,15 +4,14 @@ import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.json.Json
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
-import net.streamok.fiber.node.FiberNode
-import net.streamok.service.metrics.MetricsSuite
+import net.streamok.fiber.node.DefaultFiberNode
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(VertxUnitRunner)
 class MetricsSuiteTest {
 
-    def bus = new FiberNode().addSuite(new MetricsSuite()).vertx().eventBus()
+    def bus = new DefaultFiberNode().addSuite(new MetricsSuite()).vertx().eventBus()
 
     @Test
     void shouldReadWrittenConfiguration(TestContext context) {

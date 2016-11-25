@@ -2,12 +2,14 @@ package net.streamok.fiber.node
 
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.http.HttpServerResponse
+import net.streamok.fiber.node.api.Endpoint
+import net.streamok.fiber.node.api.FiberNode
 
 class RestEndpoint implements Endpoint {
 
     @Override
     void connect(FiberNode fiberNode) {
-        def vertx = fiberNode.vertx
+        def vertx = fiberNode.vertx()
         def server = vertx.createHttpServer()
 
         server.requestHandler { request ->

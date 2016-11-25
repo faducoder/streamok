@@ -1,11 +1,7 @@
 package net.streamok.service.configuration
 
 import io.vertx.core.Vertx
-import net.streamok.fiber.node.FiberNode
-import net.streamok.fiber.node.api.DependencyProvider
-import net.streamok.fiber.node.api.FiberDefinition
-import net.streamok.fiber.node.api.FiberNodeAware
-import net.streamok.fiber.node.api.FiberSuite
+import net.streamok.fiber.node.api.*
 
 class ConfigurationSuite implements FiberSuite, FiberNodeAware {
 

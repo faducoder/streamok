@@ -20,7 +20,7 @@ import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.json.Json
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
-import net.streamok.fiber.node.FiberNode
+import net.streamok.fiber.node.DefaultFiberNode
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat
 @RunWith(VertxUnitRunner)
 class MachineLearningSuiteTest {
 
-    static def bus = new FiberNode().addSuite(new MachineLearningSuite()).vertx().eventBus()
+    static def bus = new DefaultFiberNode().addSuite(new MachineLearningSuite()).vertx().eventBus()
 
     // Tests
 

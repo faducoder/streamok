@@ -1,13 +1,13 @@
 package net.streamok.fiber.node.api
 
 import io.vertx.core.eventbus.Message
-import net.streamok.fiber.node.FiberNode
+import net.streamok.fiber.node.DefaultFiberNode
 
 class FiberContext {
 
-    Message message
+    private final Message message
 
-    FiberNode fiberNode
+    private final FiberNode fiberNode
 
     FiberContext(Message message, FiberNode fiberNode) {
         this.message = message
@@ -27,11 +27,11 @@ class FiberContext {
     }
 
     Object dependency(String key) {
-        fiberNode.dependencies[key]
+        fiberNode.dependency(key)
     }
 
     def <T> T dependency(Class<T> type) {
-        fiberNode.dependencies.values().find { type.isAssignableFrom(it.getClass()) }
+        fiberNode.dependency(type)
     }
 
 }

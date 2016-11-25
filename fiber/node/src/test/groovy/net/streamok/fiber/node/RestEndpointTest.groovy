@@ -11,7 +11,7 @@ class RestEndpointTest {
     @Test
     void shouldInvokeFiberViaRestEndpoint(TestContext context) {
         def async = context.async()
-        def fiberNode = new FiberNode()
+        def fiberNode = new DefaultFiberNode()
         def fiberDefinition = [type: 'groovy', address: 'echo', closure: '{it -> it.reply(it.body())}']
         fiberNode.addFiber(new FiberDefinitionFactory().build(fiberDefinition))
         fiberNode.addEndpoint(new RestEndpoint())

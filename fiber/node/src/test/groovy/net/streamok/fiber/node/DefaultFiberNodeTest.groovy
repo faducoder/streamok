@@ -6,12 +6,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(VertxUnitRunner)
-class FiberNodeTest {
+class DefaultFiberNodeTest {
 
     @Test
     void shouldInvokeGroovyClosureFiber(TestContext context) {
         def async = context.async()
-        def fiberNode = new FiberNode()
+        def fiberNode = new DefaultFiberNode()
         def fiberDefinition = [type: 'groovy', address: 'echo', closure: '{it -> it.reply(it.body())}']
         fiberNode.addFiber(new FiberDefinitionFactory().build(fiberDefinition))
         fiberNode.vertx.eventBus().send('echo', 'foo') {
