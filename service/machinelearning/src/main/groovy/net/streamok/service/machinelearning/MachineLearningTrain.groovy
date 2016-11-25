@@ -1,7 +1,5 @@
 package net.streamok.service.machinelearning
 
-import io.vertx.core.Vertx
-import io.vertx.core.eventbus.DeliveryOptions
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberDefinition
 import org.apache.spark.ml.classification.LogisticRegression
@@ -22,10 +20,6 @@ class MachineLearningTrain implements FiberDefinition {
 
     static Map<String, LogisticRegressionModel> models = [:]
 
-    static def spark = SparkSession.builder()
-            .master("local[*]")
-            .getOrCreate()
-
     @Override
     String address() {
         'machinelearning.train'
@@ -33,9 +27,11 @@ class MachineLearningTrain implements FiberDefinition {
 
     @Override
     Fiber handler() {
-        { fiberContext ->
-            def source = fiberContext.header('source')
-            def collection = fiberContext.header('collection').toString()
+        { fiber ->
+            def spark = fiber.dependency(SparkSession)
+
+            def source = fiber.header('source')
+            def collection = fiber.header('collection').toString()
 
             def labels = ungroupedData[collection].collect { it.targetLabel }.unique()
             labels.each { label ->
@@ -54,7 +50,7 @@ class MachineLearningTrain implements FiberDefinition {
                 def tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words");
                 featuresDataFrame = tokenizer.transform(featuresDataFrame);
                 int numFeatures = 20;
-                HashingTF hashingTF = new HashingTF()
+                def hashingTF = new HashingTF()
                         .setInputCol("words")
                         .setOutputCol("rawFeatures")
                         .setNumFeatures(numFeatures);
@@ -68,7 +64,7 @@ class MachineLearningTrain implements FiberDefinition {
                 }
                 models[label] = new LogisticRegression().fit(rescaledData)
             }
-            fiberContext.reply(null)
+            fiber.reply(null)
         }
     }
 

@@ -2,13 +2,13 @@ package net.streamok.service.machinelearning
 
 import io.vertx.core.json.Json
 import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberContext
 import net.streamok.fiber.node.api.FiberDefinition
 import org.apache.spark.ml.feature.HashingTF
 import org.apache.spark.ml.feature.IDF
 import org.apache.spark.ml.feature.Tokenizer
 import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.sql.RowFactory
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.DataTypes
 import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.types.StructField
@@ -23,9 +23,10 @@ class MachineLearningPredict implements FiberDefinition {
 
     @Override
     Fiber handler() {
-        { fiberContext ->
-            def collection = fiberContext.header('collection').toString()
-            def featureVector = Json.decodeValue(fiberContext.body().toString(), FeatureVector)
+        { fiber ->
+            def spark = fiber.dependency(SparkSession)
+            def collection = fiber.header('collection').toString()
+            def featureVector = Json.decodeValue(fiber.body().toString(), FeatureVector)
 
             def ungroupedData = MachineLearningTrain.ungroupedData[collection]
             def labelConfidence = [:]
@@ -41,8 +42,8 @@ class MachineLearningPredict implements FiberDefinition {
                         new StructField("label", DataTypes.DoubleType, false, Metadata.empty()),
                         new StructField("sentence", DataTypes.StringType, false, Metadata.empty())
                 ].toArray(new StructField[0]) as StructField[]);
-                def featuresDataFrame = MachineLearningTrain.spark.createDataFrame(data, schema);
-                def tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words");
+                def featuresDataFrame = spark.createDataFrame(data, schema)
+                def tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words")
                 featuresDataFrame = tokenizer.transform(featuresDataFrame);
                 def hashingTF = new HashingTF()
                         .setInputCol("words")
@@ -60,7 +61,7 @@ class MachineLearningPredict implements FiberDefinition {
                 labelConfidence[label] = (prob as DenseVector).values()[1]
             }
 
-            fiberContext.reply(Json.encode(labelConfidence))
+            fiber.reply(Json.encode(labelConfidence))
         }
     }
 

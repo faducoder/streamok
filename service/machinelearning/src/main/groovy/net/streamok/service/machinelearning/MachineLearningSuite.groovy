@@ -13,7 +13,7 @@ class MachineLearningSuite implements FiberSuite {
 
     @Override
     List<DependencyProvider> dependencyProviders() {
-        []
+        [new SparkSessionProvider()]
     }
 
 }
