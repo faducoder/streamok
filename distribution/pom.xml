@@ -46,24 +46,6 @@
         <timestamp>${maven.build.timestamp}</timestamp>
     </properties>
 
-    <scm>
-        <connection>scm:git:git@github.com:smolok/smolok.git</connection>
-        <developerConnection>scm:git:git@github.com:smolok/smolok.git</developerConnection>
-        <url>git@github.com:smolok/smolok.git</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -74,9 +56,9 @@
                     <configuration>
                         <images>
                             <image>
-                                <name>smolok/${image.target}</name>
+                                <name>streamok/${image.target}</name>
                                 <build>
-                                    <from>smolok/fatjar:${project.version}</from>
+                                    <from>smolok/fatjar:0.0.10</from>
                                     <tags>
                                         <tag>latest</tag>
                                         <tag>${project.version}</tag>
@@ -87,49 +69,8 @@
                         </images>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.servicemix.tooling</groupId>
-                    <artifactId>depends-maven-plugin</artifactId>
-                    <version>${depends-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>generate-depends-file</id>
-                            <goals>
-                                <goal>generate-depends-file</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot.version}</version>
-                    <executions>
-                        <execution>
-                            <configuration>
-                                <classifier>fat</classifier>
-                                <mainClass>${mainClass}</mainClass>
-                            </configuration>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
-
-        <plugins>
-           <plugin>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-maven-plugin</artifactId>
-           </plugin>
-        </plugins>
     </build>
 
     <profiles>
