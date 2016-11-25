@@ -50,17 +50,24 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.servicemix.tooling</groupId>
-                    <artifactId>depends-maven-plugin</artifactId>
-                    <version>${depends-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>generate-depends-file</id>
-                            <goals>
-                                <goal>generate-depends-file</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                    <configuration>
+                        <images>
+                            <image>
+                                <name>smolok/${image.target}</name>
+                                <build>
+                                    <from>smolok/fatjar:${project.version}</from>
+                                    <tags>
+                                        <tag>latest</tag>
+                                        <tag>${project.version}</tag>
+                                        <tag>${timestamp}</tag>
+                                    </tags>
+                                </build>
+                            </image>
+                        </images>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
