@@ -7,3 +7,6 @@ nohup openshift/openshift start &
 sleep 5
 openshift/oc login https://localhost:8443 -u admin -p admin
 openshift/oc new-project streamok
+
+openshift/oc new-app mongo
+openshift/oc new-app steamok/node:0.0.0-SNAPSHOT
