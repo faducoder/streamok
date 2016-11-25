@@ -18,8 +18,6 @@ class MachineLearningTrain implements FiberDefinition {
 
     static Map<String, List<FeatureVector>> ungroupedData = [:].withDefault {[]}
 
-    static Map<String, LogisticRegressionModel> models = [:]
-
     @Override
     String address() {
         'machinelearning.train'
@@ -29,6 +27,7 @@ class MachineLearningTrain implements FiberDefinition {
     Fiber handler() {
         { fiber ->
             def spark = fiber.dependency(SparkSession)
+            def models = fiber.dependency(ModelCache)
 
             def source = fiber.header('source')
             def collection = fiber.header('collection').toString()
@@ -62,7 +61,7 @@ class MachineLearningTrain implements FiberDefinition {
                 if (label == null) {
                     label = 'default'
                 }
-                models[label] = new LogisticRegression().fit(rescaledData)
+                models.updateModel(collection, label, new LogisticRegression().fit(rescaledData))
             }
             fiber.reply(null)
         }

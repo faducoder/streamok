@@ -25,6 +25,8 @@ class MachineLearningPredict implements FiberDefinition {
     Fiber handler() {
         { fiber ->
             def spark = fiber.dependency(SparkSession)
+            def models = fiber.dependency(ModelCache)
+
             def collection = fiber.header('collection').toString()
             def featureVector = Json.decodeValue(fiber.body().toString(), FeatureVector)
 
@@ -35,7 +37,7 @@ class MachineLearningPredict implements FiberDefinition {
                 if (label == null) {
                     label = 'default'
                 }
-                def regressionModel = MachineLearningTrain.models[label]
+                def regressionModel = models.model(collection, label)
 
                 def data = [RowFactory.create(100d, featureVector.text)]
                 def schema = new StructType([
