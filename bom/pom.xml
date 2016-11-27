@@ -16,6 +16,7 @@
 
     <properties>
         <!-- Dependencies -->
+        <commons-lang.version>3.4</commons-lang.version>
         <embedmongo.version>1.50.2</embedmongo.version>
         <junit.version>4.12</junit.version>
         <streamok.version>0.0.0-SNAPSHOT</streamok.version>
@@ -79,6 +80,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang.version}</version>
             </dependency>
 
             <!-- Classpath conflicts resolving -->
