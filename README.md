@@ -1,3 +1,11 @@
-# streamok
+# Streamok
 
-    bash <(curl -sL https://goo.gl/pNYemi)
+Streamok is a data stream platform for connected devices, where device can be a piece of the IoT (Internet Of Things) hardware, smart phone, tablet, web browser or external IT system.
+
+The idea behind Streamok is to deliver a scalable backend PaaS platform providing core services required by device-oriented system. List of such services includes IoT-scale messaging infrastructure, device management, telemetry reading/writing, machine learning, big data analytics and so forth.
+
+Streamok is based on the top of the leading open source projects including Apache Spark.
+
+## Documentation
+
+Streamok documentation is available [here](https://streamok.gitbooks.io/streamok/content).
