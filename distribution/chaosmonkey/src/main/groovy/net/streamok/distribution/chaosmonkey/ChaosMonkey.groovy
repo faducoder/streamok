@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat
 
 class ChaosMonkey {
 
-    Vertx vertx
+    private final Vertx vertx
 
     ChaosMonkey(Vertx vertx) {
         this.vertx = vertx
