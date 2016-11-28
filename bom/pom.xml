@@ -16,6 +16,7 @@
 
     <properties>
         <!-- Dependencies -->
+        <commons-configuration.version>2.1</commons-configuration.version>
         <commons-lang.version>3.4</commons-lang.version>
         <embedmongo.version>1.50.2</embedmongo.version>
         <groovy.version>2.4.7</groovy.version>
@@ -38,6 +39,11 @@
             <dependency>
                 <groupId>net.streamok</groupId>
                 <artifactId>streamok-fiber-node</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
+                <artifactId>streamok-lib-conf</artifactId>
                 <version>${streamok.version}</version>
             </dependency>
             <dependency>
@@ -86,6 +92,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-configuration2</artifactId>
+                <version>${commons-configuration.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
