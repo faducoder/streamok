@@ -63,6 +63,7 @@ class DefaultFiberNode implements FiberNode {
         }
         fiberSuite.dependencyProviders().each { addDependency(it) }
         fiberSuite.fiberDefinitions().each { addFiber(it) }
+        fiberSuite.endpoints().each { addEndpoint(it) }
         this
     }
 

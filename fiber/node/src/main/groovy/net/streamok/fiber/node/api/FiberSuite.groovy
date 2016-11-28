@@ -6,4 +6,6 @@ interface FiberSuite {
 
     List<DependencyProvider> dependencyProviders()
 
+    List<Endpoint> endpoints()
+
 }
