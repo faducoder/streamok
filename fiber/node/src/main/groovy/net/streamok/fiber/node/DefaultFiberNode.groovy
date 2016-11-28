@@ -17,19 +17,34 @@
 package net.streamok.fiber.node
 
 import io.vertx.core.Vertx
+import io.vertx.core.eventbus.DeliveryOptions
 import net.streamok.fiber.node.api.*
 
+import static java.lang.System.currentTimeMillis
+import static java.util.UUID.randomUUID
 import static org.apache.commons.lang3.SystemUtils.javaIoTmpDir
 
 class DefaultFiberNode implements FiberNode {
 
     private final def Vertx vertx
 
+    private final id = randomUUID().toString()
+
     def dependencies = [:]
 
     DefaultFiberNode() {
         System.setProperty('vertx.cacheDirBase', javaIoTmpDir.absolutePath)
         vertx = Vertx.vertx()
+    }
+
+    FiberNode start() {
+        vertx.eventBus().send('metrics.put', null, new DeliveryOptions().addHeader('key', "fiber.node.${id}.started").addHeader('value', "${currentTimeMillis()}"))
+        this
+    }
+
+    @Override
+    String id() {
+        id
     }
 
     DefaultFiberNode addFiber(FiberDefinition fiberDefinition) {

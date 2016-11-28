@@ -11,10 +11,10 @@ class DefaultFiberNodeTest {
     @Test
     void shouldInvokeGroovyClosureFiber(TestContext context) {
         def async = context.async()
-        def fiberNode = new DefaultFiberNode()
+        def fiberNode = new DefaultFiberNode().start()
         def fiberDefinition = [type: 'groovy', address: 'echo', closure: '{it -> it.reply(it.body())}']
         fiberNode.addFiber(new FiberDefinitionFactory().build(fiberDefinition))
-        fiberNode.vertx.eventBus().send('echo', 'foo') {
+        fiberNode.vertx().eventBus().send('echo', 'foo') {
             context.assertEquals(it.result().body(), 'foo')
             async.complete()
         }

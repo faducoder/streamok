@@ -4,6 +4,10 @@ import io.vertx.core.Vertx
 
 interface FiberNode {
 
+    FiberNode start()
+
+    String id()
+
     FiberNode addFiber(FiberDefinition fiberDefinition)
 
     FiberNode addEndpoint(Endpoint endpoint)

@@ -10,22 +10,13 @@
     </parent>
 
     <artifactId>streamok-service-metrics</artifactId>
-    <name>${artifactId}</name>
+    <name>${project.artifactId}</name>
 
     <dependencies>
         <dependency>
             <groupId>net.streamok</groupId>
             <artifactId>streamok-fiber-node</artifactId>
             <version>0.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>2.4.6</version>
         </dependency>
 
         <dependency>
@@ -36,7 +27,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -67,24 +57,6 @@
         <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
     </properties>
-
-    <scm>
-        <connection>scm:git:git@github.com:smolok/smolok.git</connection>
-        <developerConnection>scm:git:git@github.com:smolok/smolok.git</developerConnection>
-        <url>git@github.com:smolok/smolok.git</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <pluginManagement>
