@@ -4,6 +4,7 @@ import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.DependencyProvider
+import net.streamok.lib.mongo.MongoClientFactory
 
 class ConfigurationStoreProvider implements DependencyProvider {
 
@@ -20,7 +21,7 @@ class ConfigurationStoreProvider implements DependencyProvider {
 
     @Override
     Object dependency() {
-        MongoClient.createShared(vertx, new JsonObject([host: 'localhost', port: 27017]))
+        new MongoClientFactory().mongoClient(vertx)
     }
 
 }

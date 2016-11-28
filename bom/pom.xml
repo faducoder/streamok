@@ -18,6 +18,7 @@
         <!-- Dependencies -->
         <commons-lang.version>3.4</commons-lang.version>
         <embedmongo.version>1.50.2</embedmongo.version>
+        <groovy.version>2.4.7</groovy.version>
         <junit.version>4.12</junit.version>
         <streamok.version>0.0.0-SNAPSHOT</streamok.version>
         <vertx.version>3.3.3</vertx.version>
@@ -73,6 +74,11 @@
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
+                <artifactId>vertx-mongo-client</artifactId>
+                <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
                 <artifactId>vertx-unit</artifactId>
                 <version>${vertx.version}</version>
             </dependency>
@@ -85,6 +91,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
             </dependency>
 
             <!-- Classpath conflicts resolving -->
