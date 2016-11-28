@@ -10,7 +10,7 @@ if [ ! -d 'openshift' ]; then
 fi
 
 nohup openshift/openshift start &
-sleep 5
+sleep 10
 openshift/oc login https://localhost:8443 -u admin -p admin
 openshift/oc new-project streamok
 
