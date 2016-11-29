@@ -29,7 +29,7 @@ class DocumentFind implements FiberDefinition {
 
                 Validate.notNull(collection, 'Document collection expected not to be null.')
 
-                def col = mongo.getDB('documents').getCollection(collection)
+                def col = mongo.getDB('default_db').getCollection(collection)
 
                 def results = col.find(new MongodbMapper().mongoQuery(queryBuilder.query)).
                             limit(queryBuilder.size).skip(queryBuilder.skip()).sort(new MongodbMapper().sortConditions(queryBuilder)).

@@ -28,7 +28,7 @@ class DocumentFindMany implements FiberDefinition {
 
             Validate.notNull(collection, 'Document collection expected not to be null.')
 
-            def col = mongo.getDB('documents').getCollection(collection)
+            def col = mongo.getDB('default_db').getCollection(collection)
 
             def mongoIds = new BasicDBObject('$in', documentIds.collect{new ObjectId(it)})
             def query = new BasicDBObject('_id', mongoIds)

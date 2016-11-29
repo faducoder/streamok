@@ -22,11 +22,10 @@ class DocumentStore implements FiberDefinition {
             def collection = fiberContext.header('collection').toString()
             def mongo = fiberContext.dependency(Mongo)
 
-
             LOG.debug('About to save {} into {}.', pojo, collection)
 
             def xxx = new MongodbMapper().canonicalToMongo(pojo)
-            mongo.getDB('documents').getCollection(collection).save(xxx)
+            mongo.getDB('default_db').getCollection(collection).save(xxx)
             def id = xxx['_id'].toString()
             fiberContext.reply(id)
         }

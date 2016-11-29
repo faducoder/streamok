@@ -29,7 +29,7 @@ class DocumentFindOne implements FiberDefinition {
             Validate.notNull(collection, 'Document collection expected not to be null.')
 
             LOG.debug('Looking up for document with ID {} from collection {}.', documentId, collection)
-            def col = mongo.getDB('documents').getCollection(collection)
+            def col = mongo.getDB('default_db').getCollection(collection)
             def document = col.findOne(new ObjectId(documentId))
             if (document != null) {
                 fiberContext.reply(Json.encode(new MongodbMapper().mongoToCanonical(document)))

@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>streamok-service-document</artifactId>
-    <name>${artifactId}</name>
+    <name>${project.artifactId}</name>
 
     <licenses>
         <license>
