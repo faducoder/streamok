@@ -17,44 +17,13 @@
 package net.streamok.service.document
 
 import com.mongodb.BasicDBObject
-import com.mongodb.DBCollection
-import com.mongodb.Mongo
-import org.apache.commons.lang3.Validate
 import org.bson.types.ObjectId
 
 //import static net.smolok.service.documentstore.mongodb.MongodbMapper.*
 
 class MongodbDocumentStore {
 
-    // Logger
-
-    private static final LOG = org.slf4j.LoggerFactory.getLogger(MongodbDocumentStore.class)
-
-    // Collaborators
-
-    private final Mongo mongo
-
-    private final MongodbMapper mongodbMapper
-
-    // Configuration members
-
-    private final String documentsDbName
-
-    // Constructors
-
-    MongodbDocumentStore(Mongo mongo, MongodbMapper mongodbMapper, String documentsDbName) {
-        this.mongo = Validate.notNull(mongo, 'Mongo client expected not to be null.')
-        this.mongodbMapper = Validate.notNull(mongodbMapper, 'MongoDB mapper expected not to be null.')
-        this.documentsDbName = Validate.notBlank(documentsDbName, 'Documents database name expected not to be blank.')
-    }
-
     // Operations implementations
-
-    List<Map<String, Object>> findMany(String collection, List<String> ids) {
-        def mongoIds = new BasicDBObject('$in', ids.collect{new ObjectId(it)})
-        def query = new BasicDBObject(net.smolok.service.documentstore.mongodb.MongodbMapper.getMONGO_ID, mongoIds)
-        documentCollection(collection).find(query).toArray().collect { mongodbMapper.mongoToCanonical(it) }
-    }
 
     long count(String collection, QueryBuilder queryBuilder) {
         documentCollection(collection).find(mongodbMapper.mongoQuery(queryBuilder.query)).
@@ -64,12 +33,6 @@ class MongodbDocumentStore {
 
     void remove(String collection, String identifier) {
         documentCollection(collection).remove(new BasicDBObject(net.smolok.service.documentstore.mongodb.MongodbMapper.getMONGO_ID, new ObjectId(identifier)))
-    }
-
-    // Helpers
-
-    private DBCollection documentCollection(String collection) {
-        mongo.getDB(documentsDbName).getCollection(collection)
     }
 
 }

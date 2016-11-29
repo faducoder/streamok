@@ -37,6 +37,23 @@ class DocumentSuiteTest {
     }
 
     @Test
+    void shouldFindMany(TestContext context) {
+        def async = context.async()
+        def ids = []
+        bus.send('document.save', Json.encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
+            ids << it.result().body().toString()
+            bus.send('document.save', Json.encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
+                ids << it.result().body().toString()
+                bus.send('document.findMany', Json.encode(ids), new DeliveryOptions().addHeader('collection', collection)) {
+                    def savedDocuments = Json.decodeValue(it.result().body().toString(), Map[])
+                    assertThat(savedDocuments.toList()).hasSize(2)
+                    async.complete()
+                }
+            }
+        }
+    }
+
+    @Test
     void shouldFindByQuery(TestContext context) {
         def async = context.async()
         bus.send('document.save', Json.encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
