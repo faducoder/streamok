@@ -1,11 +1,16 @@
 package net.streamok.service.document
 
+import io.vertx.core.Vertx
 import net.streamok.fiber.node.api.DependencyProvider
 import net.streamok.fiber.node.api.Endpoint
 import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.FiberNode
+import net.streamok.fiber.node.api.FiberNodeAware
 import net.streamok.fiber.node.api.FiberSuite
 
-class DocumentStoreSuite implements FiberSuite {
+class DocumentStoreSuite implements FiberSuite, FiberNodeAware {
+
+    Vertx vertx
 
     @Override
     List<FiberDefinition> fiberDefinitions() {
@@ -14,7 +19,7 @@ class DocumentStoreSuite implements FiberSuite {
 
     @Override
     List<DependencyProvider> dependencyProviders() {
-        [new MongoDriverProvider()]
+        [new MongoDriverProvider(), new MongoClientProvider(vertx)]
     }
 
     @Override
@@ -22,4 +27,8 @@ class DocumentStoreSuite implements FiberSuite {
         []
     }
 
+    @Override
+    void fiberNode(FiberNode fiberNode) {
+        vertx = fiberNode.vertx()
+    }
 }

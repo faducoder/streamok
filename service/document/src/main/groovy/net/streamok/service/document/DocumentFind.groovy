@@ -1,7 +1,10 @@
 package net.streamok.service.document
 
-import com.mongodb.Mongo
+import com.mongodb.BasicDBObject
 import io.vertx.core.json.Json
+import io.vertx.core.json.JsonObject
+import io.vertx.ext.mongo.FindOptions
+import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberContext
 import net.streamok.fiber.node.api.FiberDefinition
@@ -25,16 +28,15 @@ class DocumentFind implements FiberDefinition {
             void handle(FiberContext fiberContext) {
                 def collection = fiberContext.header('collection').toString()
                 def queryBuilder = fiberContext.body(QueryBuilder)
-                def mongo = fiberContext.dependency(Mongo)
+                def mongo = fiberContext.dependency(MongoClient)
 
                 Validate.notNull(collection, 'Document collection expected not to be null.')
 
-                def col = mongo.getDB('default_db').getCollection(collection)
-
-                def results = col.find(new MongodbMapper().mongoQuery(queryBuilder.query)).
-                            limit(queryBuilder.size).skip(queryBuilder.skip()).sort(new MongodbMapper().sortConditions(queryBuilder)).
-                            toArray().collect{ new MongodbMapper().mongoToCanonical(it) }
-                fiberContext.reply(Json.encode(results))
+                mongo.findWithOptions(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query).toMap()), new FindOptions().setLimit(queryBuilder.size).
+                setSkip(queryBuilder.skip()).setSort(new JsonObject(new MongodbMapper().sortConditions(queryBuilder).toMap()))) {
+                    def res = it.result().collect{ new MongodbMapper().mongoToCanonical(new BasicDBObject(it.map)) }
+                    fiberContext.reply(Json.encode(res))
+                }
             }
         }
     }

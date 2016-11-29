@@ -1,6 +1,8 @@
 package net.streamok.service.document
 
 import com.mongodb.Mongo
+import io.vertx.core.json.JsonObject
+import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberDefinition
 
@@ -20,14 +22,14 @@ class DocumentStore implements FiberDefinition {
         { fiberContext ->
             def pojo = fiberContext.body()
             def collection = fiberContext.header('collection').toString()
-            def mongo = fiberContext.dependency(Mongo)
+            def mongo = fiberContext.dependency(MongoClient)
 
             LOG.debug('About to save {} into {}.', pojo, collection)
 
-            def xxx = new MongodbMapper().canonicalToMongo(pojo)
-            mongo.getDB('default_db').getCollection(collection).save(xxx)
-            def id = xxx['_id'].toString()
-            fiberContext.reply(id)
+            def document = new MongodbMapper().canonicalToMongo(pojo)
+            mongo.save(collection, new JsonObject(document.toMap())) {
+                fiberContext.reply(it.result())
+            }
         }
     }
 

@@ -100,7 +100,7 @@ final class MongodbMapper {
         def id = mongoDocument.get(idField)
         if (id != null) {
             mongoDocument.removeField(idField);
-            mongoDocument.put(MONGO_ID, new ObjectId(id.toString()));
+            mongoDocument.put(MONGO_ID, id.toString());
         }
         mongoDocument
     }
@@ -129,7 +129,7 @@ final class MongodbMapper {
         def property = propertyWithOperator.replaceAll(propertyOperator + '$', "")
         if(property == idField) {
             property = MONGO_ID
-            value = new ObjectId((String) value)
+            value = (String) value
         }
         if (query.containsField(property)) {
             BasicDBObject existingRestriction = (BasicDBObject) query.get(property);
