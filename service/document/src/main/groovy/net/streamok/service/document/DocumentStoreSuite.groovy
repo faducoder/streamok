@@ -9,7 +9,7 @@ class DocumentStoreSuite implements FiberSuite {
 
     @Override
     List<FiberDefinition> fiberDefinitions() {
-        [new DocumentStore(), new DocumentFindOne()]
+        [new DocumentStore(), new DocumentFindOne(), new DocumentFind()]
     }
 
     @Override

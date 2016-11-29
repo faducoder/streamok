@@ -1,39 +1,49 @@
 package net.streamok.service.document
 
 import io.vertx.core.eventbus.DeliveryOptions
-import io.vertx.core.eventbus.EventBus
 import io.vertx.core.json.Json
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
-import net.streamok.lib.conf.Conf
 import net.streamok.lib.mongo.EmbeddedMongo
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+
+import static java.util.UUID.randomUUID
+import static net.streamok.lib.common.Networks.findAvailableTcpPort
+import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(VertxUnitRunner)
 class DocumentSuiteTest {
 
-    static int mongoPort = 1024 + new Random().nextInt(10000)
+    static def mongo = new EmbeddedMongo().start(findAvailableTcpPort())
 
-    @BeforeClass
-    static void beforeClass() {
-        Conf.configuration().instance().addProperty('MONGO_SERVICE_PORT', mongoPort)
-        bus = new DefaultFiberNode().addSuite(new DocumentStoreSuite()).vertx().eventBus()
-    }
+    static def bus = new DefaultFiberNode().addSuite(new DocumentStoreSuite()).vertx().eventBus()
 
-    static def mongo = new EmbeddedMongo().start(mongoPort)
+    def collection = randomUUID().toString()
 
-    static EventBus bus
+    // Tests
 
     @Test
     void shouldSave(TestContext context) {
         def async = context.async()
-        bus.send('document.save', Json.encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', 'foo')) {
-            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', 'foo').addHeader('id', it.result().body().toString())) {
-                def xx = Json.decodeValue(it.result().body().toString(), Map)
-                context.assertEquals(xx.bar, 'baz')
+        bus.send('document.save', Json.encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
+            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', it.result().body().toString())) {
+                def savedDocument = Json.decodeValue(it.result().body().toString(), Map)
+                context.assertEquals(savedDocument.bar, 'baz')
+                async.complete()
+            }
+        }
+    }
+
+    @Test
+    void shouldFindByQuery(TestContext context) {
+        def async = context.async()
+        bus.send('document.save', Json.encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
+            bus.send('document.find', Json.encode([query: [bar: 'baz']]), new DeliveryOptions().addHeader('collection', collection)) {
+                def savedDocuments = Json.decodeValue(it.result().body().toString(), Map[])
+                assertThat(savedDocuments.toList()).hasSize(1)
+                context.assertEquals(savedDocuments.first().bar, 'baz')
                 async.complete()
             }
         }

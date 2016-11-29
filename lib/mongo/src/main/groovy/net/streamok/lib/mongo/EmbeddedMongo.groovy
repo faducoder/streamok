@@ -22,10 +22,12 @@ import de.flapdoodle.embed.mongo.config.Net
 
 import static de.flapdoodle.embed.mongo.distribution.Version.Main.V3_2
 import static de.flapdoodle.embed.process.runtime.Network.localhostIsIPv6
+import static net.streamok.lib.conf.Conf.configuration
 
 class EmbeddedMongo {
 
     void start(int port) {
+        configuration().instance().addProperty('MONGO_SERVICE_PORT', port)
         def config = new MongodConfigBuilder()
                 .version(V3_2).net(new Net(port, localhostIsIPv6()))
                 .build()

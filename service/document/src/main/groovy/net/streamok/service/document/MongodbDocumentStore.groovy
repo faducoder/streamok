@@ -56,12 +56,6 @@ class MongodbDocumentStore {
         documentCollection(collection).find(query).toArray().collect { mongodbMapper.mongoToCanonical(it) }
     }
 
-    List<Map<String, Object>> find(String collection, QueryBuilder queryBuilder) {
-        documentCollection(collection).find(mongodbMapper.mongoQuery(queryBuilder.query)).
-                limit(queryBuilder.size).skip(queryBuilder.skip()).sort(mongodbMapper.sortConditions(queryBuilder)).
-                toArray().collect{ mongodbMapper.mongoToCanonical(it) }
-    }
-
     long count(String collection, QueryBuilder queryBuilder) {
         documentCollection(collection).find(mongodbMapper.mongoQuery(queryBuilder.query)).
                 limit(queryBuilder.size).skip(queryBuilder.skip()).sort(mongodbMapper.sortConditions(queryBuilder)).
