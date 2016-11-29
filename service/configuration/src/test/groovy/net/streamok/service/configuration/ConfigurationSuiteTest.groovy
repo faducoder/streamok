@@ -1,10 +1,13 @@
 package net.streamok.service.configuration
 
 import io.vertx.core.eventbus.DeliveryOptions
+import io.vertx.core.eventbus.EventBus
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
+import net.streamok.lib.conf.Conf
 import net.streamok.lib.mongo.EmbeddedMongo
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -13,9 +16,17 @@ import static net.streamok.service.configuration.ConfigurationRead.configuration
 @RunWith(VertxUnitRunner)
 class ConfigurationSuiteTest {
 
-    static def mongo = new EmbeddedMongo().start()
+    static int mongoPort = 1024 + new Random().nextInt(10000)
 
-    static def bus = new DefaultFiberNode().addSuite(new ConfigurationSuite()).vertx().eventBus()
+    @BeforeClass
+    static void beforeClass() {
+        Conf.configuration().instance().addProperty('MONGO_SERVICE_PORT', mongoPort)
+        bus = new DefaultFiberNode().addSuite(new ConfigurationSuite()).vertx().eventBus()
+    }
+
+    static def mongo = new EmbeddedMongo().start(mongoPort)
+
+    static EventBus bus
 
     @Test
     void shouldReadWrittenConfiguration(TestContext context) {

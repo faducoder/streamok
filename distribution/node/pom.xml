@@ -29,6 +29,11 @@
         </dependency>
         <dependency>
             <groupId>net.streamok</groupId>
+            <artifactId>streamok-service-document</artifactId>
+            <version>0.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.streamok</groupId>
             <artifactId>streamok-service-metrics</artifactId>
         </dependency>
         <dependency>

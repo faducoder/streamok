@@ -17,6 +17,7 @@
     <modules>
         <module>metrics</module>
         <module>configuration</module>
+        <module>document</module>
         <module>machinelearning</module>
     </modules>
 

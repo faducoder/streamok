@@ -3,9 +3,11 @@ package net.streamok.lib.mongo
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
+import net.streamok.lib.conf.Conf
 
 import static com.google.common.base.MoreObjects.firstNonNull
 import static java.lang.System.getenv
+import static net.streamok.lib.conf.Conf.configuration
 
 class MongoClientFactory {
 
@@ -14,9 +16,9 @@ class MongoClientFactory {
     }
 
     MongoClient mongoClient(Vertx vertx) {
-        def host = firstNonNull(getenv('MONGO_SERVICE_HOST'), 'localhost')
-        def port = firstNonNull(getenv('MONGO_SERVICE_PORT'), '27017')
-        mongoClient(vertx, host, port.toInteger())
+        def host = configuration().instance().getString('MONGO_SERVICE_HOST', 'localhost')
+        def port = configuration().instance().getInt('MONGO_SERVICE_PORT', 27017)
+        mongoClient(vertx, host, port)
     }
 
 }
