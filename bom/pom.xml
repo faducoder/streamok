@@ -21,7 +21,9 @@
         <commons-lang.version>3.4</commons-lang.version>
         <embedmongo.version>1.50.2</embedmongo.version>
         <groovy.version>2.4.7</groovy.version>
+        <guava.version>19.0</guava.version>
         <junit.version>4.12</junit.version>
+        <slf4j.version>1.7.21</slf4j.version>
         <streamok.version>0.0.0-SNAPSHOT</streamok.version>
         <vertx.version>3.3.3</vertx.version>
 
@@ -40,6 +42,11 @@
             <dependency>
                 <groupId>net.streamok</groupId>
                 <artifactId>streamok-fiber-node</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
+                <artifactId>streamok-lib-common</artifactId>
                 <version>${streamok.version}</version>
             </dependency>
             <dependency>
@@ -73,6 +80,11 @@
                 <groupId>de.flapdoodle.embed</groupId>
                 <artifactId>de.flapdoodle.embed.mongo</artifactId>
                 <version>${embedmongo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
@@ -113,6 +125,11 @@
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy</artifactId>
                 <version>${groovy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <!-- Classpath conflicts resolving -->
