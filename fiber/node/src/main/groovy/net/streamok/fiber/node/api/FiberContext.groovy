@@ -1,7 +1,8 @@
 package net.streamok.fiber.node.api
 
 import io.vertx.core.eventbus.Message
-import net.streamok.fiber.node.DefaultFiberNode
+
+import static io.vertx.core.json.Json.decodeValue
 
 class FiberContext {
 
@@ -14,8 +15,16 @@ class FiberContext {
         this.fiberNode = fiberNode
     }
 
-    Object body() {
-        message.body()
+    Map body() {
+        body(Map)
+    }
+
+    def <T> T body(Class<T> type) {
+        def json = message.body() as String
+        if(json == null) {
+            return null
+        }
+        decodeValue(json, type)
     }
 
     Object header(String name) {

@@ -28,7 +28,7 @@ class MachineLearningPredict implements FiberDefinition {
             def models = fiber.dependency(ModelCache)
 
             def collection = fiber.header('collection').toString()
-            def featureVector = Json.decodeValue(fiber.body().toString(), FeatureVector)
+            def featureVector = fiber.body(FeatureVector)
 
             def ungroupedData = MachineLearningTrain.ungroupedData[collection]
             def labelConfidence = [:]
