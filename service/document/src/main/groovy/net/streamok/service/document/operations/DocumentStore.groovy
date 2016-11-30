@@ -27,7 +27,7 @@ class DocumentStore implements FiberDefinition {
             LOG.debug('About to save {} into {}.', pojo, collection)
 
             def document = new MongodbMapper().canonicalToMongo(pojo)
-            mongo.save(collection, new JsonObject(document.toMap())) {
+            mongo.save(collection, new JsonObject(document)) {
                 fiberContext.reply(it.result())
             }
         }

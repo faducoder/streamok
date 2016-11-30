@@ -1,6 +1,5 @@
 package net.streamok.service.document.operations
 
-import com.mongodb.BasicDBObject
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
@@ -34,7 +33,7 @@ class DocumentFindOne implements FiberDefinition {
 
             mongo.findOne(collection, new JsonObject([_id: documentId]), null) {
                 if (it.result() != null) {
-                    fiberContext.reply(Json.encode(new MongodbMapper().mongoToCanonical(new BasicDBObject(it.result().map))))
+                    fiberContext.reply(Json.encode(new MongodbMapper().mongoToCanonical(it.result().map)))
                 } else {
                     fiberContext.reply(null)
                 }

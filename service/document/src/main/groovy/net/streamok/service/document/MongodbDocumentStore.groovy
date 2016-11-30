@@ -16,7 +16,6 @@
  */
 package net.streamok.service.document
 
-import com.mongodb.BasicDBObject
 import org.bson.types.ObjectId
 
 //import static net.smolok.service.documentstore.mongodb.MongodbMapper.*
@@ -24,7 +23,7 @@ import org.bson.types.ObjectId
 class MongodbDocumentStore {
 
     void remove(String collection, String identifier) {
-        documentCollection(collection).remove(new BasicDBObject(net.smolok.service.documentstore.mongodb.MongodbMapper.getMONGO_ID, new ObjectId(identifier)))
+        documentCollection(collection).remove(['_id': new ObjectId(identifier)])
     }
 
 }

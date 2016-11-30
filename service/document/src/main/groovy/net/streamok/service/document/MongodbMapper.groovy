@@ -16,13 +16,7 @@
  */
 package net.streamok.service.document
 
-import com.mongodb.BasicDBObject
-import com.mongodb.DBObject
 import org.apache.commons.lang3.Validate
-import org.bson.types.ObjectId
-import org.slf4j.LoggerFactory
-
-import static org.slf4j.LoggerFactory.getLogger
 
 /**
  * Converts DocumentStore canonical data (like documents and queries) into MongoDB structures (and reversely).
@@ -51,8 +45,8 @@ final class MongodbMapper {
         this.idField = idField
     }
 
-    DBObject mongoQuery(Map<String, Object> jsonQuery) {
-        def mongoQuery = new BasicDBObject()
+    Map<String, Object> mongoQuery(Map<String, Object> jsonQuery) {
+        def mongoQuery = [:]
         for (String originalKey : jsonQuery.keySet()) {
             String compoundKey = originalKey.replaceAll('(.)_', '$1.');
 
@@ -71,7 +65,7 @@ final class MongodbMapper {
         mongoQuery
     }
 
-    DBObject sortConditions(QueryBuilder queryBuilder) {
+    Map<String, Object> sortConditions(QueryBuilder queryBuilder) {
         Validate.notNull(queryBuilder, 'Query builder cannot be null.')
 
         int order = queryBuilder.sortAscending ? 1 : -1
@@ -83,9 +77,9 @@ final class MongodbMapper {
         }
 
         if (orderBy.size() == 0) {
-            new BasicDBObject('$natural', order)
+            ['$natural': order]
         } else {
-            def sort = new BasicDBObject()
+            def sort = [:]
             orderBy.each {
                 sort.put(it, order)
             }
@@ -93,23 +87,23 @@ final class MongodbMapper {
         }
     }
 
-    DBObject canonicalToMongo(Map<String, Object> document) {
+    Map<String, Object> canonicalToMongo(Map<String, Object> document) {
         Validate.notNull(document, 'JSON passed to the conversion cannot be null.')
 
-        def mongoDocument = new BasicDBObject(document)
+        def mongoDocument = new LinkedHashMap(document)
         def id = mongoDocument.get(idField)
         if (id != null) {
-            mongoDocument.removeField(idField);
-            mongoDocument.put(MONGO_ID, id.toString());
+            mongoDocument.remove(idField)
+            mongoDocument.put(MONGO_ID, id.toString())
         }
         mongoDocument
     }
 
-    Map<String, Object> mongoToCanonical(DBObject mongoDocument) {
+    Map<String, Object> mongoToCanonical(Map<String, Object> mongoDocument) {
         Validate.notNull(mongoDocument, 'BSON passed to the conversion cannot be null.')
         LOG.debug('Converting MongoDB document {} into canonical format.', mongoDocument)
 
-        def canonicalDocument = mongoDocument.toMap()
+        def canonicalDocument = new HashMap<>(mongoDocument)
         def id = canonicalDocument.get(MONGO_ID)
         if (id != null) {
             canonicalDocument.remove(MONGO_ID)
@@ -125,17 +119,19 @@ final class MongodbMapper {
         return matchingSuffixOperators.isEmpty() ? null : matchingSuffixOperators.get(0);
     }
 
-    private void addRestriction(BasicDBObject query, String propertyWithOperator, String propertyOperator, String operator, Object value) {
+    private void addRestriction(Map<String, Object> query, String propertyWithOperator, String propertyOperator, String operator, Object value) {
         def property = propertyWithOperator.replaceAll(propertyOperator + '$', "")
         if(property == idField) {
             property = MONGO_ID
             value = (String) value
         }
-        if (query.containsField(property)) {
-            BasicDBObject existingRestriction = (BasicDBObject) query.get(property);
+        if (query.containsKey(property)) {
+            Map<String, Object> existingRestriction = query.get(property)
             existingRestriction.put(operator, value);
         } else {
-            query.put(property, new BasicDBObject(operator, value));
+            def op = [:]
+            op[operator] = value
+            query.put(property, op)
         }
     }
 

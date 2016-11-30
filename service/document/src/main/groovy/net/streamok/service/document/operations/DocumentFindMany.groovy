@@ -1,6 +1,5 @@
 package net.streamok.service.document.operations
 
-import com.mongodb.BasicDBObject
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
@@ -29,10 +28,10 @@ class DocumentFindMany implements FiberDefinition {
 
             Validate.notNull(collection, 'Document collection expected not to be null.')
 
-            def mongoIds = new BasicDBObject('$in', documentIds.toList())
-            def query = new BasicDBObject('_id', mongoIds)
-            mongo.find(collection, new JsonObject(query.toMap())) {
-                def results = it.result().collect { new MongodbMapper().mongoToCanonical(new BasicDBObject(mongoIds.toMap())) }
+            def mongoIds = ['$in': documentIds.toList()]
+            def query = ['_id': mongoIds]
+            mongo.find(collection, new JsonObject(query)) {
+                def results = it.result().collect { new MongodbMapper().mongoToCanonical(mongoIds) }
                 fiberContext.reply(Json.encode(results))
             }
         }

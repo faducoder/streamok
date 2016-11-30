@@ -1,6 +1,5 @@
 package net.streamok.service.document.operations
 
-import com.mongodb.BasicDBObject
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.FindOptions
@@ -34,9 +33,9 @@ class DocumentFind implements FiberDefinition {
 
                 Validate.notNull(collection, 'Document collection expected not to be null.')
 
-                mongo.findWithOptions(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query).toMap()), new FindOptions().setLimit(queryBuilder.size).
-                setSkip(queryBuilder.skip()).setSort(new JsonObject(new MongodbMapper().sortConditions(queryBuilder).toMap()))) {
-                    def res = it.result().collect{ new MongodbMapper().mongoToCanonical(new BasicDBObject(it.map)) }
+                mongo.findWithOptions(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query)), new FindOptions().setLimit(queryBuilder.size).
+                setSkip(queryBuilder.skip()).setSort(new JsonObject(new MongodbMapper().sortConditions(queryBuilder)))) {
+                    def res = it.result().collect{ new MongodbMapper().mongoToCanonical(it.map) }
                     fiberContext.reply(Json.encode(res))
                 }
             }
