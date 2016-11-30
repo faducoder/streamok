@@ -3,9 +3,9 @@ package net.streamok.service.machinelearning
 import net.streamok.fiber.node.api.DependencyProvider
 import net.streamok.fiber.node.api.Endpoint
 import net.streamok.fiber.node.api.FiberDefinition
-import net.streamok.fiber.node.api.FiberSuite
+import net.streamok.fiber.node.api.Service
 
-class MachineLearningSuite implements FiberSuite {
+class MachineLearningSuite implements Service {
 
     @Override
     List<FiberDefinition> fiberDefinitions() {

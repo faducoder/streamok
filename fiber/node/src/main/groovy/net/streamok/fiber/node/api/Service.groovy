@@ -1,6 +1,6 @@
 package net.streamok.fiber.node.api
 
-interface FiberSuite {
+interface Service {
 
     List<FiberDefinition> fiberDefinitions()
 

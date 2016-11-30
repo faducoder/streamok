@@ -7,7 +7,7 @@ import net.streamok.fiber.node.api.*
 
 import static java.lang.System.currentTimeMillis
 
-class ConfigurationSuite implements FiberSuite, FiberNodeAware {
+class ConfigurationSuite implements Service, FiberNodeAware {
 
     private Vertx vertx
 

@@ -23,14 +23,6 @@ import org.bson.types.ObjectId
 
 class MongodbDocumentStore {
 
-    // Operations implementations
-
-    long count(String collection, QueryBuilder queryBuilder) {
-        documentCollection(collection).find(mongodbMapper.mongoQuery(queryBuilder.query)).
-                limit(queryBuilder.size).skip(queryBuilder.skip()).sort(mongodbMapper.sortConditions(queryBuilder)).
-                count()
-    }
-
     void remove(String collection, String identifier) {
         documentCollection(collection).remove(new BasicDBObject(net.smolok.service.documentstore.mongodb.MongodbMapper.getMONGO_ID, new ObjectId(identifier)))
     }

@@ -4,7 +4,7 @@ import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.fiber.node.RestEndpoint
 import net.streamok.fiber.node.api.FiberNode
 import net.streamok.service.configuration.ConfigurationSuite
-import net.streamok.service.document.DocumentStoreSuite
+import net.streamok.service.document.DocumentService
 import net.streamok.service.metrics.MetricsSuite
 
 class StreamokNode {
@@ -13,7 +13,7 @@ class StreamokNode {
             addEndpoint(new RestEndpoint()).
             addSuite(new MetricsSuite()).
             addSuite(new ConfigurationSuite()).
-            addSuite(new DocumentStoreSuite()).
+            addSuite(new DocumentService()).
             start()
 
     FiberNode fiberNode() {

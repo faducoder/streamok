@@ -12,7 +12,7 @@ interface FiberNode {
 
     FiberNode addEndpoint(Endpoint endpoint)
 
-    FiberNode addSuite(FiberSuite fiberSuite)
+    FiberNode addSuite(Service fiberSuite)
 
     FiberNode addDependency(DependencyProvider dependencyProvider)
 

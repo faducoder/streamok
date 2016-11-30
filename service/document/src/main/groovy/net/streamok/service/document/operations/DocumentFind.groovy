@@ -1,4 +1,4 @@
-package net.streamok.service.document
+package net.streamok.service.document.operations
 
 import com.mongodb.BasicDBObject
 import io.vertx.core.json.Json
@@ -8,6 +8,8 @@ import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberContext
 import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.service.document.MongodbMapper
+import net.streamok.service.document.QueryBuilder
 import org.apache.commons.lang3.Validate
 
 import static org.slf4j.LoggerFactory.getLogger

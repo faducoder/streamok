@@ -57,7 +57,7 @@ class DefaultFiberNode implements FiberNode {
         this
     }
 
-    DefaultFiberNode addSuite(FiberSuite fiberSuite) {
+    DefaultFiberNode addSuite(Service fiberSuite) {
         if(fiberSuite instanceof FiberNodeAware) {
             fiberSuite.fiberNode(this)
         }

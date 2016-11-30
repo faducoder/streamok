@@ -1,4 +1,4 @@
-package net.streamok.service.document
+package net.streamok.service.document.dependencies
 
 import io.vertx.core.Vertx
 import net.streamok.fiber.node.api.DependencyProvider

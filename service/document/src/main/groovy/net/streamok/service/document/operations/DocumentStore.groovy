@@ -1,10 +1,10 @@
-package net.streamok.service.document
+package net.streamok.service.document.operations
 
-import com.mongodb.Mongo
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.service.document.MongodbMapper
 
 import static org.slf4j.LoggerFactory.getLogger
 

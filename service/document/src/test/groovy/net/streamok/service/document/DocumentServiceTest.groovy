@@ -14,11 +14,11 @@ import static net.streamok.lib.common.Networks.findAvailableTcpPort
 import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(VertxUnitRunner)
-class DocumentSuiteTest {
+class DocumentServiceTest {
 
     static def mongo = new EmbeddedMongo().start(findAvailableTcpPort())
 
-    static def bus = new DefaultFiberNode().addSuite(new DocumentStoreSuite()).vertx().eventBus()
+    static def bus = new DefaultFiberNode().addSuite(new DocumentService()).vertx().eventBus()
 
     def collection = randomUUID().toString()
 
@@ -61,6 +61,18 @@ class DocumentSuiteTest {
                 def savedDocuments = Json.decodeValue(it.result().body().toString(), Map[])
                 assertThat(savedDocuments.toList()).hasSize(1)
                 context.assertEquals(savedDocuments.first().bar, 'baz')
+                async.complete()
+            }
+        }
+    }
+
+    @Test
+    void shouldCountByQuery(TestContext context) {
+        def async = context.async()
+        bus.send('document.save', Json.encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
+            bus.send('document.count', Json.encode([query: [bar: 'baz']]), new DeliveryOptions().addHeader('collection', collection)) {
+                def count = Json.decodeValue(it.result().body().toString(), long)
+                assertThat(count).isEqualTo(1)
                 async.complete()
             }
         }
