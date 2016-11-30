@@ -1,6 +1,8 @@
 package net.streamok.service.document
 
 import io.vertx.core.Vertx
+import io.vertx.core.eventbus.DeliveryOptions
+import net.streamok.fiber.node.TimerEndpoint
 import net.streamok.fiber.node.api.DependencyProvider
 import net.streamok.fiber.node.api.Endpoint
 import net.streamok.fiber.node.api.FiberDefinition
@@ -13,6 +15,8 @@ import net.streamok.service.document.operations.DocumentFind
 import net.streamok.service.document.operations.DocumentFindMany
 import net.streamok.service.document.operations.DocumentFindOne
 import net.streamok.service.document.operations.DocumentStore
+
+import static java.lang.System.currentTimeMillis
 
 class DocumentService implements Service, FiberNodeAware {
 
@@ -30,7 +34,9 @@ class DocumentService implements Service, FiberNodeAware {
 
     @Override
     List<Endpoint> endpoints() {
-        []
+        [new TimerEndpoint(5000, 'metrics.put', {
+            new TimerEndpoint.Event(deliveryOptions: new DeliveryOptions().
+                    addHeader('key', 'service.document.heartbeat').addHeader('value', "${currentTimeMillis()}")) })]
     }
 
     @Override

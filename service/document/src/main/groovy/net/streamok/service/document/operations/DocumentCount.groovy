@@ -1,5 +1,6 @@
 package net.streamok.service.document.operations
 
+import com.google.common.base.MoreObjects
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.FindOptions
@@ -10,6 +11,7 @@ import net.streamok.service.document.MongodbMapper
 import net.streamok.service.document.QueryBuilder
 import org.apache.commons.lang3.Validate
 
+import static com.google.common.base.MoreObjects.firstNonNull
 import static org.slf4j.LoggerFactory.getLogger
 
 class DocumentCount implements FiberDefinition {
@@ -25,7 +27,7 @@ class DocumentCount implements FiberDefinition {
     Fiber handler() {
         { fiberContext ->
             def collection = fiberContext.header('collection').toString()
-            def queryBuilder = fiberContext.body(QueryBuilder)
+            def queryBuilder = firstNonNull(fiberContext.body(QueryBuilder), new QueryBuilder())
             def mongo = fiberContext.dependency(MongoClient)
 
             Validate.notNull(collection, 'Document collection expected not to be null.')

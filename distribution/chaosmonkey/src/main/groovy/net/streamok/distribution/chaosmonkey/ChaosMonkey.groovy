@@ -17,7 +17,23 @@ class ChaosMonkey {
     }
 
     void run() {
+        checkConfigurationServiceApiHeartbeat()
         accessConfigurationServiceApi()
+
+        // Document service
+        checkDocumentServiceApiHeartbeat()
+        accessDocumentServiceApi()
+    }
+
+    private void checkConfigurationServiceApiHeartbeat() {
+        def latch = new CountDownLatch(1)
+        vertx.createHttpClient().getNow(8080, 'localhost', "/metrics/get?key=service.configuration.heartbeat") {
+            it.bodyHandler {
+                assertThat(it.toString().toLong()).isGreaterThan(0L)
+                latch.countDown()
+            }
+        }
+        latch.await(5, SECONDS)
     }
 
     private void accessConfigurationServiceApi() {
@@ -30,6 +46,31 @@ class ChaosMonkey {
                     assertThat(it.toString()).isEqualTo(value)
                     latch.countDown()
                 }
+            }
+        }
+        latch.await(5, SECONDS)
+    }
+
+    // Document service
+
+    private void checkDocumentServiceApiHeartbeat() {
+        def latch = new CountDownLatch(1)
+        vertx.createHttpClient().getNow(8080, 'localhost', "/metrics/get?key=service.document.heartbeat") {
+            it.bodyHandler {
+                assertThat(it.toString().toLong()).isGreaterThan(0L)
+                latch.countDown()
+            }
+        }
+        latch.await(5, SECONDS)
+    }
+
+    private void accessDocumentServiceApi() {
+        def latch = new CountDownLatch(1)
+        def collection = randomAlphanumeric(20)
+        vertx.createHttpClient().getNow(8080, 'localhost', "/document/count?collection=${collection}") {
+            it.bodyHandler {
+                assertThat(it.toString().toLong()).isGreaterThanOrEqualTo(0L)
+                latch.countDown()
             }
         }
         latch.await(5, SECONDS)
