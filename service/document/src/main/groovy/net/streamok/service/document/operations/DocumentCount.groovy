@@ -1,15 +1,12 @@
 package net.streamok.service.document.operations
 
-import com.google.common.base.MoreObjects
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
-import io.vertx.ext.mongo.FindOptions
 import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberDefinition
 import net.streamok.service.document.MongodbMapper
 import net.streamok.service.document.QueryBuilder
-import org.apache.commons.lang3.Validate
 
 import static com.google.common.base.MoreObjects.firstNonNull
 import static org.slf4j.LoggerFactory.getLogger
@@ -26,16 +23,13 @@ class DocumentCount implements FiberDefinition {
     @Override
     Fiber handler() {
         { fiberContext ->
-            def collection = fiberContext.header('collection').toString()
+            def collection = fiberContext.nonBlankHeader('collection')
             def queryBuilder = firstNonNull(fiberContext.body(QueryBuilder), new QueryBuilder())
+            LOG.debug('About to count collection {} using query: {}', collection, queryBuilder)
             def mongo = fiberContext.dependency(MongoClient)
 
-            Validate.notNull(collection, 'Document collection expected not to be null.')
-
-            mongo.findWithOptions(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query)), new FindOptions().setLimit(queryBuilder.size).
-                    setSkip(queryBuilder.skip()).setSort(new JsonObject(new MongodbMapper().sortConditions(queryBuilder)))) {
-                def res = it.result().collect { new MongodbMapper().mongoToCanonical(it.map) }
-                fiberContext.reply(Json.encode(res.size()))
+            mongo.count(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query))) {
+                fiberContext.reply(Json.encode(it.result()))
             }
         }
     }

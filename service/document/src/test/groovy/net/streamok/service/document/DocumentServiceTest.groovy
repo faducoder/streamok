@@ -17,7 +17,6 @@
 package net.streamok.service.document
 
 import io.vertx.core.eventbus.DeliveryOptions
-import io.vertx.core.json.Json
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
@@ -25,6 +24,7 @@ import net.streamok.lib.mongo.EmbeddedMongo
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import static io.vertx.core.json.Json.decodeValue
 import static io.vertx.core.json.Json.encode
 import static java.util.UUID.randomUUID
 import static net.streamok.lib.common.Networks.findAvailableTcpPort
@@ -48,7 +48,7 @@ class DocumentServiceTest {
         def async = context.async()
         bus.send('document.save', encode(document), new DeliveryOptions().addHeader('collection', collection)) {
             bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', it.result().body().toString())) {
-                def savedDocument = Json.decodeValue(it.result().body().toString(), Map)
+                def savedDocument = decodeValue(it.result().body().toString(), Map)
                 context.assertEquals(savedDocument.foo, document.foo)
                 async.complete()
             }
@@ -110,8 +110,21 @@ class DocumentServiceTest {
         bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
             def savedId = it.result().body().toString()
             bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', it.result().body().toString())) {
-                def savedDocument = Json.decodeValue(it.result().body().toString(), Map)
+                def savedDocument = decodeValue(it.result().body().toString(), Map)
                 assertThat(savedDocument.id).isEqualTo(savedId)
+                async.complete()
+            }
+        }
+    }
+
+    @Test
+    void loadedDocumentShouldHasNotMongoId(TestContext context) {
+        def async = context.async()
+        bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
+            def savedId = it.result().body().toString()
+            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', it.result().body().toString())) {
+                def savedDocument = decodeValue(it.result().body().toString(), Map)
+                assertThat(savedDocument._id).isNull()
                 async.complete()
             }
         }
@@ -126,7 +139,7 @@ class DocumentServiceTest {
             bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
                 ids << it.result().body().toString()
                 bus.send('document.findMany', encode(ids), new DeliveryOptions().addHeader('collection', collection)) {
-                    def savedDocuments = Json.decodeValue(it.result().body().toString(), Map[])
+                    def savedDocuments = decodeValue(it.result().body().toString(), Map[])
                     assertThat(savedDocuments.toList()).hasSize(2)
                     async.complete()
                 }
@@ -139,9 +152,23 @@ class DocumentServiceTest {
         def async = context.async()
         bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
             bus.send('document.find', encode([query: [bar: 'baz']]), new DeliveryOptions().addHeader('collection', collection)) {
-                def savedDocuments = Json.decodeValue(it.result().body().toString(), Map[])
+                def savedDocuments = decodeValue(it.result().body().toString(), Map[])
                 assertThat(savedDocuments.toList()).hasSize(1)
                 context.assertEquals(savedDocuments.first().bar, 'baz')
+                async.complete()
+            }
+        }
+    }
+
+    // DocumentCount tests
+
+    @Test
+    void shouldCountAll(TestContext context) {
+        def async = context.async()
+        bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
+            bus.send('document.count', null, new DeliveryOptions().addHeader('collection', collection)) {
+                def count = decodeValue(it.result().body().toString(), long)
+                assertThat(count).isEqualTo(1)
                 async.complete()
             }
         }
@@ -152,7 +179,7 @@ class DocumentServiceTest {
         def async = context.async()
         bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
             bus.send('document.count', encode([query: [bar: 'baz']]), new DeliveryOptions().addHeader('collection', collection)) {
-                def count = Json.decodeValue(it.result().body().toString(), long)
+                def count = decodeValue(it.result().body().toString(), long)
                 assertThat(count).isEqualTo(1)
                 async.complete()
             }
@@ -178,44 +205,6 @@ class DocumentServiceTest {
         }
     }
 
-//        // Other tests
-//
-//        @Test
-//        void shouldCountInvoice() {
-//            // Given
-//            documentStore.save(collection, serialize(invoice))
-//
-//            // When
-//            def count = documentStore.count(collection, QueryBuilder.queryBuilder())
-//
-//            // Then
-//            assertThat(count).isEqualTo(1)
-//        }
-//
-//        @Test
-//        void loadedDocumentShouldHasId() {
-//            // Given
-//            def id = documentStore.save(collection, serialize(invoice))
-//
-//            // When
-//            def loadedInvoice = documentStore.findOne(collection, id)
-//
-//            // Then
-//            assertThat(loadedInvoice.myid).isInstanceOf(String.class)
-//        }
-//
-//        @Test
-//        void loadedDocumentShouldHasNotMongoId() {
-//            // Given
-//            def id = documentStore.save(collection, serialize(invoice))
-//
-//            // When
-//            def loadedInvoice = documentStore.findOne(collection, id)
-//
-//            // Then
-//            assertThat(loadedInvoice._id).isNull()
-//        }
-//
 //        @Test
 //        public void shouldUpdateDocument() {
 //            // Given

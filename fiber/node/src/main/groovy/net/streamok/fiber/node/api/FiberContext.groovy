@@ -3,6 +3,8 @@ package net.streamok.fiber.node.api
 import io.vertx.core.eventbus.Message
 
 import static io.vertx.core.json.Json.decodeValue
+import static org.apache.commons.lang3.Validate.notBlank
+import static org.apache.commons.lang3.Validate.notNull
 
 class FiberContext {
 
@@ -30,6 +32,11 @@ class FiberContext {
     Object header(String name) {
         def matchingHeaders = message.headers().getAll(name)
         matchingHeaders.isEmpty() ? null : matchingHeaders.first()
+    }
+
+    String nonBlankHeader(String name) {
+        def value = notNull(header(name), "${name} can't  be null.").toString()
+        notBlank(value, "${name} can't be blank.")
     }
 
     void reply(Object payload) {
