@@ -1,5 +1,6 @@
 package net.streamok.fiber.node.api
 
+import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 
 import static io.vertx.core.json.Json.decodeValue
@@ -53,6 +54,10 @@ class FiberContext {
 
     def <T> T dependency(Class<T> type) {
         fiberNode.dependency(type)
+    }
+
+    Vertx vertx() {
+        fiberNode.vertx()
     }
 
 }

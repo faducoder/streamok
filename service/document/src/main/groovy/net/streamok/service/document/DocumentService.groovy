@@ -3,19 +3,10 @@ package net.streamok.service.document
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.DeliveryOptions
 import net.streamok.fiber.node.TimerEndpoint
-import net.streamok.fiber.node.api.DependencyProvider
-import net.streamok.fiber.node.api.Endpoint
-import net.streamok.fiber.node.api.FiberDefinition
-import net.streamok.fiber.node.api.FiberNode
-import net.streamok.fiber.node.api.FiberNodeAware
-import net.streamok.fiber.node.api.Service
+import net.streamok.fiber.node.api.*
 import net.streamok.service.document.dependencies.MongoClientProvider
-import net.streamok.service.document.operations.DocumentCount
-import net.streamok.service.document.operations.DocumentFind
-import net.streamok.service.document.operations.DocumentFindMany
-import net.streamok.service.document.operations.DocumentFindOne
-import net.streamok.service.document.operations.DocumentRemove
-import net.streamok.service.document.operations.DocumentStore
+import net.streamok.service.document.metrics.DocumentMetricsCount
+import net.streamok.service.document.operations.*
 
 import static java.lang.System.currentTimeMillis
 
@@ -25,7 +16,7 @@ class DocumentService implements Service, FiberNodeAware {
 
     @Override
     List<FiberDefinition> fiberDefinitions() {
-        [new DocumentStore(), new DocumentFindOne(), new DocumentFindMany(), new DocumentFind(), new DocumentCount(), new DocumentRemove()]
+        [new DocumentStore(), new DocumentFindOne(), new DocumentFindMany(), new DocumentFind(), new DocumentCount(), new DocumentRemove(), new DocumentMetricsCount()]
     }
 
     @Override
@@ -37,7 +28,9 @@ class DocumentService implements Service, FiberNodeAware {
     List<Endpoint> endpoints() {
         [new TimerEndpoint(5000, 'metrics.put', {
             new TimerEndpoint.Event(deliveryOptions: new DeliveryOptions().
-                    addHeader('key', 'service.document.heartbeat').addHeader('value', "${currentTimeMillis()}")) })]
+                    addHeader('key', 'service.document.heartbeat').addHeader('value', "${currentTimeMillis()}")) }),
+         new TimerEndpoint(15000, 'document.metrics.count', {
+             new TimerEndpoint.Event(deliveryOptions: new DeliveryOptions()) })]
     }
 
     @Override

@@ -21,8 +21,10 @@ class ChaosMonkey {
         accessConfigurationServiceApi()
 
         // Document service
-        checkDocumentServiceApiHeartbeat()
-        accessDocumentServiceApi()
+        checkDocumentServiceHeartbeat()
+        accessDocumentServiceSaveOperation()
+        accessDocumentServiceCountOperation()
+        checkDocumentServiceCountMetric()
     }
 
     private void checkConfigurationServiceApiHeartbeat() {
@@ -53,7 +55,7 @@ class ChaosMonkey {
 
     // Document service
 
-    private void checkDocumentServiceApiHeartbeat() {
+    private void checkDocumentServiceHeartbeat() {
         def latch = new CountDownLatch(1)
         vertx.createHttpClient().getNow(8080, 'localhost', "/metrics/get?key=service.document.heartbeat") {
             it.bodyHandler {
@@ -64,14 +66,35 @@ class ChaosMonkey {
         latch.await(5, SECONDS)
     }
 
-    private void accessDocumentServiceApi() {
+    private void checkDocumentServiceCountMetric() {
+        def latch = new CountDownLatch(1)
+        vertx.createHttpClient().getNow(8080, 'localhost', "/metrics/get?key=service.document.count") {
+            it.bodyHandler {
+                assertThat(it.toString().toLong()).isGreaterThan(0L)
+                latch.countDown()
+            }
+        }
+        latch.await(30, SECONDS)
+    }
+
+    private void accessDocumentServiceSaveOperation() {
         def latch = new CountDownLatch(1)
         def collection = randomAlphanumeric(20)
         vertx.createHttpClient().getNow(8080, 'localhost', "/document/count?collection=${collection}") {
             it.bodyHandler {
-                assertThat(it.toString().toLong()).isGreaterThanOrEqualTo(0L)
+                assertThat(it.toString().toLong()).isGreaterThan(0L)
                 latch.countDown()
             }
+        }
+        latch.await(5, SECONDS)
+    }
+
+    private void accessDocumentServiceCountOperation() {
+        def latch = new CountDownLatch(1)
+        def collection = randomAlphanumeric(20)
+        vertx.createHttpClient().post(8080, 'localhost', "/document/save?collection=${collection}") {
+            assertThat(it.toString()).isNotNull()
+            latch.countDown()
         }
         latch.await(5, SECONDS)
     }

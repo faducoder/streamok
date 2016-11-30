@@ -29,6 +29,12 @@
             <artifactId>streamok-lib-mongo</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.streamok</groupId>
+            <artifactId>streamok-service-metrics</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Testing dependencies -->
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>

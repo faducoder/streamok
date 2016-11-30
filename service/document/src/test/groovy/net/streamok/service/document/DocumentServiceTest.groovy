@@ -17,10 +17,12 @@
 package net.streamok.service.document
 
 import io.vertx.core.eventbus.DeliveryOptions
+import io.vertx.core.json.Json
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.lib.mongo.EmbeddedMongo
+import net.streamok.service.metrics.MetricsSuite
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -35,7 +37,7 @@ class DocumentServiceTest {
 
     static def mongo = new EmbeddedMongo().start(findAvailableTcpPort())
 
-    static def bus = new DefaultFiberNode().addSuite(new DocumentService()).vertx().eventBus()
+    static def bus = new DefaultFiberNode().addSuite(new DocumentService()).addSuite(new MetricsSuite()).vertx().eventBus()
 
     def collection = randomUUID().toString()
 
@@ -202,6 +204,23 @@ class DocumentServiceTest {
                     }
                 }
             }
+        }
+    }
+
+    // Metrics tests
+
+    @Test
+    void shouldReadCountMetric(TestContext context) {
+        def async = context.async()
+        bus.send('document.save', encode(document), new DeliveryOptions().addHeader('collection', collection)) {
+        }
+        while(!async.isCompleted()) {
+            bus.send('metrics.get', null, new DeliveryOptions().addHeader('key', 'service.document.count')) {
+                if(decodeValue(it.result().body().toString(), long) > 0) {
+                    async.complete()
+                }
+            }
+            Thread.sleep(1000)
         }
     }
 
