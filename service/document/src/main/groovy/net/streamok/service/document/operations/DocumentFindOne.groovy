@@ -23,22 +23,25 @@ class DocumentFindOne implements FiberDefinition {
     @Override
     Fiber handler() {
         { fiberContext ->
-            def collection = fiberContext.header('collection').toString()
+            def collection = notNull(fiberContext.header('collection'), "Collection can't  be null.").toString()
+            collection = notBlank(collection, "Collection can't be blank.")
 
             def id = notNull(fiberContext.header('id'), 'Document ID not expected to be null.').toString()
             id = notBlank(id, 'Document ID not expected to be blank.')
 
             def mongo = fiberContext.dependency(MongoClient)
 
-            notNull(collection, 'Document collection expected not to be null.')
-
             LOG.debug('Looking up for document with ID {} from collection {}.', id, collection)
 
             mongo.findOne(collection, new JsonObject([_id: id]), null) {
-                if (it.result() != null) {
-                    fiberContext.reply(Json.encode(new MongodbMapper().mongoToCanonical(it.result().map)))
+                if(it.succeeded()) {
+                    if (it.result() != null) {
+                        fiberContext.reply(Json.encode(new MongodbMapper().mongoToCanonical(it.result().map)))
+                    } else {
+                        fiberContext.reply(null)
+                    }
                 } else {
-                    fiberContext.reply(null)
+                    fiberContext.fail(100, "Can't load document with ID ${id} from collection ${collection}. Cause: ${it.cause().getMessage()}")
                 }
             }
         }

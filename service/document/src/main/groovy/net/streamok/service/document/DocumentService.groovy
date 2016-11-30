@@ -14,6 +14,7 @@ import net.streamok.service.document.operations.DocumentCount
 import net.streamok.service.document.operations.DocumentFind
 import net.streamok.service.document.operations.DocumentFindMany
 import net.streamok.service.document.operations.DocumentFindOne
+import net.streamok.service.document.operations.DocumentRemove
 import net.streamok.service.document.operations.DocumentStore
 
 import static java.lang.System.currentTimeMillis
@@ -24,7 +25,7 @@ class DocumentService implements Service, FiberNodeAware {
 
     @Override
     List<FiberDefinition> fiberDefinitions() {
-        [new DocumentStore(), new DocumentFindOne(), new DocumentFindMany(), new DocumentFind(), new DocumentCount()]
+        [new DocumentStore(), new DocumentFindOne(), new DocumentFindMany(), new DocumentFind(), new DocumentCount(), new DocumentRemove()]
     }
 
     @Override

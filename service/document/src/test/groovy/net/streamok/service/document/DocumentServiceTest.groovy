@@ -41,10 +41,10 @@ class DocumentServiceTest {
 
     def document = [foo: 'bar']
 
-    // Tests
+    // FindOne tests
 
     @Test
-    void shouldSave(TestContext context) {
+    void shouldFindOne(TestContext context) {
         def async = context.async()
         bus.send('document.save', encode(document), new DeliveryOptions().addHeader('collection', collection)) {
             bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', it.result().body().toString())) {
@@ -54,8 +54,6 @@ class DocumentServiceTest {
             }
         }
     }
-
-    // FindOne tests
 
     @Test
     void shouldNotFindOne(TestContext context) {
@@ -80,6 +78,26 @@ class DocumentServiceTest {
     void findOneShouldValidateBlankId(TestContext context) {
         def async = context.async()
         bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', ' ')) {
+            assertThat(it.failed()).isTrue()
+            assertThat(it.cause()).hasMessageContaining('blank')
+            async.complete()
+        }
+    }
+
+    @Test
+    void findOneShouldValidateNullCollection(TestContext context) {
+        def async = context.async()
+        bus.send('document.findOne', null, new DeliveryOptions().addHeader('id', 'someId')) {
+            assertThat(it.failed()).isTrue()
+            assertThat(it.cause()).hasMessageContaining('null')
+            async.complete()
+        }
+    }
+
+    @Test
+    void findOneShouldValidateBlankCollection(TestContext context) {
+        def async = context.async()
+        bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', ' ').addHeader('id', 'someId')) {
             assertThat(it.failed()).isTrue()
             assertThat(it.cause()).hasMessageContaining('blank')
             async.complete()
@@ -141,16 +159,25 @@ class DocumentServiceTest {
         }
     }
 
-//        @Test(expected = NullPointerException.class)
-//        void findOneShouldValidateNullId() {
-//            documentStore.findOne(collection, null)
-//        }
-//
-//        @Test(expected = NullPointerException.class)
-//        void findOneShouldValidateNullCollection() {
-//            documentStore.findOne(null, 'someId')
-//        }
-//
+    // DocumentRemove tests
+
+    @Test
+    void shouldRemove(TestContext context) {
+        def async = context.async()
+        bus.send('document.save', encode(document), new DeliveryOptions().addHeader('collection', collection)) {
+            def savedId = it.result().body().toString()
+            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', savedId)) {
+                bus.send('document.remove', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', savedId)) {
+                    bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', savedId)) {
+                        def savedDocument = it.result().body()
+                        assertThat(savedDocument).isNull()
+                        async.complete()
+                    }
+                }
+            }
+        }
+    }
+
 //        // Other tests
 //
 //        @Test

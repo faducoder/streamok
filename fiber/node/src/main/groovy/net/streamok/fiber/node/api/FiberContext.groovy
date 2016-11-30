@@ -36,6 +36,10 @@ class FiberContext {
         message.reply(payload)
     }
 
+    def fail(int code, String message) {
+        this.message.fail(code, message)
+    }
+
     Object dependency(String key) {
         fiberNode.dependency(key)
     }
