@@ -6,8 +6,9 @@ import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberDefinition
 import net.streamok.service.document.MongodbMapper
-import org.apache.commons.lang3.Validate
 
+import static org.apache.commons.lang3.Validate.notBlank
+import static org.apache.commons.lang3.Validate.notNull
 import static org.slf4j.LoggerFactory.getLogger
 
 class DocumentFindOne implements FiberDefinition {
@@ -23,15 +24,17 @@ class DocumentFindOne implements FiberDefinition {
     Fiber handler() {
         { fiberContext ->
             def collection = fiberContext.header('collection').toString()
-            def documentId = fiberContext.header('id').toString()
+
+            def id = notNull(fiberContext.header('id'), 'Document ID not expected to be null.').toString()
+            id = notBlank(id, 'Document ID not expected to be blank.')
+
             def mongo = fiberContext.dependency(MongoClient)
 
-            Validate.notNull(documentId, 'Document ID expected not to be null.')
-            Validate.notNull(collection, 'Document collection expected not to be null.')
+            notNull(collection, 'Document collection expected not to be null.')
 
-            LOG.debug('Looking up for document with ID {} from collection {}.', documentId, collection)
+            LOG.debug('Looking up for document with ID {} from collection {}.', id, collection)
 
-            mongo.findOne(collection, new JsonObject([_id: documentId]), null) {
+            mongo.findOne(collection, new JsonObject([_id: id]), null) {
                 if (it.result() != null) {
                     fiberContext.reply(Json.encode(new MongodbMapper().mongoToCanonical(it.result().map)))
                 } else {

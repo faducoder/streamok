@@ -18,7 +18,7 @@
         <!-- Dependencies -->
         <assertj.version>3.6.1</assertj.version>
         <commons-configuration.version>2.1</commons-configuration.version>
-        <commons-lang.version>3.4</commons-lang.version>
+        <commons-lang.version>3.5</commons-lang.version>
         <embedmongo.version>1.50.2</embedmongo.version>
         <groovy.version>2.4.7</groovy.version>
         <guava.version>19.0</guava.version>

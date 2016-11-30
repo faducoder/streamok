@@ -28,7 +28,8 @@ class FiberContext {
     }
 
     Object header(String name) {
-        message.headers().get(name)
+        def matchingHeaders = message.headers().getAll(name)
+        matchingHeaders.isEmpty() ? null : matchingHeaders.first()
     }
 
     void reply(Object payload) {
