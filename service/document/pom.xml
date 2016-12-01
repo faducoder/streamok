@@ -13,7 +13,7 @@
     <parent>
         <groupId>net.streamok</groupId>
         <artifactId>streamok-service</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>streamok-service-document</artifactId>
