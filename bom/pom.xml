@@ -66,6 +66,7 @@
             <dependency>
                 <groupId>net.streamok</groupId>
                 <artifactId>streamok-service-document</artifactId>
+                <version>${streamok.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.streamok</groupId>
