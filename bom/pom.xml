@@ -65,6 +65,10 @@
             </dependency>
             <dependency>
                 <groupId>net.streamok</groupId>
+                <artifactId>streamok-service-document</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
                 <artifactId>streamok-service-machinelearning</artifactId>
                 <version>${streamok.version}</version>
             </dependency>
