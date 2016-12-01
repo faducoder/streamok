@@ -6,7 +6,7 @@
     <parent>
         <groupId>net.streamok</groupId>
         <artifactId>streamok-fiber</artifactId>
-        <version>0.0.0</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>streamok-fiber-node</artifactId>
