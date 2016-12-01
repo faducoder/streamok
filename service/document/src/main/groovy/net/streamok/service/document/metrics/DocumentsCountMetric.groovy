@@ -1,20 +1,20 @@
 package net.streamok.service.document.metrics
 
+import io.vertx.core.Vertx
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.PeriodicFiberDefinition
 
-import static org.slf4j.LoggerFactory.getLogger
+import static net.streamok.lib.conf.Conf.configuration
 
-class DocumentsCountMetric implements FiberDefinition {
+class DocumentsCountMetric extends PeriodicFiberDefinition {
 
-    private static final LOG = getLogger(DocumentsCountMetric)
-
-    @Override
-    String address() {
-        'document.metrics.count'
+    DocumentsCountMetric(Vertx vertx) {
+        super(vertx,
+                'document.metrics.count',
+                configuration().instance().getInt('DOCUMENT_METRIC_COUNT_INTERVAL', 15000))
     }
 
     @Override
