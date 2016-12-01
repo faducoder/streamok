@@ -8,6 +8,7 @@ import net.streamok.lib.mongo.EmbeddedMongo
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import static net.streamok.lib.conf.Conf.configuration
 import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(VertxUnitRunner)
@@ -17,6 +18,8 @@ class ChaosMonkeyTest {
     void shouldSurviveMonkeyRun(TestContext testContext) {
         def async = testContext.async()
         new EmbeddedMongo().start()
+
+        configuration().memory().setProperty('DOCUMENT_METRIC_COUNT_INTERVAL', 500)
         def node = new StreamokNode()
         new ChaosMonkey().run()
         node.fiberNode().vertx().eventBus().send('metrics.get', null, new DeliveryOptions().addHeader('key', "fiber.node.${node.fiberNode.id()}.started")) {

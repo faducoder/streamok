@@ -17,12 +17,15 @@
 package net.streamok.service.document
 
 import io.vertx.core.eventbus.DeliveryOptions
+import io.vertx.core.eventbus.EventBus
 import io.vertx.core.json.Json
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
+import net.streamok.lib.conf.Conf
 import net.streamok.lib.mongo.EmbeddedMongo
 import net.streamok.service.metrics.MetricsSuite
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -30,14 +33,21 @@ import static io.vertx.core.json.Json.decodeValue
 import static io.vertx.core.json.Json.encode
 import static java.util.UUID.randomUUID
 import static net.streamok.lib.common.Networks.findAvailableTcpPort
+import static net.streamok.lib.conf.Conf.configuration
 import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(VertxUnitRunner)
 class DocumentServiceTest {
 
-    static def mongo = new EmbeddedMongo().start(findAvailableTcpPort())
+    static EventBus bus
 
-    static def bus = new DefaultFiberNode().addSuite(new DocumentService()).addSuite(new MetricsSuite()).vertx().eventBus()
+    @BeforeClass
+    static void beforeClass() {
+        new EmbeddedMongo().start(findAvailableTcpPort())
+
+        configuration().memory().setProperty('DOCUMENT_METRIC_COUNT_INTERVAL', 500)
+        bus = new DefaultFiberNode().addSuite(new DocumentService()).addSuite(new MetricsSuite()).vertx().eventBus()
+    }
 
     def collection = randomUUID().toString()
 

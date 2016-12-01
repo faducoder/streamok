@@ -3,6 +3,7 @@ package net.streamok.service.configuration
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.DeliveryOptions
 import net.streamok.fiber.node.TimerEndpoint
+import net.streamok.fiber.node.TimerEvent
 import net.streamok.fiber.node.api.*
 
 import static java.lang.System.currentTimeMillis
@@ -24,7 +25,7 @@ class ConfigurationSuite implements Service, FiberNodeAware {
     @Override
     List<Endpoint> endpoints() {
         [new TimerEndpoint(5000, 'metrics.put', {
-            new TimerEndpoint.Event(deliveryOptions: new DeliveryOptions().
+            new TimerEvent(deliveryOptions: new DeliveryOptions().
                     addHeader('key', 'service.configuration.heartbeat').addHeader('value', "${currentTimeMillis()}")) })]
     }
 

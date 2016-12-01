@@ -9,7 +9,7 @@ class Conf {
 
     private static Conf conf = new Conf()
 
-    private final Configuration configuration
+    private final CompositeConfiguration configuration
 
     Conf() {
         configuration = new CompositeConfiguration()
@@ -23,6 +23,10 @@ class Conf {
 
     Configuration instance() {
         configuration
+    }
+
+    Configuration memory() {
+        configuration.inMemoryConfiguration
     }
 
 }
