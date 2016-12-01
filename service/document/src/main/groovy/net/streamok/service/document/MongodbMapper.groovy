@@ -19,7 +19,7 @@ package net.streamok.service.document
 import org.apache.commons.lang3.Validate
 
 /**
- * Converts DocumentStore canonical data (like documents and queries) into MongoDB structures (and reversely).
+ * Converts DocumentSave canonical data (like documents and queries) into MongoDB structures (and reversely).
  */
 final class MongodbMapper {
 

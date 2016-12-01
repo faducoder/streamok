@@ -16,7 +16,7 @@ class DocumentService implements Service, FiberNodeAware {
 
     @Override
     List<FiberDefinition> fiberDefinitions() {
-        [new DocumentStore(), new DocumentFindOne(), new DocumentFindMany(), new DocumentFind(), new DocumentCount(), new DocumentRemove(), new DocumentMetricsCount()]
+        [new DocumentSave(), new DocumentFindOne(), new DocumentFindMany(), new DocumentFind(), new DocumentCount(), new DocumentRemove(), new DocumentMetricsCount()]
     }
 
     @Override

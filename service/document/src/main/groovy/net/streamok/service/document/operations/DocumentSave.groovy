@@ -6,11 +6,12 @@ import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberDefinition
 import net.streamok.service.document.MongodbMapper
 
+import static io.vertx.core.json.Json.encode
 import static org.slf4j.LoggerFactory.getLogger
 
-class DocumentStore implements FiberDefinition {
+class DocumentSave implements FiberDefinition {
 
-    private static final LOG = getLogger(DocumentStore)
+    private static final LOG = getLogger(DocumentSave)
 
     @Override
     String address() {
@@ -28,7 +29,7 @@ class DocumentStore implements FiberDefinition {
 
             def document = new MongodbMapper().canonicalToMongo(pojo)
             mongo.save(collection, new JsonObject(document)) {
-                fiberContext.reply(it.result())
+                fiberContext.reply(encode(it.result()))
             }
         }
     }

@@ -43,13 +43,35 @@ class DocumentServiceTest {
 
     def document = [foo: 'bar']
 
-    // FindOne tests
+    // DocumentSave tests
+
+    @Test
+    void shouldUpdate(TestContext context) {
+        def async = context.async()
+        bus.send('document.save', encode(document), new DeliveryOptions().addHeader('collection', collection)) {
+            def savedId = decodeValue(it.result().body().toString(), String)
+            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', savedId)) {
+                def savedDocument = decodeValue(it.result().body().toString(), Map)
+                savedDocument.foo = 'updated'
+                bus.send('document.save', encode(savedDocument), new DeliveryOptions().addHeader('collection', collection)) {
+                    bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', savedId)) {
+                        def updatedDocument = decodeValue(it.result().body().toString(), Map)
+                        context.assertEquals(updatedDocument.foo, 'updated')
+                        async.complete()
+                    }
+                }
+            }
+        }
+    }
+
+    // DocumentFindOne tests
 
     @Test
     void shouldFindOne(TestContext context) {
         def async = context.async()
         bus.send('document.save', encode(document), new DeliveryOptions().addHeader('collection', collection)) {
-            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', it.result().body().toString())) {
+            def id = decodeValue(it.result().body().toString(), String)
+            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', id)) {
                 def savedDocument = decodeValue(it.result().body().toString(), Map)
                 context.assertEquals(savedDocument.foo, document.foo)
                 async.complete()
@@ -110,8 +132,8 @@ class DocumentServiceTest {
     void findOneShouldContainsID(TestContext context) {
         def async = context.async()
         bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
-            def savedId = it.result().body().toString()
-            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', it.result().body().toString())) {
+            def savedId = decodeValue(it.result().body().toString(), String)
+            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', savedId)) {
                 def savedDocument = decodeValue(it.result().body().toString(), Map)
                 assertThat(savedDocument.id).isEqualTo(savedId)
                 async.complete()
@@ -123,8 +145,8 @@ class DocumentServiceTest {
     void loadedDocumentShouldHasNotMongoId(TestContext context) {
         def async = context.async()
         bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
-            def savedId = it.result().body().toString()
-            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', it.result().body().toString())) {
+            def savedId = decodeValue(it.result().body().toString(), String)
+            bus.send('document.findOne', null, new DeliveryOptions().addHeader('collection', collection).addHeader('id', savedId)) {
                 def savedDocument = decodeValue(it.result().body().toString(), Map)
                 assertThat(savedDocument._id).isNull()
                 async.complete()
@@ -137,9 +159,9 @@ class DocumentServiceTest {
         def async = context.async()
         def ids = []
         bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
-            ids << it.result().body().toString()
+            ids << decodeValue(it.result().body().toString(), String)
             bus.send('document.save', encode([bar: 'baz']), new DeliveryOptions().addHeader('collection', collection)) {
-                ids << it.result().body().toString()
+                ids << decodeValue(it.result().body().toString(), String)
                 bus.send('document.findMany', encode(ids), new DeliveryOptions().addHeader('collection', collection)) {
                     def savedDocuments = decodeValue(it.result().body().toString(), Map[])
                     assertThat(savedDocuments.toList()).hasSize(2)
@@ -224,21 +246,6 @@ class DocumentServiceTest {
         }
     }
 
-//        @Test
-//        public void shouldUpdateDocument() {
-//            // Given
-//            def id = documentStore.save(collection, serialize(invoice))
-//            invoice.myid = id
-//            invoice.invoiceId = 'newValue'
-//
-//            // When
-//            documentStore.save(collection, serialize(invoice))
-//
-//            // Then
-//            def updatedInvoice = documentStore.findOne(collection, id)
-//            assertThat(updatedInvoice.invoiceId).isEqualTo(invoice.invoiceId)
-//        }
-//
 //        @Test
 //        void shouldReturnEmptyList() {
 //            // When
