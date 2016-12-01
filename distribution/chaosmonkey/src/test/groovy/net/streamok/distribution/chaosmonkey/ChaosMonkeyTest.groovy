@@ -18,7 +18,7 @@ class ChaosMonkeyTest {
         def async = testContext.async()
         new EmbeddedMongo().start()
         def node = new StreamokNode()
-        new ChaosMonkey(node.fiberNode().vertx()).run()
+        new ChaosMonkey().run()
         node.fiberNode().vertx().eventBus().send('metrics.get', null, new DeliveryOptions().addHeader('key', "fiber.node.${node.fiberNode.id()}.started")) {
             def started = it.result().body().toString().toLong()
             assertThat(started).isGreaterThan(0L)

@@ -14,35 +14,30 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.streamok</groupId>
-            <artifactId>streamok-distribution-node</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>2.4.6</version>
-        </dependency>
-        <dependency>
-            <groupId>net.streamok</groupId>
-            <artifactId>streamok-service-configuration</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
 
-        <!-- Testing dependencies -->
+        <!-- Internal testing dependencies -->
+        <dependency>
+            <groupId>net.streamok</groupId>
+            <artifactId>streamok-distribution-node</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- External testing dependencies -->
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>

@@ -16,6 +16,10 @@ class ChaosMonkey {
         this.vertx = vertx
     }
 
+    ChaosMonkey() {
+        this(Vertx.vertx())
+    }
+
     void run() {
         checkConfigurationServiceApiHeartbeat()
         accessConfigurationServiceApi()
