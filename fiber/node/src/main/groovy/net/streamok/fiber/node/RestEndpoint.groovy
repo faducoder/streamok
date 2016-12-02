@@ -1,6 +1,7 @@
 package net.streamok.fiber.node
 
 import io.vertx.core.eventbus.DeliveryOptions
+import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerResponse
 import net.streamok.fiber.node.api.Endpoint
 import net.streamok.fiber.node.api.FiberNode
@@ -19,10 +20,16 @@ class RestEndpoint implements Endpoint {
             }
             def dd = new DeliveryOptions()
             request.params().entries().each { dd.addHeader(it.key, it.value) }
-            vertx.eventBus().send(address, null, dd) {
-                HttpServerResponse response = request.response()
-                response.putHeader("content-type", "text/plain")
-                response.end(it.result().body().toString())
+            request.bodyHandler {
+                vertx.eventBus().send(address, request.method() == HttpMethod.GET ? null : it.toString(), dd) {
+                    HttpServerResponse response = request.response()
+                    response.putHeader("content-type", "text/plain")
+                    if(it.failed()) {
+                        response.end(it.cause().message)
+                    } else {
+                        response.end(it.result().body().toString())
+                    }
+                }
             }
         }
 

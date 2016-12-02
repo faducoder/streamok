@@ -5,6 +5,7 @@ import net.streamok.fiber.node.RestEndpoint
 import net.streamok.fiber.node.api.FiberNode
 import net.streamok.service.configuration.ConfigurationSuite
 import net.streamok.service.document.DocumentService
+import net.streamok.service.machinelearning.MachineLearningSuite
 import net.streamok.service.metrics.MetricsSuite
 
 class StreamokNode {
@@ -14,6 +15,7 @@ class StreamokNode {
             addSuite(new MetricsSuite()).
             addSuite(new ConfigurationSuite()).
             addSuite(new DocumentService()).
+            addSuite(new MachineLearningSuite()).
             start()
 
     FiberNode fiberNode() {

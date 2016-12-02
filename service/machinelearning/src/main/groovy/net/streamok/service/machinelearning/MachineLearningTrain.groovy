@@ -20,7 +20,7 @@ class MachineLearningTrain implements FiberDefinition {
 
     @Override
     String address() {
-        'machinelearning.train'
+        'machineLearning.train'
     }
 
     @Override

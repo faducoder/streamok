@@ -1,11 +1,7 @@
 package net.streamok.service.machinelearning
 
-import io.vertx.core.json.Json
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberDefinition
-import org.apache.spark.ml.feature.HashingTF
-import org.apache.spark.ml.feature.IDF
-import org.apache.spark.ml.feature.Tokenizer
 import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.sql.RowFactory
 import org.apache.spark.sql.SparkSession
@@ -14,11 +10,13 @@ import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 
+import static io.vertx.core.json.Json.encode
+
 class MachineLearningPredict implements FiberDefinition {
 
     @Override
     String address() {
-        'machinelearning.predict'
+        'machineLearning.predict'
     }
 
     @Override
@@ -44,18 +42,6 @@ class MachineLearningPredict implements FiberDefinition {
                         new StructField("sentence", DataTypes.StringType, false, Metadata.empty())
                 ].toArray(new StructField[0]) as StructField[]);
                 def featuresDataFrame = spark.createDataFrame(data, schema)
-//                def tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words")
-//                featuresDataFrame = tokenizer.transform(featuresDataFrame);
-//                def hashingTF = new HashingTF()
-//                        .setInputCol("words")
-//                        .setOutputCol("rawFeatures")
-//                        .setNumFeatures(1000)
-//                def featurizedData = hashingTF.transform(featuresDataFrame);
-//
-//                def idf = new IDF().setInputCol("rawFeatures").setOutputCol("features");
-//                def idfModel = idf.fit(featurizedData);
-//                def rescaledData = idfModel.transform(featurizedData);
-
 
                 def predictions = regressionModel.transform(featuresDataFrame)
                 def prob = predictions.collectAsList().first().getAs(5)
@@ -63,7 +49,7 @@ class MachineLearningPredict implements FiberDefinition {
                 labelConfidence[label] = (prob as DenseVector).values()[1]
             }
 
-            fiber.reply(Json.encode(labelConfidence))
+            fiber.reply(encode(labelConfidence))
         }
     }
 
