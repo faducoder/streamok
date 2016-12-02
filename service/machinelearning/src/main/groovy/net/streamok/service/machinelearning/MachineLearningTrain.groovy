@@ -28,11 +28,9 @@ class MachineLearningTrain implements FiberDefinition {
         { fiber ->
             def spark = fiber.dependency(SparkSession)
             def models = fiber.dependency(ModelCache)
+            def input = fiber.nonBlankHeader('input')
 
-            def collection = fiber.header('collection').toString()
-            def source = fiber.header('source')
-
-            fiber.vertx().eventBus().send('document.find', Json.encode([size: 2000]), new DeliveryOptions().addHeader('collection', 'training_texts_' + collection)) {
+            fiber.vertx().eventBus().send('document.find', Json.encode([size: 2000]), new DeliveryOptions().addHeader('collection', 'training_texts_' + input)) {
                 def data = Json.decodeValue(it.result().body().toString(), FeatureVector[]).toList()
                 Validate.notEmpty(data, "Training data can't be empty.")
 
@@ -62,7 +60,7 @@ class MachineLearningTrain implements FiberDefinition {
                     if (label == null) {
                         label = 'default'
                     }
-                    models.updateModel(collection, label, pipeline.fit(featuresDataFrame))
+                    models.updateModel(input, label, pipeline.fit(featuresDataFrame))
                 }
                 fiber.reply(null)
             }

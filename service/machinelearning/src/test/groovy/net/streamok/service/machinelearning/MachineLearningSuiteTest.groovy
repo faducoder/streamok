@@ -44,7 +44,7 @@ class MachineLearningSuiteTest {
     static
     def bus = new DefaultFiberNode().addSuite(new MachineLearningSuite()).addSuite(new DocumentService()).vertx().eventBus()
 
-    def collection = randomUUID().toString()
+    def input = randomUUID().toString()
 
     // Tests
 
@@ -60,14 +60,14 @@ class MachineLearningSuiteTest {
                             textFeatureVector('Logistic regression models are neat', true)]
         def semaphore = new CountDownLatch(trainingData.size())
         trainingData.each {
-            bus.send(documentSave, encode(it), headers(collection: "training_texts_${collection}")) {
+            bus.send(documentSave, encode(it), headers(collection: "training_texts_${input}")) {
                 semaphore.countDown()
             }
         }
         semaphore.await(15, SECONDS)
 
-        bus.send('machinelearning.train', null, headers(collection: collection)) {
-            bus.send('machinelearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), headers(collection: collection)) {
+        bus.send('machinelearning.train', null, headers(input: input)) {
+            bus.send('machinelearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), headers(collection: input)) {
                 def result = Json.decodeValue(it.result().body().toString(), Map)
                 assertThat(result['default'] as double).isGreaterThan(0.8d)
                 async.complete()
@@ -99,7 +99,7 @@ class MachineLearningSuiteTest {
             bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col2'))
         }
         Thread.sleep(5000)
-        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', 'col2')) {
+        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('input', 'col2')) {
             bus.send('machinelearning.predict', encode(new FeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('collection', 'col2')) {
                 def result = Json.decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isGreaterThan(0.9d)
@@ -133,7 +133,7 @@ class MachineLearningSuiteTest {
             bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col3'))
         }
         Thread.sleep(5000)
-        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', 'col3')) {
+        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('input', 'col3')) {
             bus.send('machinelearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col3')) {
                 def result = Json.decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isLessThan(0.7d)
@@ -146,14 +146,14 @@ class MachineLearningSuiteTest {
     @Test
     void shouldLoadTwitter(TestContext context) {
         def async = context.async()
-        bus.send('machinelearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'iot').addHeader('collection', collection)) {
+        bus.send('machinelearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'iot').addHeader('collection', input)) {
 
         }
         Thread.sleep(15000)
-        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', collection)) {
-            bus.send('machinelearning.predict', encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', collection)) {
+        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('input', input)) {
+            bus.send('machinelearning.predict', encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', input)) {
                 assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
-                bus.send('machinelearning.predict', encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', collection)) {
+                bus.send('machinelearning.predict', encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', input)) {
                     assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
                     async.complete()
                 }
