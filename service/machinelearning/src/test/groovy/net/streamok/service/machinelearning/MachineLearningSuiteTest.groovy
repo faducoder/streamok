@@ -147,15 +147,13 @@ class MachineLearningSuiteTest {
     void shouldLoadTwitter(TestContext context) {
         def async = context.async()
         bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'iot').addHeader('collection', input)) {
-
-        }
-        Thread.sleep(15000)
-        bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', input)) {
-            bus.send('machineLearning.predict', encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', input)) {
-                assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
-                bus.send('machineLearning.predict', encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', input)) {
+            bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', input)) {
+                bus.send('machineLearning.predict', encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', input)) {
                     assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
-                    async.complete()
+                    bus.send('machineLearning.predict', encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', input)) {
+                        assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
+                        async.complete()
+                    }
                 }
             }
         }

@@ -116,12 +116,11 @@ class ChaosMonkey {
         def latch = new CountDownLatch(1)
         def collection = randomAlphanumeric(20)
         vertx.createHttpClient().getNow(8080, 'localhost', "/machineLearning/ingestTrainingData?collection=${collection}&source=twitter:iot") {
-        }
-        Thread.sleep(5000)
-        vertx.createHttpClient().getNow(8080, 'localhost', "/document/count?collection=training_texts_${collection}") {
-            it.bodyHandler {
-                assertThat(it.toString().toLong()).isGreaterThan(100L)
-                latch.countDown()
+            vertx.createHttpClient().getNow(8080, 'localhost', "/document/count?collection=training_texts_${collection}") {
+                it.bodyHandler {
+                    assertThat(it.toString().toLong()).isGreaterThan(100L)
+                    latch.countDown()
+                }
             }
         }
         Validate.isTrue(latch.await(15, SECONDS))
