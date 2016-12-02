@@ -46,7 +46,7 @@ class ChaosMonkey {
                 latch.countDown()
             }
         }
-        Validate.isTrue(latch.await(15, SECONDS))
+        Validate.isTrue(latch.await(15, SECONDS), "Configuration service doesn't send heartbeats..")
     }
 
     private void accessConfigurationServiceApi() {
@@ -61,7 +61,7 @@ class ChaosMonkey {
                 }
             }
         }
-        Validate.isTrue(latch.await(5, SECONDS))
+        Validate.isTrue(latch.await(15, SECONDS), 'Configuration service API not available.')
     }
 
     // Document service
