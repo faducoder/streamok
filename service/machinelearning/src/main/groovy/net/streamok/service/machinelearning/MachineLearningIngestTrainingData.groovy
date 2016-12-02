@@ -28,26 +28,41 @@ class MachineLearningIngestTrainingData implements FiberDefinition {
             void handle(FiberContext fiberContext) {
                 def source = fiberContext.nonBlankHeader('source')
                 def twitterTag = source.replaceFirst('twitter:', '')
+                def collection = fiberContext.nonBlankHeader('collection')
 
                 def cb = new ConfigurationBuilder()
-                cb.setOAuthConsumerKey("bnI9hm5vYMnNR7zV5BagxKW6R")
-                        .setOAuthConsumerSecret("CrhMdKRt3zw1ZCqdTsXCLtQmG84zWzIc8noxP8lGMoD9RqgVUr")
-                        .setOAuthAccessToken("18531491-ZARem17HyP6wZnMFhKNeFiN2qQUkzdi54KrFoF1rU")
-                        .setOAuthAccessTokenSecret("nhcYaYpIjFh9bsSaRBzD1fIrpb1ugNOI79heeb83lLFOL");
+                cb.setOAuthConsumerKey("qfSY4xyuyBeZ9pppAY7R8NASl")
+                        .setOAuthConsumerSecret("ZO2NQJQOBk98JfxF6l8AUzzw8gSs4dRR1lEnvsgMG0NFA224mV")
+                        .setOAuthAccessToken("804661469086359552-IWeaoXXpsCfMlkL9TFVkQ46cSU2t5jI")
+                        .setOAuthAccessTokenSecret("BSwqXggpm01PldZtAfPGwAQtft6Qvi2jPWvkGuUEIrLaT");
                 def twitter = new TwitterFactory(cb.build()).instance
                 Query query = new Query("lang:en ${twitterTag}")
                 query.setCount(1000)
                 QueryResult result = twitter.search(query);
                 for (Status status : result.getTweets()) {
-                    fiberContext.vertx().eventBus().send('document.save', encode(textFeatureVector(status.text, twitterTag, true)), new DeliveryOptions().addHeader('collection', 'training_texts'))
+                    fiberContext.vertx().eventBus().send('document.save', encode(textFeatureVector(status.text, twitterTag, true)), new DeliveryOptions().addHeader('collection', 'training_texts_' + collection))
                 }
 
-                query = new Query('"lang:en #dogs"')
+                query = new Query('lang:en #dogs')
                 query.setCount(1000)
                 result = twitter.search(query);
                 for (Status status : result.getTweets().findAll{ it.lang == 'en' }) {
-                    fiberContext.vertx().eventBus().send('document.save', encode(textFeatureVector(status.text, twitterTag, false)), new DeliveryOptions().addHeader('collection', 'training_texts'))
+                    fiberContext.vertx().eventBus().send('document.save', encode(textFeatureVector(status.text, twitterTag, false)), new DeliveryOptions().addHeader('collection', 'training_texts_' + collection))
                 }
+
+//                query = new Query('lang:en #disney')
+//                query.setCount(1000)
+//                result = twitter.search(query);
+//                for (Status status : result.getTweets().findAll{ it.lang == 'en' }) {
+//                    fiberContext.vertx().eventBus().send('document.save', encode(textFeatureVector(status.text, twitterTag, false)), new DeliveryOptions().addHeader('collection', 'training_texts_' + collection))
+//                }
+//
+//                query = new Query('lang:en #lego')
+//                query.setCount(1000)
+//                result = twitter.search(query);
+//                for (Status status : result.getTweets().findAll{ it.lang == 'en' }) {
+//                    fiberContext.vertx().eventBus().send('document.save', encode(textFeatureVector(status.text, twitterTag, false)), new DeliveryOptions().addHeader('collection', 'training_texts_' + collection))
+//                }
 
                 fiberContext.reply(null)
             }

@@ -30,9 +30,8 @@ class MachineLearningPredict implements FiberDefinition {
             def collection = fiber.header('collection').toString()
             def featureVector = fiber.body(FeatureVector)
 
-            def ungroupedData = MachineLearningTrain.ungroupedData[collection]
             def labelConfidence = [:]
-            def labels = ['iot']
+            def labels = models.labels(collection)
             labels.each { label ->
                 if (label == null) {
                     label = 'default'
@@ -45,20 +44,21 @@ class MachineLearningPredict implements FiberDefinition {
                         new StructField("sentence", DataTypes.StringType, false, Metadata.empty())
                 ].toArray(new StructField[0]) as StructField[]);
                 def featuresDataFrame = spark.createDataFrame(data, schema)
-                def tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words")
-                featuresDataFrame = tokenizer.transform(featuresDataFrame);
-                def hashingTF = new HashingTF()
-                        .setInputCol("words")
-                        .setOutputCol("rawFeatures")
-                        .setNumFeatures(1000)
-                def featurizedData = hashingTF.transform(featuresDataFrame);
+//                def tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words")
+//                featuresDataFrame = tokenizer.transform(featuresDataFrame);
+//                def hashingTF = new HashingTF()
+//                        .setInputCol("words")
+//                        .setOutputCol("rawFeatures")
+//                        .setNumFeatures(1000)
+//                def featurizedData = hashingTF.transform(featuresDataFrame);
+//
+//                def idf = new IDF().setInputCol("rawFeatures").setOutputCol("features");
+//                def idfModel = idf.fit(featurizedData);
+//                def rescaledData = idfModel.transform(featurizedData);
 
-                def idf = new IDF().setInputCol("rawFeatures").setOutputCol("features");
-                def idfModel = idf.fit(featurizedData);
-                def rescaledData = idfModel.transform(featurizedData);
 
-                def predictions = regressionModel.transform(rescaledData)
-                def prob = predictions.collectAsList().first().getAs(6)
+                def predictions = regressionModel.transform(featuresDataFrame)
+                def prob = predictions.collectAsList().first().getAs(5)
 
                 labelConfidence[label] = (prob as DenseVector).values()[1]
             }
