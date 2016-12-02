@@ -26,7 +26,13 @@ import net.streamok.service.document.DocumentService
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import java.util.concurrent.CountDownLatch
+
+import static io.vertx.core.json.Json.encode
 import static java.util.UUID.randomUUID
+import static java.util.concurrent.TimeUnit.SECONDS
+import static net.streamok.lib.vertx.EventBuses.headers
+import static net.streamok.service.document.operations.DocumentSave.documentSave
 import static net.streamok.service.machinelearning.FeatureVector.textFeatureVector
 import static org.assertj.core.api.Assertions.assertThat
 
@@ -52,12 +58,16 @@ class MachineLearningSuiteTest {
                             textFeatureVector('Logistic regression models are neat', true),
                             textFeatureVector('Logistic regression models are neat', true),
                             textFeatureVector('Logistic regression models are neat', true)]
+        def semaphore = new CountDownLatch(trainingData.size())
         trainingData.each {
-            bus.send('document.save', Json.encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col1'))
+            bus.send(documentSave, encode(it), headers(collection: "training_texts_${collection}")) {
+                semaphore.countDown()
+            }
         }
-        Thread.sleep(5000)
-        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', 'col1')) {
-            bus.send('machinelearning.predict', Json.encode(new FeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col1')) {
+        semaphore.await(15, SECONDS)
+
+        bus.send('machinelearning.train', null, headers(collection: collection)) {
+            bus.send('machinelearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), headers(collection: collection)) {
                 def result = Json.decodeValue(it.result().body().toString(), Map)
                 assertThat(result['default'] as double).isGreaterThan(0.8d)
                 async.complete()
@@ -86,11 +96,11 @@ class MachineLearningSuiteTest {
                 new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem')
         ]
         trainingData.each {
-            bus.send('document.save', Json.encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col2'))
+            bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col2'))
         }
         Thread.sleep(5000)
         bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', 'col2')) {
-            bus.send('machinelearning.predict', Json.encode(new FeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('collection', 'col2')) {
+            bus.send('machinelearning.predict', encode(new FeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('collection', 'col2')) {
                 def result = Json.decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isGreaterThan(0.9d)
                 assertThat(result['lorem'] as double).isGreaterThan(0.9d)
@@ -120,11 +130,11 @@ class MachineLearningSuiteTest {
                 new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem')
         ]
         trainingData.each {
-            bus.send('document.save', Json.encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col3'))
+            bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col3'))
         }
         Thread.sleep(5000)
         bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', 'col3')) {
-            bus.send('machinelearning.predict', Json.encode(new FeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col3')) {
+            bus.send('machinelearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col3')) {
                 def result = Json.decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isLessThan(0.7d)
                 assertThat(result['lorem'] as double).isLessThan(0.7d)
@@ -141,9 +151,9 @@ class MachineLearningSuiteTest {
         }
         Thread.sleep(15000)
         bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', collection)) {
-            bus.send('machinelearning.predict', Json.encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', collection)) {
+            bus.send('machinelearning.predict', encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', collection)) {
                 assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
-                bus.send('machinelearning.predict', Json.encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', collection)) {
+                bus.send('machinelearning.predict', encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', collection)) {
                     assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
                     async.complete()
                 }

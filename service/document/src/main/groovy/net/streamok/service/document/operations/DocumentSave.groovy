@@ -13,9 +13,11 @@ class DocumentSave implements FiberDefinition {
 
     private static final LOG = getLogger(DocumentSave)
 
+    public static final String documentSave = 'document.save'
+
     @Override
     String address() {
-        'document.save'
+        documentSave
     }
 
     @Override

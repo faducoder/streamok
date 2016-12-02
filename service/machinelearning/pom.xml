@@ -19,13 +19,8 @@
             <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>2.4.6</version>
+            <groupId>net.streamok</groupId>
+            <artifactId>streamok-lib-vertx</artifactId>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>

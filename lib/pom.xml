@@ -23,6 +23,7 @@
 
     <modules>
         <module>common</module>
+        <module>vertx</module>
         <module>conf</module>
         <module>mongo</module>
     </modules>
