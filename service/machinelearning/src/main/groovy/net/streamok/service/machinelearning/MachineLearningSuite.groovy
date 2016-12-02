@@ -9,7 +9,7 @@ class MachineLearningSuite implements Service {
 
     @Override
     List<FiberDefinition> fiberDefinitions() {
-        [new MachineLearningTrain(), new MachineLearningPredict()]
+        [new MachineLearningIngestTrainingData(), new MachineLearningTrain(), new MachineLearningPredict()]
     }
 
     @Override

@@ -21,16 +21,22 @@ import io.vertx.core.json.Json
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
+import net.streamok.lib.mongo.EmbeddedMongo
+import net.streamok.service.document.DocumentService
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import static net.streamok.service.machinelearning.FeatureVector.textFeatureVector
 import static org.assertj.core.api.Assertions.assertThat
 
+@Ignore
 @RunWith(VertxUnitRunner)
 class MachineLearningSuiteTest {
 
-    static def bus = new DefaultFiberNode().addSuite(new MachineLearningSuite()).vertx().eventBus()
+    static def mongo = new EmbeddedMongo().start()
+
+    static def bus = new DefaultFiberNode().addSuite(new MachineLearningSuite()).addSuite(new DocumentService()).vertx().eventBus()
 
     // Tests
 
@@ -84,6 +90,41 @@ class MachineLearningSuiteTest {
                 async.complete()
             }
         }
+    }
+
+    @Test
+    void shouldLoadTwitter(TestContext context) {
+        def async = context.async()
+        bus.send('machinelearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'iot')) {
+
+        }
+        Thread.sleep(15000)
+        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', 'xxx')) {
+        }
+        Thread.sleep(15000)
+        bus.send('machinelearning.predict', Json.encode(textFeatureVector('internet of things and connected devices', true)), new DeliveryOptions().addHeader('collection', 'xxx')) {
+            println 'XXXXXXXXXXXXXX'
+            println it.succeeded()
+            println it.result().body()
+            println 'XXXXXXXXXXXXXX'
+            bus.send('machinelearning.predict', Json.encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', 'xxx')) {
+                println 'YYYYYYYYYYYYY'
+                println it.succeeded()
+                println it.result().body()
+                println 'YYYYYYYYYY'
+                async.complete()
+            }
+        }
+
+
+
+//        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', 'col1')) {
+//            bus.send('machinelearning.predict', Json.encode(new FeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col1')) {
+//                def result = Json.decodeValue(it.result().body().toString(), Map)
+//                assertThat(result['default'] as double).isGreaterThan(0.4d)
+//                async.complete()
+//            }
+//        }
     }
 
 }

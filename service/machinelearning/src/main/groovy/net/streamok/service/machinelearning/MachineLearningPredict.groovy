@@ -32,7 +32,7 @@ class MachineLearningPredict implements FiberDefinition {
 
             def ungroupedData = MachineLearningTrain.ungroupedData[collection]
             def labelConfidence = [:]
-            def labels = ungroupedData.collect { it.targetLabel }.unique()
+            def labels = ['iot']
             labels.each { label ->
                 if (label == null) {
                     label = 'default'
@@ -50,7 +50,7 @@ class MachineLearningPredict implements FiberDefinition {
                 def hashingTF = new HashingTF()
                         .setInputCol("words")
                         .setOutputCol("rawFeatures")
-                        .setNumFeatures(20)
+                        .setNumFeatures(1000)
                 def featurizedData = hashingTF.transform(featuresDataFrame);
 
                 def idf = new IDF().setInputCol("rawFeatures").setOutputCol("features");

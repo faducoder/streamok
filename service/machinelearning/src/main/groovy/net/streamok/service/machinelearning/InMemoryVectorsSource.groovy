@@ -24,7 +24,8 @@ class InMemoryVectorsSource implements NativeVectorsSource {
 
     @Override
     JavaRDD<Row> source(String label) {
-         new JavaSparkContext(sparkSession.sparkContext()).parallelize(vectors.findAll { it.targetLabel == label }.collect{ RowFactory.create(it.targetFeature, it.text) })
+        def labelData = vectors.findAll { it.targetLabel == label }.collect{ RowFactory.create(it.targetFeature, it.text) }
+        new JavaSparkContext(sparkSession.sparkContext()).parallelize(labelData)
     }
 
 }
