@@ -25,12 +25,19 @@
             <groupId>net.streamok</groupId>
             <artifactId>streamok-lib-common</artifactId>
         </dependency>
+
+        <!-- External dependencies -->
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
         </dependency>
 
         <!-- External testing dependencies -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-unit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

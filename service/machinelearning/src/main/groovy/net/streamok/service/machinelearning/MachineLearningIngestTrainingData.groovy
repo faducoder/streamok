@@ -5,6 +5,7 @@ import io.vertx.core.json.Json
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.FiberContext
 import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.lib.vertx.Handlers
 import org.apache.commons.lang3.Validate
 import twitter4j.Query
 import twitter4j.QueryResult
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 import static io.vertx.core.json.Json.encode
+import static net.streamok.lib.vertx.Handlers.completeIteration
 import static net.streamok.service.machinelearning.FeatureVector.textFeatureVector
 
 class MachineLearningIngestTrainingData implements FiberDefinition {
@@ -48,17 +50,11 @@ class MachineLearningIngestTrainingData implements FiberDefinition {
             query.setCount(1000)
             def result2 = twitter.search(query)
 
-            def sempahore = new AtomicInteger(result2.getTweets().size() + result.getTweets().size())
-            for (Status status : result2.getTweets().findAll { it.lang == 'en' }) {
-                fiberContext.vertx().eventBus().send('document.save', encode(textFeatureVector(status.text, twitterTag, false)), new DeliveryOptions().addHeader('collection', 'training_texts_' + collection)) {
-                    if(sempahore.decrementAndGet() == 0) {
-                        fiberContext.reply(null)
-                    }
-                }
-            }
-            for (Status status : result.getTweets()) {
-                fiberContext.vertx().eventBus().send('document.save', encode(textFeatureVector(status.text, twitterTag, true)), new DeliveryOptions().addHeader('collection', 'training_texts_' + collection)) {
-                    if(sempahore.decrementAndGet() == 0) {
+            def positives = result.tweets.collect { encode(textFeatureVector(it.text, twitterTag, true)) }
+            def negatives = result2.tweets.collect { encode(textFeatureVector(it.text, twitterTag, false)) }
+            completeIteration(positives + negatives) { iteration ->
+                fiberContext.vertx().eventBus().send('document.save', iteration.element(), new DeliveryOptions().addHeader('collection', 'training_texts_' + collection)) {
+                    iteration.ifFinished {
                         fiberContext.reply(null)
                     }
                 }
