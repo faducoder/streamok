@@ -45,18 +45,6 @@ class MachineLearningTrain implements FiberDefinition {
                             new StructField("sentence", DataTypes.StringType, false, Metadata.empty())
                     ].toArray(new StructField[0]) as StructField[]);
                     def featuresDataFrame = spark.createDataFrame(dataSource.source(label), schema)
-//                    def tokenizer = new Tokenizer().setInputCol("sentence").setOutputCol("words");
-//                    featuresDataFrame = tokenizer.transform(featuresDataFrame);
-//                    int numFeatures = 1000;
-//                    def hashingTF = new HashingTF()
-//                            .setInputCol("words")
-//                            .setOutputCol("rawFeatures")
-//                            .setNumFeatures(numFeatures);
-//                    def featurizedData = hashingTF.transform(featuresDataFrame)
-//                    def idf = new IDF().setInputCol("rawFeatures").setOutputCol("features");
-//                    def idfModel = idf.fit(featurizedData)
-//                    def rescaledData = idfModel.transform(featurizedData);
-
                     def tokenizer = new Tokenizer()
                             .setInputCol("sentence")
                             .setOutputCol("words")

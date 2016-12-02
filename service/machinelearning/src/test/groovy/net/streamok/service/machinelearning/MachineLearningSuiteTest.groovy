@@ -23,12 +23,10 @@ import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.lib.mongo.EmbeddedMongo
 import net.streamok.service.document.DocumentService
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import java.util.concurrent.atomic.AtomicInteger
-
+import static java.util.UUID.randomUUID
 import static net.streamok.service.machinelearning.FeatureVector.textFeatureVector
 import static org.assertj.core.api.Assertions.assertThat
 
@@ -39,6 +37,8 @@ class MachineLearningSuiteTest {
 
     static
     def bus = new DefaultFiberNode().addSuite(new MachineLearningSuite()).addSuite(new DocumentService()).vertx().eventBus()
+
+    def collection = randomUUID().toString()
 
     // Tests
 
@@ -136,18 +136,17 @@ class MachineLearningSuiteTest {
     @Test
     void shouldLoadTwitter(TestContext context) {
         def async = context.async()
-        bus.send('machinelearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'iot').addHeader('collection', 'xxx')) {
+        bus.send('machinelearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'iot').addHeader('collection', collection)) {
 
         }
         Thread.sleep(15000)
-        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', 'xxx')) {
-        }
-        Thread.sleep(20000)
-        bus.send('machinelearning.predict', Json.encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', 'xxx')) {
-            assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
-            bus.send('machinelearning.predict', Json.encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', 'xxx')) {
+        bus.send('machinelearning.train', null, new DeliveryOptions().addHeader('collection', collection)) {
+            bus.send('machinelearning.predict', Json.encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', collection)) {
                 assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
-                async.complete()
+                bus.send('machinelearning.predict', Json.encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', collection)) {
+                    assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
+                    async.complete()
+                }
             }
         }
     }
