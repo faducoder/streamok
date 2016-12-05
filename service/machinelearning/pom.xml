@@ -25,10 +25,6 @@
             <groupId>net.streamok</groupId>
             <artifactId>streamok-fiber-node</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.streamok</groupId>
-            <artifactId>streamok-lib-mongo</artifactId>
-        </dependency>
 
         <!-- External dependencies -->
         <dependency>
