@@ -146,7 +146,7 @@ class MachineLearningSuiteTest {
     @Test
     void shouldLoadTwitter(TestContext context) {
         def async = context.async()
-        bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'iot').addHeader('collection', input)) {
+        bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', input)) {
             bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', input)) {
                 bus.send('machineLearning.predict', encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', input)) {
                     assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
