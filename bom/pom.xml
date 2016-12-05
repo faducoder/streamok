@@ -6,7 +6,7 @@
     <parent>
         <groupId>net.streamok</groupId>
         <artifactId>streamok</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.4-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
 
@@ -24,7 +24,7 @@
         <junit.version>4.12</junit.version>
         <slf4j.version>1.7.21</slf4j.version>
         <spark.version>2.0.1</spark.version>
-        <streamok.version>0.0.3</streamok.version>
+        <streamok.version>0.0.4-SNAPSHOT</streamok.version>
         <twitterj.version>4.0.5</twitterj.version>
         <vertx.version>3.3.3</vertx.version>
 

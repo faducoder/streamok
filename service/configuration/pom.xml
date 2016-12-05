@@ -6,7 +6,7 @@
     <parent>
         <groupId>net.streamok</groupId>
         <artifactId>streamok-service</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>streamok-service-configuration</artifactId>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>net.streamok</groupId>
             <artifactId>streamok-fiber-node</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
