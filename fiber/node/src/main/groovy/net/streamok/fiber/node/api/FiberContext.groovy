@@ -3,6 +3,7 @@ package net.streamok.fiber.node.api
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 import net.streamok.lib.conf.Conf
+import org.slf4j.LoggerFactory
 
 import static io.vertx.core.json.Json.decodeValue
 import static org.apache.commons.lang3.Validate.notBlank
@@ -59,6 +60,10 @@ class FiberContext {
 
     def String configurationString(String key, String defaultValue) {
         Conf.configuration().instance().getString(key, defaultValue)
+    }
+
+    void debug(String message) {
+        LoggerFactory.getLogger("streamok.service.operation").debug(message)
     }
 
     Vertx vertx() {

@@ -21,7 +21,9 @@ class MachineLearningIngestTrainingData implements FiberDefinition {
     @Override
     Fiber handler() {
         { operation ->
+            operation.debug("Executing operation ${address()}...")
             def source = operation.nonBlankHeader('source')
+            operation.debug("Source found: ${source}")
 
             if (source.startsWith('twitter:')) {
                 def twitterTag = source.replaceFirst('twitter:', '')
@@ -60,7 +62,6 @@ class MachineLearningIngestTrainingData implements FiberDefinition {
                 }
             } else {
                 operation.fail(100, "Unknown ingestion source: ${source}")
-                operation.reply(null)
             }
         }
     }
