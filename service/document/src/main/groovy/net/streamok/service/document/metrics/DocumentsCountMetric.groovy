@@ -7,6 +7,8 @@ import io.vertx.ext.mongo.MongoClient
 import net.streamok.fiber.node.api.Fiber
 import net.streamok.fiber.node.api.PeriodicFiberDefinition
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import static net.streamok.lib.conf.Conf.configuration
 
 class DocumentsCountMetric extends PeriodicFiberDefinition {
@@ -23,15 +25,18 @@ class DocumentsCountMetric extends PeriodicFiberDefinition {
             def mongo = fiberContext.dependency(MongoClient)
             mongo.getCollections {
                 def total = 0
-                def sem = it.result().size()
-                it.result().each {
-                    mongo.count(it, new JsonObject()) {
-                        total += it.result()
-                        sem--
-                        if(sem == 0) {
-                            fiberContext.vertx().eventBus().send('metrics.put', null, new DeliveryOptions().addHeader('key', 'service.document.count').addHeader('value', total.toString()))
+                def sem = new AtomicInteger(it.result().size())
+                if(sem.intValue() > 0) {
+                    it.result().each {
+                        mongo.count(it, new JsonObject()) {
+                            total += it.result()
+                            if (sem.decrementAndGet() == 0) {
+                                fiberContext.vertx().eventBus().send('metrics.put', null, new DeliveryOptions().addHeader('key', 'service.document.count').addHeader('value', total.toString()))
+                            }
                         }
                     }
+                } else {
+                    fiberContext.vertx().eventBus().send('metrics.put', null, new DeliveryOptions().addHeader('key', 'service.document.count').addHeader('value', '0'))
                 }
             }
         }
