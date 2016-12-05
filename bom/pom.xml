@@ -67,6 +67,11 @@
             </dependency>
             <dependency>
                 <groupId>net.streamok</groupId>
+                <artifactId>streamok-lib-vertx-test</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
                 <artifactId>streamok-service-configuration</artifactId>
                 <version>${streamok.version}</version>
             </dependency>

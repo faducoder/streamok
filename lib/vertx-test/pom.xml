@@ -12,21 +12,26 @@
 
     <parent>
         <groupId>net.streamok</groupId>
-        <artifactId>streamok-bom</artifactId>
+        <artifactId>streamok-lib</artifactId>
         <version>0.0.3-SNAPSHOT</version>
-        <relativePath>../bom</relativePath>
     </parent>
-    <packaging>pom</packaging>
 
-    <artifactId>streamok-lib</artifactId>
+    <artifactId>streamok-lib-vertx-test</artifactId>
     <name>${project.artifactId}</name>
 
-    <modules>
-        <module>common</module>
-        <module>vertx</module>
-        <module>vertx-test</module>
-        <module>conf</module>
-        <module>mongo</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-unit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
