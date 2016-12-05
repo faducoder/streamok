@@ -15,4 +15,4 @@ openshift/oc login https://localhost:8443 -u admin -p admin
 openshift/oc new-project streamok
 
 openshift/oc new-app mongo
-openshift/oc new-app streamok/node:0.0.2
+openshift/oc new-app streamok/node:0.0.3
