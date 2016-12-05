@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>net.streamok</groupId>
-            <artifactId>streamok-lib-common</artifactId>
+            <artifactId>streamok-lib-vertx</artifactId>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
