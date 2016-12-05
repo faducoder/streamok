@@ -8,7 +8,7 @@ interface FiberNode {
 
     String id()
 
-    FiberNode addFiber(FiberDefinition fiberDefinition)
+    FiberNode addFiber(OperationDefinition fiberDefinition)
 
     FiberNode addEndpoint(Endpoint endpoint)
 

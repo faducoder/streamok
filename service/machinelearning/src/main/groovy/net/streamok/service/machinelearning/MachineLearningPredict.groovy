@@ -1,7 +1,7 @@
 package net.streamok.service.machinelearning
 
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.sql.RowFactory
 import org.apache.spark.sql.SparkSession
@@ -12,7 +12,7 @@ import org.apache.spark.sql.types.StructType
 
 import static io.vertx.core.json.Json.encode
 
-class MachineLearningPredict implements FiberDefinition {
+class MachineLearningPredict implements OperationDefinition {
 
     @Override
     String address() {
@@ -20,7 +20,7 @@ class MachineLearningPredict implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiber ->
             def spark = fiber.dependency(SparkSession)
             def models = fiber.dependency(ModelCache)

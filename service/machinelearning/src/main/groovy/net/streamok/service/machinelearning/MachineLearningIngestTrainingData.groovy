@@ -1,8 +1,8 @@
 package net.streamok.service.machinelearning
 
 import io.vertx.core.eventbus.DeliveryOptions
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 import twitter4j.Query
 import twitter4j.TwitterFactory
 import twitter4j.conf.ConfigurationBuilder
@@ -11,7 +11,7 @@ import static io.vertx.core.json.Json.encode
 import static net.streamok.lib.vertx.Handlers.completeIteration
 import static net.streamok.service.machinelearning.FeatureVector.textFeatureVector
 
-class MachineLearningIngestTrainingData implements FiberDefinition {
+class MachineLearningIngestTrainingData implements OperationDefinition {
 
     @Override
     String address() {
@@ -19,7 +19,7 @@ class MachineLearningIngestTrainingData implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { operation ->
             operation.debug("Executing operation ${address()}...")
             def source = operation.nonBlankHeader('source')

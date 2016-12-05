@@ -7,7 +7,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(VertxUnitRunner)
-class DefaultFiberNodeTest {
+class DefaultOperationNodeTest {
 
     @Test
     void shouldInvokeGroovyClosureFiber(TestContext context) {

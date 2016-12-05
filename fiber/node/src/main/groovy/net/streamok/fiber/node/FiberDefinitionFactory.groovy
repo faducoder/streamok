@@ -1,17 +1,17 @@
 package net.streamok.fiber.node
 
 import io.vertx.core.json.Json
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationDefinition
 
 class FiberDefinitionFactory {
 
-    FiberDefinition build(String definition) {
+    OperationDefinition build(String definition) {
         build(Json.decodeValue(definition, Map))
     }
 
-    FiberDefinition build(Map<String, Object> definition) {
+    OperationDefinition build(Map<String, Object> definition) {
         if(definition.type == 'groovy') {
-            return GroovyClosureFiberDefinition.groovyClosureFiberDefinition(definition.address as String, definition.closure as String)
+            return GroovyClosureOperationDefinition.groovyClosureFiberDefinition(definition.address as String, definition.closure as String)
         }
         null
     }

@@ -2,8 +2,8 @@ package net.streamok.service.machinelearning
 
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.json.Json
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 import org.apache.commons.lang3.Validate
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.PipelineStage
@@ -16,7 +16,7 @@ import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 
-class MachineLearningTrain implements FiberDefinition {
+class MachineLearningTrain implements OperationDefinition {
 
     @Override
     String address() {
@@ -24,7 +24,7 @@ class MachineLearningTrain implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiber ->
             def spark = fiber.dependency(SparkSession)
             def models = fiber.dependency(ModelCache)

@@ -3,15 +3,15 @@ package net.streamok.service.document.operations
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 import net.streamok.service.document.MongodbMapper
 import net.streamok.service.document.QueryBuilder
 
 import static com.google.common.base.MoreObjects.firstNonNull
 import static org.slf4j.LoggerFactory.getLogger
 
-class DocumentCount implements FiberDefinition {
+class DocumentCount implements OperationDefinition {
 
     private static final LOG = getLogger(DocumentCount)
 
@@ -21,7 +21,7 @@ class DocumentCount implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiberContext ->
             def collection = fiberContext.nonBlankHeader('collection')
             def queryBuilder = firstNonNull(fiberContext.body(QueryBuilder), new QueryBuilder())

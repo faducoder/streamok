@@ -2,14 +2,14 @@ package net.streamok.service.document.operations
 
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 
 import static org.apache.commons.lang3.Validate.notBlank
 import static org.apache.commons.lang3.Validate.notNull
 import static org.slf4j.LoggerFactory.getLogger
 
-class DocumentRemove implements FiberDefinition {
+class DocumentRemove implements OperationDefinition {
 
     private static final LOG = getLogger(DocumentRemove)
 
@@ -19,7 +19,7 @@ class DocumentRemove implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiberContext ->
             def collection = fiberContext.header('collection').toString()
             notNull(collection, 'Document collection expected not to be null.')

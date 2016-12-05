@@ -2,11 +2,10 @@ package net.streamok.service.configuration
 
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberContext
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 
-class ConfigurationRead implements FiberDefinition {
+class ConfigurationRead implements OperationDefinition {
 
     public static final String configurationRead = 'configuration.read'
 
@@ -16,7 +15,7 @@ class ConfigurationRead implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiberContext ->
             def key = fiberContext.header('key').toString()
             def mongo = fiberContext.dependency(MongoClient)

@@ -9,13 +9,13 @@ import static io.vertx.core.json.Json.decodeValue
 import static org.apache.commons.lang3.Validate.notBlank
 import static org.apache.commons.lang3.Validate.notNull
 
-class FiberContext {
+class OperationContext {
 
     private final Message message
 
     private final FiberNode fiberNode
 
-    FiberContext(Message message, FiberNode fiberNode) {
+    OperationContext(Message message, FiberNode fiberNode) {
         this.message = message
         this.fiberNode = fiberNode
     }

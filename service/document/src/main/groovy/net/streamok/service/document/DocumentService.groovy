@@ -16,7 +16,7 @@ class DocumentService implements Service, FiberNodeAware {
     Vertx vertx
 
     @Override
-    List<FiberDefinition> fiberDefinitions() {
+    List<OperationDefinition> fiberDefinitions() {
         [new DocumentSave(), new DocumentFindOne(), new DocumentFindMany(), new DocumentFind(), new DocumentCount(), new DocumentRemove(), new DocumentsCountMetric(vertx)]
     }
 

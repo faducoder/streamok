@@ -47,10 +47,10 @@ class DefaultFiberNode implements FiberNode {
         id
     }
 
-    DefaultFiberNode addFiber(FiberDefinition fiberDefinition) {
+    DefaultFiberNode addFiber(OperationDefinition fiberDefinition) {
         vertx.eventBus().consumer(fiberDefinition.address()) {
             try {
-                fiberDefinition.handler().handle(new FiberContext(it, this))
+                fiberDefinition.handler().handle(new OperationContext(it, this))
             } catch (Exception e) {
                 it.fail(100, e.message)
             }

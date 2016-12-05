@@ -4,14 +4,14 @@ import io.vertx.core.Vertx
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.PeriodicFiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.PeriodicOperationDefinition
 
 import java.util.concurrent.atomic.AtomicInteger
 
 import static net.streamok.lib.conf.Conf.configuration
 
-class DocumentsCountMetric extends PeriodicFiberDefinition {
+class DocumentsCountMetric extends PeriodicOperationDefinition {
 
     DocumentsCountMetric(Vertx vertx) {
         super(vertx,
@@ -20,7 +20,7 @@ class DocumentsCountMetric extends PeriodicFiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiberContext ->
             def mongo = fiberContext.dependency(MongoClient)
             mongo.getCollections {

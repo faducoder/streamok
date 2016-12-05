@@ -4,16 +4,15 @@ import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.FindOptions
 import io.vertx.ext.mongo.MongoClient
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberContext
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationContext
+import net.streamok.fiber.node.api.OperationDefinition
 import net.streamok.service.document.MongodbMapper
 import net.streamok.service.document.QueryBuilder
-import org.apache.commons.lang3.Validate
 
 import static org.slf4j.LoggerFactory.getLogger
 
-class DocumentFind implements FiberDefinition {
+class DocumentFind implements OperationDefinition {
 
     private static final LOG = getLogger(DocumentFind)
 
@@ -23,18 +22,18 @@ class DocumentFind implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
-        new Fiber() {
+    OperationHandler handler() {
+        new OperationHandler() {
             @Override
-            void handle(FiberContext fiberContext) {
-                def collection = fiberContext.nonBlankHeader('collection')
-                def queryBuilder = fiberContext.body(QueryBuilder)
-                def mongo = fiberContext.dependency(MongoClient)
+            void handle(OperationContext operationContext) {
+                def collection = operationContext.nonBlankHeader('collection')
+                def queryBuilder = operationContext.body(QueryBuilder)
+                def mongo = operationContext.dependency(MongoClient)
 
                 mongo.findWithOptions(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query)), new FindOptions().setLimit(queryBuilder.size).
                 setSkip(queryBuilder.skip()).setSort(new JsonObject(new MongodbMapper().sortConditions(queryBuilder)))) {
                     def res = it.result().collect{ new MongodbMapper().mongoToCanonical(it.map) }
-                    fiberContext.reply(Json.encode(res))
+                    operationContext.reply(Json.encode(res))
                 }
             }
         }

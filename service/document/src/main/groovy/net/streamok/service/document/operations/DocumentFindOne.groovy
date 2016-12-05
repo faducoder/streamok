@@ -3,13 +3,13 @@ package net.streamok.service.document.operations
 import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 import net.streamok.service.document.MongodbMapper
 
 import static org.slf4j.LoggerFactory.getLogger
 
-class DocumentFindOne implements FiberDefinition {
+class DocumentFindOne implements OperationDefinition {
 
     private static final LOG = getLogger(DocumentFindOne)
 
@@ -19,7 +19,7 @@ class DocumentFindOne implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiberContext ->
             def collection = fiberContext.nonBlankHeader('collection')
             def id = fiberContext.nonBlankHeader('id')

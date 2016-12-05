@@ -2,11 +2,10 @@ package net.streamok.service.configuration
 
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.MongoClient
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberContext
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 
-class ConfigurationWrite implements FiberDefinition {
+class ConfigurationWrite implements OperationDefinition {
 
     @Override
     String address() {
@@ -14,7 +13,7 @@ class ConfigurationWrite implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiberContext ->
             def key = fiberContext.header('key').toString()
             def value = fiberContext.header('value').toString()

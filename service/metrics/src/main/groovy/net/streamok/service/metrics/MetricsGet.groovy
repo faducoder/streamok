@@ -1,10 +1,9 @@
 package net.streamok.service.metrics
 
-import net.streamok.fiber.node.api.Fiber
-import net.streamok.fiber.node.api.FiberContext
-import net.streamok.fiber.node.api.FiberDefinition
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.api.OperationDefinition
 
-class MetricsGet implements FiberDefinition {
+class MetricsGet implements OperationDefinition {
 
     @Override
     String address() {
@@ -12,7 +11,7 @@ class MetricsGet implements FiberDefinition {
     }
 
     @Override
-    Fiber handler() {
+    OperationHandler handler() {
         { fiberContext ->
             def key = fiberContext.header('key').toString()
             def value = fiberContext.dependency(Map)[key]
