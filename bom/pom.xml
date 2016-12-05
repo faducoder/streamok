@@ -23,7 +23,9 @@
         <guava.version>19.0</guava.version>
         <junit.version>4.12</junit.version>
         <slf4j.version>1.7.21</slf4j.version>
+        <spark.version>2.0.1</spark.version>
         <streamok.version>0.0.3-SNAPSHOT</streamok.version>
+        <twitterj.version>4.0.5</twitterj.version>
         <vertx.version>3.3.3</vertx.version>
 
         <!-- Classpath conflicts resolving -->
@@ -126,6 +128,17 @@
                 <version>${commons-lang.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-mllib_2.11</artifactId>
+                <version>${spark.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
@@ -139,6 +152,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.twitter4j</groupId>
+                <artifactId>twitter4j-core</artifactId>
+                <version>${twitterj.version}</version>
             </dependency>
 
             <!-- Classpath conflicts resolving -->
