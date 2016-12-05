@@ -60,6 +60,7 @@ class MachineLearningIngestTrainingData implements FiberDefinition {
                 }
             } else {
                 operation.fail(100, "Unknown ingestion source: ${source}")
+                operation.reply(null)
             }
         }
     }
