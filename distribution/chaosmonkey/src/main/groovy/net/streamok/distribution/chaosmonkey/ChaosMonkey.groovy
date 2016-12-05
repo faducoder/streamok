@@ -81,7 +81,7 @@ class ChaosMonkey {
         def latch = new CountDownLatch(1)
         vertx.createHttpClient().getNow(8080, 'localhost', "/metrics/get?key=service.document.count") {
             it.bodyHandler {
-                assertThat(it.toString().toLong()).isGreaterThan(0L)
+                assertThat(it.toString().toLong()).isGreaterThanOrEqualTo(0L)
                 latch.countDown()
             }
         }
