@@ -74,7 +74,7 @@ class ChaosMonkey {
                 latch.countDown()
             }
         }
-        Validate.isTrue(latch.await(5, SECONDS))
+        Validate.isTrue(latch.await(5, SECONDS), 'Cannot read document service heartbeat.')
     }
 
     private void checkDocumentServiceCountMetric() {
@@ -85,7 +85,7 @@ class ChaosMonkey {
                 latch.countDown()
             }
         }
-        Validate.isTrue(latch.await(30, SECONDS))
+        Validate.isTrue(latch.await(30, SECONDS), 'Cannot read document service documents count metric.')
     }
 
     private void accessDocumentServiceCountOperation() {
@@ -97,7 +97,7 @@ class ChaosMonkey {
                 latch.countDown()
             }
         }
-        Validate.isTrue(latch.await(15, SECONDS))
+        Validate.isTrue(latch.await(15, SECONDS), "Can't invoke document count operation.")
     }
 
     private void accessDocumentServiceSaveOperation() {
