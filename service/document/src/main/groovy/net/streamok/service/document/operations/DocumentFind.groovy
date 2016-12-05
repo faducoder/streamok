@@ -4,8 +4,9 @@ import io.vertx.core.json.Json
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.FindOptions
 import io.vertx.ext.mongo.MongoClient
-import net.streamok.fiber.node.api.OperationHandler
 import net.streamok.fiber.node.api.OperationContext
+import net.streamok.fiber.node.api.OperationHandler
+import net.streamok.fiber.node.vertx.VertxOperationContext
 import net.streamok.fiber.node.api.OperationDefinition
 import net.streamok.service.document.MongodbMapper
 import net.streamok.service.document.QueryBuilder
@@ -23,18 +24,15 @@ class DocumentFind implements OperationDefinition {
 
     @Override
     OperationHandler handler() {
-        new OperationHandler() {
-            @Override
-            void handle(OperationContext operationContext) {
-                def collection = operationContext.nonBlankHeader('collection')
-                def queryBuilder = operationContext.body(QueryBuilder)
-                def mongo = operationContext.dependency(MongoClient)
+        { operation ->
+            def collection = operation.nonBlankHeader('collection')
+            def queryBuilder = operation.body(QueryBuilder)
+            def mongo = operation.dependency(MongoClient)
 
-                mongo.findWithOptions(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query)), new FindOptions().setLimit(queryBuilder.size).
-                setSkip(queryBuilder.skip()).setSort(new JsonObject(new MongodbMapper().sortConditions(queryBuilder)))) {
-                    def res = it.result().collect{ new MongodbMapper().mongoToCanonical(it.map) }
-                    operationContext.reply(Json.encode(res))
-                }
+            mongo.findWithOptions(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query)), new FindOptions().setLimit(queryBuilder.size).
+                    setSkip(queryBuilder.skip()).setSort(new JsonObject(new MongodbMapper().sortConditions(queryBuilder)))) {
+                def res = it.result().collect { new MongodbMapper().mongoToCanonical(it.map) }
+                operation.reply(Json.encode(res))
             }
         }
     }

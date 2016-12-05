@@ -1,73 +1,29 @@
 package net.streamok.fiber.node.api
 
 import io.vertx.core.Vertx
-import io.vertx.core.eventbus.Message
-import net.streamok.lib.conf.Conf
-import org.slf4j.LoggerFactory
 
-import static io.vertx.core.json.Json.decodeValue
-import static org.apache.commons.lang3.Validate.notBlank
-import static org.apache.commons.lang3.Validate.notNull
+interface OperationContext {
 
-class OperationContext {
+    Map body()
 
-    private final Message message
+    def <T> T body(Class<T> type)
 
-    private final FiberNode fiberNode
+    Object header(String name)
 
-    OperationContext(Message message, FiberNode fiberNode) {
-        this.message = message
-        this.fiberNode = fiberNode
-    }
+    String nonBlankHeader(String name)
 
-    Map body() {
-        body(Map)
-    }
+    void reply(Object payload)
 
-    def <T> T body(Class<T> type) {
-        def json = message.body() as String
-        if(json == null) {
-            return null
-        }
-        decodeValue(json, type)
-    }
+    def fail(int code, String message)
 
-    Object header(String name) {
-        def matchingHeaders = message.headers().getAll(name)
-        matchingHeaders.isEmpty() ? null : matchingHeaders.first()
-    }
+    Object dependency(String key)
 
-    String nonBlankHeader(String name) {
-        def value = notNull(header(name), "${name} can't  be null.").toString()
-        notBlank(value, "${name} can't be blank.")
-    }
+    def <T> T dependency(Class<T> type)
 
-    void reply(Object payload) {
-        message.reply(payload)
-    }
+    def String configurationString(String key, String defaultValue)
 
-    def fail(int code, String message) {
-        this.message.fail(code, message)
-    }
+    void debug(String message)
 
-    Object dependency(String key) {
-        fiberNode.dependency(key)
-    }
-
-    def <T> T dependency(Class<T> type) {
-        fiberNode.dependency(type)
-    }
-
-    def String configurationString(String key, String defaultValue) {
-        Conf.configuration().instance().getString(key, defaultValue)
-    }
-
-    void debug(String message) {
-        LoggerFactory.getLogger("streamok.service.operation").debug(message)
-    }
-
-    Vertx vertx() {
-        fiberNode.vertx()
-    }
+    Vertx vertx()
 
 }

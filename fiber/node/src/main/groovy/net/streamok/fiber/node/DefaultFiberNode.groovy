@@ -19,6 +19,7 @@ package net.streamok.fiber.node
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.DeliveryOptions
 import net.streamok.fiber.node.api.*
+import net.streamok.fiber.node.vertx.VertxOperationContext
 
 import static java.lang.System.currentTimeMillis
 import static java.util.UUID.randomUUID
@@ -50,7 +51,7 @@ class DefaultFiberNode implements FiberNode {
     DefaultFiberNode addFiber(OperationDefinition fiberDefinition) {
         vertx.eventBus().consumer(fiberDefinition.address()) {
             try {
-                fiberDefinition.handler().handle(new OperationContext(it, this))
+                fiberDefinition.handler().handle(new VertxOperationContext(it, this))
             } catch (Exception e) {
                 it.fail(100, e.message)
             }
