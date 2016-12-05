@@ -2,6 +2,7 @@ package net.streamok.fiber.node.api
 
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
+import net.streamok.lib.conf.Conf
 
 import static io.vertx.core.json.Json.decodeValue
 import static org.apache.commons.lang3.Validate.notBlank
@@ -54,6 +55,10 @@ class FiberContext {
 
     def <T> T dependency(Class<T> type) {
         fiberNode.dependency(type)
+    }
+
+    def String configurationString(String key, String defaultValue) {
+        Conf.configuration().instance().getString(key, defaultValue)
     }
 
     Vertx vertx() {

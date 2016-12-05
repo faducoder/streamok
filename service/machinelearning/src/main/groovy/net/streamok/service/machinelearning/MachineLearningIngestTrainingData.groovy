@@ -23,16 +23,23 @@ class MachineLearningIngestTrainingData implements FiberDefinition {
         { operation ->
             def source = operation.nonBlankHeader('source')
 
-            if(source.startsWith('twitter:')) {
+            if (source.startsWith('twitter:')) {
                 def twitterTag = source.replaceFirst('twitter:', '')
                 def collection = operation.nonBlankHeader('collection')
 
-                def twitterConfiguration = new ConfigurationBuilder()
-                twitterConfiguration.setOAuthConsumerKey("qfSY4xyuyBeZ9pppAY7R8NASl")
-                        .setOAuthConsumerSecret("ZO2NQJQOBk98JfxF6l8AUzzw8gSs4dRR1lEnvsgMG0NFA224mV")
-                        .setOAuthAccessToken("804661469086359552-IWeaoXXpsCfMlkL9TFVkQ46cSU2t5jI")
-                        .setOAuthAccessTokenSecret("BSwqXggpm01PldZtAfPGwAQtft6Qvi2jPWvkGuUEIrLaT");
-                def twitter = new TwitterFactory(twitterConfiguration.build()).instance
+                def consumerKey = operation.configurationString('MACHINELEARNING_INGEST_TWITTER_CONSUMER_KEY',
+                        'qfSY4xyuyBeZ9pppAY7R8NASl')
+                def consumerSecret = operation.configurationString('MACHINELEARNING_INGEST_TWITTER_CONSUMER_SECRET',
+                        'ZO2NQJQOBk98JfxF6l8AUzzw8gSs4dRR1lEnvsgMG0NFA224mV')
+                def accessToken = operation.configurationString('MACHINELEARNING_INGEST_TWITTER_CONSUMER_SECRET',
+                        '804661469086359552-IWeaoXXpsCfMlkL9TFVkQ46cSU2t5jI')
+                def accessTokenSecret = operation.configurationString('MACHINELEARNING_INGEST_TWITTER_CONSUMER_SECRET',
+                        'BSwqXggpm01PldZtAfPGwAQtft6Qvi2jPWvkGuUEIrLaT')
+
+                def twitter = new TwitterFactory(new ConfigurationBuilder().
+                        setOAuthConsumerKey(consumerKey).setOAuthConsumerSecret(consumerSecret).
+                        setOAuthAccessToken(accessToken).setOAuthAccessTokenSecret(accessTokenSecret).
+                        build()).instance
 
                 def query = new Query("lang:en ${twitterTag}")
                 query.setCount(1000)

@@ -18,6 +18,10 @@
             <artifactId>streamok-lib-vertx</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.streamok</groupId>
+            <artifactId>streamok-lib-conf</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
         </dependency>
