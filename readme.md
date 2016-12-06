@@ -9,6 +9,8 @@ The idea behind Streamok is to deliver a scalable backend platform providing cor
 
 Streamok is based on the top of the leading open source projects including [Eclipse Vert.x](http://vertx.io/), [Apache Spark](http://spark.apache.org/) and [CentOS](https://www.centos.org/).
 
+[![Streamok](streamok_arch.png)](https://github.com/streamok/streamok)
+
 ## Documentation
 
 Streamok documentation is available [here](https://streamok.gitbooks.io/streamok/content).
