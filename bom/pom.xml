@@ -17,6 +17,7 @@
         <!-- Dependencies -->
         <assertj.version>3.6.1</assertj.version>
         <commons-configuration.version>2.1</commons-configuration.version>
+        <commons-io.version>1.3.2</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
         <embedmongo.version>1.50.2</embedmongo.version>
         <groovy.version>2.4.7</groovy.version>
@@ -132,6 +133,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-configuration2</artifactId>
                 <version>${commons-configuration.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

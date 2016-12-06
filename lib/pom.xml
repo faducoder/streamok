@@ -27,6 +27,7 @@
         <module>vertx-test</module>
         <module>conf</module>
         <module>mongo</module>
+        <module>process</module>
     </modules>
 
 </project>
