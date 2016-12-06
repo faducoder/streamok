@@ -20,4 +20,16 @@ class ConfTest {
         assertThat(property).isNull()
     }
 
+    @Test
+    void inMemoeryShouldOverrideSystemSetting() {
+        // Given
+        System.setProperty('foo', 'system')
+        configuration().memory().setProperty('foo', 'memory')
+
+        // When
+        def valueRead = configuration().instance().getString('foo')
+
+        assertThat(valueRead).isEqualTo('memory')
+    }
+
 }
