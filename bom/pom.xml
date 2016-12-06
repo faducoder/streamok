@@ -22,6 +22,7 @@
         <groovy.version>2.4.7</groovy.version>
         <guava.version>19.0</guava.version>
         <junit.version>4.12</junit.version>
+        <logback.version>1.1.7</logback.version>
         <slf4j.version>1.7.21</slf4j.version>
         <spark.version>2.0.1</spark.version>
         <streamok.version>0.0.4-SNAPSHOT</streamok.version>
@@ -92,6 +93,11 @@
             </dependency>
 
             <!-- External dependencies -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
             <dependency>
                 <groupId>de.flapdoodle.embed</groupId>
                 <artifactId>de.flapdoodle.embed.mongo</artifactId>
