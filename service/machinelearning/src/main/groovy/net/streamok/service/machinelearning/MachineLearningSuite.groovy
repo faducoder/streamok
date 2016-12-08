@@ -6,13 +6,14 @@ import net.streamok.fiber.node.api.OperationDefinition
 import net.streamok.fiber.node.api.Service
 import net.streamok.service.machinelearning.decision.Decide
 import net.streamok.service.machinelearning.decision.TrainDecisionModel
+import net.streamok.service.machinelearning.textlabel.TrainTextLabelModel
 
 class MachineLearningSuite implements Service {
 
     @Override
     List<OperationDefinition> fiberDefinitions() {
-        [new MachineLearningIngestTrainingData(), new MachineLearningTrain(), new MachineLearningPredict(),
-        new TrainDecisionModel(), new Decide()]
+        [new MachineLearningIngestTrainingData(), new TrainTextLabelModel(), new MachineLearningPredict(),
+         new TrainDecisionModel(), new Decide()]
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.streamok.service.machinelearning
 
 import net.streamok.fiber.node.api.OperationHandler
 import net.streamok.fiber.node.api.OperationDefinition
+import net.streamok.service.machinelearning.textlabel.TextLabelFeatureVector
 import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.sql.RowFactory
 import org.apache.spark.sql.SparkSession
@@ -26,7 +27,7 @@ class MachineLearningPredict implements OperationDefinition {
             def models = fiber.dependency(ModelCache)
 
             def collection = fiber.header('collection').toString()
-            def featureVector = fiber.body(FeatureVector)
+            def featureVector = fiber.body(TextLabelFeatureVector)
 
             def labelConfidence = [:]
             def labels = models.labels(collection)

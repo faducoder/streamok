@@ -9,7 +9,7 @@ import twitter4j.conf.ConfigurationBuilder
 
 import static io.vertx.core.json.Json.encode
 import static net.streamok.lib.vertx.Handlers.completeIteration
-import static net.streamok.service.machinelearning.FeatureVector.textFeatureVector
+import static net.streamok.service.machinelearning.textlabel.TextLabelFeatureVector.textFeatureVector
 
 class MachineLearningIngestTrainingData implements OperationDefinition {
 

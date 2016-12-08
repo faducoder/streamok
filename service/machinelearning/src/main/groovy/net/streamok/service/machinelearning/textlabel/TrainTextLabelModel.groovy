@@ -1,9 +1,11 @@
-package net.streamok.service.machinelearning
+package net.streamok.service.machinelearning.textlabel
 
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.json.Json
 import net.streamok.fiber.node.api.OperationHandler
 import net.streamok.fiber.node.api.OperationDefinition
+import net.streamok.service.machinelearning.InMemoryVectorsSource
+import net.streamok.service.machinelearning.ModelCache
 import org.apache.commons.lang3.Validate
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.PipelineStage
@@ -16,11 +18,13 @@ import org.apache.spark.sql.types.Metadata
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StructType
 
-class MachineLearningTrain implements OperationDefinition {
+class TrainTextLabelModel implements OperationDefinition {
+
+    public static final String trainTextLabelModel = 'machineLearning.trainTextLabelModel'
 
     @Override
     String address() {
-        'machineLearning.train'
+        trainTextLabelModel
     }
 
     @Override
@@ -31,7 +35,7 @@ class MachineLearningTrain implements OperationDefinition {
             def input = operation.nonBlankHeader('input')
 
             operation.vertx().eventBus().send('document.find', Json.encode([size: 2000]), new DeliveryOptions().addHeader('collection', 'training_texts_' + input)) {
-                def data = Json.decodeValue(it.result().body().toString(), FeatureVector[]).toList()
+                def data = Json.decodeValue(it.result().body().toString(), TextLabelFeatureVector[]).toList()
                 Validate.notEmpty(data, "Training data can't be empty.")
 
                 def dataSource = new InMemoryVectorsSource(spark, data)

@@ -1,5 +1,6 @@
 package net.streamok.service.machinelearning
 
+import net.streamok.service.machinelearning.textlabel.TextLabelFeatureVector
 import org.apache.spark.api.java.JavaRDD
 import org.apache.spark.api.java.JavaSparkContext
 import org.apache.spark.sql.Row
@@ -10,9 +11,9 @@ class InMemoryVectorsSource implements NativeVectorsSource {
 
     SparkSession sparkSession
 
-    List<FeatureVector> vectors
+    List<TextLabelFeatureVector> vectors
 
-    InMemoryVectorsSource(SparkSession sparkSession, List<FeatureVector> vectors) {
+    InMemoryVectorsSource(SparkSession sparkSession, List<TextLabelFeatureVector> vectors) {
         this.sparkSession = sparkSession
         this.vectors = vectors
     }

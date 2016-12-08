@@ -17,13 +17,13 @@
 package net.streamok.service.machinelearning
 
 import io.vertx.core.eventbus.DeliveryOptions
-import io.vertx.core.json.Json
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.lib.mongo.EmbeddedMongo
 import net.streamok.service.document.DocumentService
 import net.streamok.service.machinelearning.decision.DecisionFeatureVector
+import net.streamok.service.machinelearning.textlabel.TextLabelFeatureVector
 import org.apache.commons.lang.Validate
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +36,8 @@ import static java.util.UUID.randomUUID
 import static java.util.concurrent.TimeUnit.SECONDS
 import static net.streamok.lib.vertx.EventBuses.headers
 import static net.streamok.service.document.operations.DocumentSave.documentSave
-import static net.streamok.service.machinelearning.FeatureVector.textFeatureVector
+import static TextLabelFeatureVector.textFeatureVector
+import static net.streamok.service.machinelearning.textlabel.TrainTextLabelModel.trainTextLabelModel
 import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(VertxUnitRunner)
@@ -69,8 +70,8 @@ class MachineLearningSuiteTest {
         }
         semaphore.await(15, SECONDS)
 
-        bus.send('machineLearning.train', null, headers(input: input)) {
-            bus.send('machineLearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), headers(collection: input)) {
+        bus.send(trainTextLabelModel, null, headers(input: input)) {
+            bus.send('machineLearning.predict', encode(new TextLabelFeatureVector(text: 'I love Logistic regression')), headers(collection: input)) {
                 def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['default'] as double).isGreaterThan(0.8d)
                 async.complete()
@@ -83,27 +84,27 @@ class MachineLearningSuiteTest {
         // Given
         def async = context.async()
         def trainingData = [
-                new FeatureVector(text: 'Hi I heard about Spark', targetFeature: 0, targetLabel: 'foo'),
-                new FeatureVector(text: 'I wish Java could use case classes', targetFeature: 0, targetLabel: 'foo'),
-                new FeatureVector(text: 'Hi I heard about Spark', targetFeature: 0, targetLabel: 'lorem'),
-                new FeatureVector(text: 'I wish Java could use case classes', targetFeature: 0, targetLabel: 'lorem'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem')
+                new TextLabelFeatureVector(text: 'Hi I heard about Spark', targetFeature: 0, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'I wish Java could use case classes', targetFeature: 0, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'Hi I heard about Spark', targetFeature: 0, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'I wish Java could use case classes', targetFeature: 0, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem')
         ]
         trainingData.each {
             bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col2'))
         }
         Thread.sleep(5000)
-        bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', 'col2')) {
-            bus.send('machineLearning.predict', encode(new FeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('collection', 'col2')) {
+        bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('input', 'col2')) {
+            bus.send('machineLearning.predict', encode(new TextLabelFeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('collection', 'col2')) {
                 def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isGreaterThan(0.9d)
                 assertThat(result['lorem'] as double).isGreaterThan(0.9d)
@@ -117,27 +118,27 @@ class MachineLearningSuiteTest {
         // Given
         def async = context.async()
         def trainingData = [
-                new FeatureVector(text: 'Hi I heard about Spark', targetFeature: 0, targetLabel: 'foo'),
-                new FeatureVector(text: 'I wish Java could use case classes', targetFeature: 0, targetLabel: 'foo'),
-                new FeatureVector(text: 'Hi I heard about Spark', targetFeature: 0, targetLabel: 'lorem'),
-                new FeatureVector(text: 'I wish Java could use case classes', targetFeature: 0, targetLabel: 'lorem'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
-                new FeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem')
+                new TextLabelFeatureVector(text: 'Hi I heard about Spark', targetFeature: 0, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'I wish Java could use case classes', targetFeature: 0, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'Hi I heard about Spark', targetFeature: 0, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'I wish Java could use case classes', targetFeature: 0, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'foo bar baz', targetFeature: 1, targetLabel: 'foo'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem'),
+                new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem')
         ]
         trainingData.each {
             bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col3'))
         }
         Thread.sleep(5000)
-        bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', 'col3')) {
-            bus.send('machineLearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col3')) {
+        bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('input', 'col3')) {
+            bus.send('machineLearning.predict', encode(new TextLabelFeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col3')) {
                 def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isLessThan(0.7d)
                 assertThat(result['lorem'] as double).isLessThan(0.7d)
@@ -150,7 +151,7 @@ class MachineLearningSuiteTest {
     void shouldLoadTwitter(TestContext context) {
         def async = context.async()
         bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', input)) {
-            bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', input)) {
+            bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('input', input)) {
                 bus.send('machineLearning.predict', encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', input)) {
                     assertThat((decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
                     bus.send('machineLearning.predict', encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', input)) {
