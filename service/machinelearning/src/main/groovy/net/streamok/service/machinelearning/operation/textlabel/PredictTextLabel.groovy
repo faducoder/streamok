@@ -1,8 +1,9 @@
-package net.streamok.service.machinelearning
+package net.streamok.service.machinelearning.operation.textlabel
 
 import net.streamok.fiber.node.api.OperationHandler
 import net.streamok.fiber.node.api.OperationDefinition
-import net.streamok.service.machinelearning.textlabel.TextLabelFeatureVector
+import net.streamok.service.machinelearning.common.ModelCache
+import net.streamok.service.machinelearning.operation.textlabel.TextLabelFeatureVector
 import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.sql.RowFactory
 import org.apache.spark.sql.SparkSession
@@ -13,21 +14,23 @@ import org.apache.spark.sql.types.StructType
 
 import static io.vertx.core.json.Json.encode
 
-class MachineLearningPredict implements OperationDefinition {
+class PredictTextLabel implements OperationDefinition {
+
+    public static final String predictTextLabel = 'machineLearning.predictTextLabel'
 
     @Override
     String address() {
-        'machineLearning.predict'
+        predictTextLabel
     }
 
     @Override
     OperationHandler handler() {
-        { fiber ->
-            def spark = fiber.dependency(SparkSession)
-            def models = fiber.dependency(ModelCache)
+        { operation ->
+            def spark = operation.dependency(SparkSession)
+            def models = operation.dependency(ModelCache)
 
-            def collection = fiber.header('collection').toString()
-            def featureVector = fiber.body(TextLabelFeatureVector)
+            def collection = operation.header('collection').toString()
+            def featureVector = operation.body(TextLabelFeatureVector)
 
             def labelConfidence = [:]
             def labels = models.labels(collection)
@@ -50,7 +53,7 @@ class MachineLearningPredict implements OperationDefinition {
                 labelConfidence[label] = (prob as DenseVector).values()[1]
             }
 
-            fiber.reply(encode(labelConfidence))
+            operation.reply(encode(labelConfidence))
         }
     }
 

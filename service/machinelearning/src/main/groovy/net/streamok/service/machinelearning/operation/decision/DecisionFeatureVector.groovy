@@ -1,4 +1,4 @@
-package net.streamok.service.machinelearning.decision
+package net.streamok.service.machinelearning.operation.decision
 
 import org.apache.spark.ml.feature.LabeledPoint
 import org.apache.spark.ml.linalg.Vectors

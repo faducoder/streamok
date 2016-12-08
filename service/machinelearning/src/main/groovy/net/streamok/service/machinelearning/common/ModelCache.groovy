@@ -1,4 +1,4 @@
-package net.streamok.service.machinelearning
+package net.streamok.service.machinelearning.common
 
 import org.apache.spark.ml.PipelineModel
 import org.apache.spark.ml.classification.LogisticRegressionModel

@@ -1,4 +1,4 @@
-package net.streamok.service.machinelearning
+package net.streamok.service.machinelearning.vertx
 
 import net.streamok.fiber.node.api.DependencyProvider
 import org.apache.spark.sql.SparkSession

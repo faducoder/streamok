@@ -1,9 +1,9 @@
-package net.streamok.service.machinelearning
+package net.streamok.service.machinelearning.operation.textlabel
 
 import org.apache.spark.api.java.JavaRDD
 import org.apache.spark.sql.Row
 
-interface NativeVectorsSource {
+interface FeatureVectorSource {
 
     List<String> labels()
 

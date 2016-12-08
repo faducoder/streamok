@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.streamok.service.machinelearning
+package net.streamok.service.machinelearning.operation.textlabel
 
-class FeatureVector {
+class TextLabelFeatureVector {
 
     String id
 
@@ -30,12 +30,12 @@ class FeatureVector {
 
     String text
 
-    static FeatureVector textFeatureVector(String text, String targetLabel, boolean targetFeature) {
-        new FeatureVector(text: text, targetLabel: targetLabel, targetFeature: targetFeature ? 1 : 0)
+    static TextLabelFeatureVector textFeatureVector(String text, String targetLabel, boolean targetFeature) {
+        new TextLabelFeatureVector(text: text, targetLabel: targetLabel, targetFeature: targetFeature ? 1 : 0)
     }
 
-    static FeatureVector textFeatureVector(String text, boolean targetFeature) {
-        new FeatureVector(text: text, targetFeature: targetFeature ? 1 : 0)
+    static TextLabelFeatureVector textFeatureVector(String text, boolean targetFeature) {
+        new TextLabelFeatureVector(text: text, targetFeature: targetFeature ? 1 : 0)
     }
 
 }

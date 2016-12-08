@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.streamok.service.machinelearning.decision
+package net.streamok.service.machinelearning.operation.decision
 
 import io.vertx.core.eventbus.DeliveryOptions
 import net.streamok.fiber.node.api.OperationDefinition
 import net.streamok.fiber.node.api.OperationHandler
-import net.streamok.service.machinelearning.ModelCache
+import net.streamok.service.machinelearning.common.ModelCache
 import org.apache.commons.lang3.Validate
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.PipelineStage

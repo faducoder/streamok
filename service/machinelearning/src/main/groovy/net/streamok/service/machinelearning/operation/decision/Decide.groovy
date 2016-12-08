@@ -1,9 +1,9 @@
-package net.streamok.service.machinelearning.decision
+package net.streamok.service.machinelearning.operation.decision
 
 import net.streamok.fiber.node.api.OperationContext
 import net.streamok.fiber.node.api.OperationDefinition
 import net.streamok.fiber.node.api.OperationHandler
-import net.streamok.service.machinelearning.ModelCache
+import net.streamok.service.machinelearning.common.ModelCache
 import org.apache.spark.ml.feature.LabeledPoint
 import org.apache.spark.sql.SparkSession
 

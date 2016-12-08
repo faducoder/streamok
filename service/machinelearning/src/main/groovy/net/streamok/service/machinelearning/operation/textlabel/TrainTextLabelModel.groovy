@@ -1,11 +1,10 @@
-package net.streamok.service.machinelearning.textlabel
+package net.streamok.service.machinelearning.operation.textlabel
 
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.json.Json
 import net.streamok.fiber.node.api.OperationHandler
 import net.streamok.fiber.node.api.OperationDefinition
-import net.streamok.service.machinelearning.InMemoryVectorsSource
-import net.streamok.service.machinelearning.ModelCache
+import net.streamok.service.machinelearning.common.ModelCache
 import org.apache.commons.lang3.Validate
 import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.PipelineStage

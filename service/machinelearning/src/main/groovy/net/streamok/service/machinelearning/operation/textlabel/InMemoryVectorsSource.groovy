@@ -1,13 +1,14 @@
-package net.streamok.service.machinelearning
+package net.streamok.service.machinelearning.operation.textlabel
 
-import net.streamok.service.machinelearning.textlabel.TextLabelFeatureVector
+import net.streamok.service.machinelearning.operation.textlabel.FeatureVectorSource
+import net.streamok.service.machinelearning.operation.textlabel.TextLabelFeatureVector
 import org.apache.spark.api.java.JavaRDD
 import org.apache.spark.api.java.JavaSparkContext
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.RowFactory
 import org.apache.spark.sql.SparkSession
 
-class InMemoryVectorsSource implements NativeVectorsSource {
+class InMemoryVectorsSource implements FeatureVectorSource {
 
     SparkSession sparkSession
 
