@@ -2,9 +2,9 @@ package net.streamok.fiber.node.api
 
 interface Service {
 
-    List<OperationDefinition> fiberDefinitions()
+    List<OperationDefinition> operations()
 
-    List<DependencyProvider> dependencyProviders()
+    List<DependencyProvider> dependencies()
 
     List<Endpoint> endpoints()
 

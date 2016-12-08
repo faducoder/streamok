@@ -8,12 +8,12 @@ import net.streamok.fiber.node.api.Service
 class MetricsSuite implements Service {
 
     @Override
-    List<OperationDefinition> fiberDefinitions() {
+    List<OperationDefinition> operations() {
         [new MetricsGet(), new MetricsGetAll(), new MetricsPut()]
     }
 
     @Override
-    List<DependencyProvider> dependencyProviders() {
+    List<DependencyProvider> dependencies() {
         [new MetricsStoreProvider()]
     }
 

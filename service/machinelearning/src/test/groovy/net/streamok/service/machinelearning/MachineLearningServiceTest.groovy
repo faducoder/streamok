@@ -23,7 +23,6 @@ import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.lib.mongo.EmbeddedMongo
 import net.streamok.service.document.DocumentService
 import net.streamok.service.machinelearning.operation.decision.DecisionFeatureVector
-import net.streamok.service.machinelearning.operation.textlabel.PredictTextLabel
 import net.streamok.service.machinelearning.operation.textlabel.TextLabelFeatureVector
 import org.apache.commons.lang.Validate
 import org.junit.Test
@@ -43,12 +42,12 @@ import static net.streamok.service.machinelearning.operation.textlabel.TrainText
 import static org.assertj.core.api.Assertions.assertThat
 
 @RunWith(VertxUnitRunner)
-class MachineLearningSuiteTest {
+class MachineLearningServiceTest {
 
     static def mongo = new EmbeddedMongo().start()
 
     static
-    def bus = new DefaultFiberNode().addSuite(new MachineLearningSuite()).addSuite(new DocumentService()).vertx().eventBus()
+    def bus = new DefaultFiberNode().addSuite(new MachineLearningService()).addSuite(new DocumentService()).vertx().eventBus()
 
     def input = randomUUID().toString()
 

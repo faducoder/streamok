@@ -13,12 +13,12 @@ class ConfigurationSuite implements Service, FiberNodeAware {
     private Vertx vertx
 
     @Override
-    List<OperationDefinition> fiberDefinitions() {
+    List<OperationDefinition> operations() {
         [new ConfigurationRead(), new ConfigurationWrite()]
     }
 
     @Override
-    List<DependencyProvider> dependencyProviders() {
+    List<DependencyProvider> dependencies() {
         [new ConfigurationStoreProvider(vertx)]
     }
 

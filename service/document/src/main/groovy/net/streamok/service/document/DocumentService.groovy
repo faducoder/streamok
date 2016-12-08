@@ -16,12 +16,12 @@ class DocumentService implements Service, FiberNodeAware {
     Vertx vertx
 
     @Override
-    List<OperationDefinition> fiberDefinitions() {
+    List<OperationDefinition> operations() {
         [new DocumentSave(), new DocumentFindOne(), new DocumentFindMany(), new DocumentFind(), new DocumentCount(), new DocumentRemove(), new DocumentsCountMetric(vertx)]
     }
 
     @Override
-    List<DependencyProvider> dependencyProviders() {
+    List<DependencyProvider> dependencies() {
         [new MongoClientProvider(vertx)]
     }
 

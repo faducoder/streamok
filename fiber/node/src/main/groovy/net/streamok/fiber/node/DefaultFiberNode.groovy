@@ -68,8 +68,8 @@ class DefaultFiberNode implements FiberNode {
         if(fiberSuite instanceof FiberNodeAware) {
             fiberSuite.fiberNode(this)
         }
-        fiberSuite.dependencyProviders().each { addDependency(it) }
-        fiberSuite.fiberDefinitions().each { addFiber(it) }
+        fiberSuite.dependencies().each { addDependency(it) }
+        fiberSuite.operations().each { addFiber(it) }
         fiberSuite.endpoints().each { addEndpoint(it) }
         this
     }

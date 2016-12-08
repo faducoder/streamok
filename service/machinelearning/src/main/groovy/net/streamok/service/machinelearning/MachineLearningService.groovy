@@ -11,16 +11,16 @@ import net.streamok.service.machinelearning.operation.textlabel.TrainTextLabelMo
 import net.streamok.service.machinelearning.vertx.ModelCacheProvider
 import net.streamok.service.machinelearning.vertx.SparkSessionProvider
 
-class MachineLearningSuite implements Service {
+class MachineLearningService implements Service {
 
     @Override
-    List<OperationDefinition> fiberDefinitions() {
+    List<OperationDefinition> operations() {
         [new MachineLearningIngestTrainingData(), new TrainTextLabelModel(), new PredictTextLabel(),
          new TrainDecisionModel(), new Decide()]
     }
 
     @Override
-    List<DependencyProvider> dependencyProviders() {
+    List<DependencyProvider> dependencies() {
         [new SparkSessionProvider(), new ModelCacheProvider()]
     }
 
