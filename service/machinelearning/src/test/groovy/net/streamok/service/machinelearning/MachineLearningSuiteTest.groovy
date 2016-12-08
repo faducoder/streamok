@@ -23,11 +23,14 @@ import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.lib.mongo.EmbeddedMongo
 import net.streamok.service.document.DocumentService
+import net.streamok.service.machinelearning.decision.DecisionFeatureVector
+import org.apache.commons.lang.Validate
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import java.util.concurrent.CountDownLatch
 
+import static io.vertx.core.json.Json.decodeValue
 import static io.vertx.core.json.Json.encode
 import static java.util.UUID.randomUUID
 import static java.util.concurrent.TimeUnit.SECONDS
@@ -68,7 +71,7 @@ class MachineLearningSuiteTest {
 
         bus.send('machineLearning.train', null, headers(input: input)) {
             bus.send('machineLearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), headers(collection: input)) {
-                def result = Json.decodeValue(it.result().body().toString(), Map)
+                def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['default'] as double).isGreaterThan(0.8d)
                 async.complete()
             }
@@ -101,7 +104,7 @@ class MachineLearningSuiteTest {
         Thread.sleep(5000)
         bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', 'col2')) {
             bus.send('machineLearning.predict', encode(new FeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('collection', 'col2')) {
-                def result = Json.decodeValue(it.result().body().toString(), Map)
+                def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isGreaterThan(0.9d)
                 assertThat(result['lorem'] as double).isGreaterThan(0.9d)
                 async.complete()
@@ -135,7 +138,7 @@ class MachineLearningSuiteTest {
         Thread.sleep(5000)
         bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', 'col3')) {
             bus.send('machineLearning.predict', encode(new FeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col3')) {
-                def result = Json.decodeValue(it.result().body().toString(), Map)
+                def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isLessThan(0.7d)
                 assertThat(result['lorem'] as double).isLessThan(0.7d)
                 async.complete()
@@ -149,11 +152,44 @@ class MachineLearningSuiteTest {
         bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', input)) {
             bus.send('machineLearning.train', null, new DeliveryOptions().addHeader('input', input)) {
                 bus.send('machineLearning.predict', encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', input)) {
-                    assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
+                    assertThat((decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
                     bus.send('machineLearning.predict', encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', input)) {
-                        assertThat((Json.decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
+                        assertThat((decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
                         async.complete()
                     }
+                }
+            }
+        }
+    }
+
+    @Test
+    void shouldMakeDecision(TestContext context) {
+        def async = context.async()
+        def trainingData = [
+                new DecisionFeatureVector(features: [10.0d, 1.0d], label: 0.0d),
+                new DecisionFeatureVector(features: [50.0d, 1.0d], label: 1.0d),
+                new DecisionFeatureVector(features: [50.0d, 1.0d], label: 1.0d),
+                new DecisionFeatureVector(features: [100.0d, 1.0d], label: 1.0d),
+                new DecisionFeatureVector(features: [50.0d, 2.0d], label: 2.0d),
+                new DecisionFeatureVector(features: [50.0d, 2.0d], label: 2.0d),
+                new DecisionFeatureVector(features: [100.0d, 2.0d], label: 2.0d),
+                new DecisionFeatureVector(features: [150.0d, 1.0d], label: 2.0d),
+                new DecisionFeatureVector(features: [200.0d, 1.0d], label: 2.0d),
+        ]
+        def semaphore = new CountDownLatch(trainingData.size())
+        trainingData.each {
+            bus.send(documentSave, encode(it), headers(collection: "training_decision_${input}")) {
+                semaphore.countDown()
+            }
+        }
+        Validate.isTrue(semaphore.await(15, SECONDS))
+
+        bus.send('machineLearning.trainDecisionModel', null, headers(input: input)) {
+            if (it.succeeded()) {
+                assertThat(decodeValue(it.result().body() as String, double)).isNotNegative()
+                bus.send('machineLearning.decide', encode([features: [200.0d, 2.0d]]), headers(input: input)) {
+                    assertThat(decodeValue(it.result().body().toString(), double)).isEqualTo(2.0d)
+                    async.complete()
                 }
             }
         }
