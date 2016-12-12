@@ -13,7 +13,7 @@
     <parent>
         <groupId>net.streamok</groupId>
         <artifactId>streamok-bom</artifactId>
-        <version>0.0.4-SNAPSHOT</version>
+        <version>0.0.4</version>
         <relativePath>../bom</relativePath>
     </parent>
     <packaging>pom</packaging>
