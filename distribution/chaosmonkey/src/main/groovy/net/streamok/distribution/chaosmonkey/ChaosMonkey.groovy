@@ -1,12 +1,15 @@
 package net.streamok.distribution.chaosmonkey
 
 import io.vertx.core.Vertx
+import io.vertx.core.http.HttpClient
 import io.vertx.core.json.Json
+import net.streamok.lib.vertx.Blocking
 import org.apache.commons.lang3.Validate
 
 import java.util.concurrent.CountDownLatch
 
 import static java.util.concurrent.TimeUnit.SECONDS
+import static net.streamok.lib.vertx.Blocking.block
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric
 import static org.assertj.core.api.Assertions.assertThat
 
@@ -14,8 +17,11 @@ class ChaosMonkey {
 
     private final Vertx vertx
 
+    private final HttpClient http
+
     ChaosMonkey(Vertx vertx) {
         this.vertx = vertx
+        this.http = vertx.createHttpClient()
     }
 
     ChaosMonkey() {
@@ -36,6 +42,7 @@ class ChaosMonkey {
 
         // Machine learning service
         triggerTrainingDataIngestionFromTweeter()
+        trainTextLabelModel()
     }
 
     private void checkConfigurationServiceApiHeartbeat() {
@@ -113,17 +120,36 @@ class ChaosMonkey {
     // Machine learning service
 
     private void triggerTrainingDataIngestionFromTweeter() {
-        def latch = new CountDownLatch(1)
-        def collection = randomAlphanumeric(20)
-        vertx.createHttpClient().getNow(8080, 'localhost', "/machineLearning/ingestTrainingData?collection=${collection}&source=twitter:iot") {
-            vertx.createHttpClient().getNow(8080, 'localhost', "/document/count?collection=training_texts_${collection}") {
-                it.bodyHandler {
-                    assertThat(it.toString().toLong()).isGreaterThan(100L)
-                    latch.countDown()
+        block { semaphore ->
+            def collection = randomAlphanumeric(20)
+            http.getNow(8080, 'localhost', "/machineLearning/ingestTrainingData?collection=${collection}&source=twitter:iot") {
+                http.getNow(8080, 'localhost', "/document/count?collection=training_texts_${collection}") {
+                    it.bodyHandler {
+                        assertThat(it.toString().toLong()).isGreaterThan(100L)
+                        semaphore.countDown()
+                    }
                 }
             }
         }
-        Validate.isTrue(latch.await(15, SECONDS))
+    }
+
+    private void trainTextLabelModel() {
+        block { semaphore ->
+            def collection = randomAlphanumeric(20)
+            http.getNow(8080, 'localhost', "/machineLearning/ingestTrainingData?collection=${collection}&source=twitter:iot") {
+                http.getNow(8080, 'localhost', "/document/count?collection=training_texts_${collection}") {
+                    it.bodyHandler {
+                        http.getNow(8080, 'localhost', "/machineLearning/trainTextLabelModel?dataset=${collection}") {
+                            it.bodyHandler {
+                                def response = it.toString()
+                                assertThat(response).isEqualTo('null')
+                                semaphore.countDown()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
