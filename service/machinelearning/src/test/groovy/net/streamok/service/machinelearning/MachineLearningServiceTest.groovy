@@ -102,11 +102,11 @@ class MachineLearningServiceTest {
                 new TextLabelFeatureVector(text: 'lorem ipsum', targetFeature: 1, targetLabel: 'lorem')
         ]
         trainingData.each {
-            bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col2'))
+            bus.send('document.save', encode(it), headers(collection: 'training_texts_' + dataset))
         }
         Thread.sleep(5000)
-        bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('dataset', 'col2')) {
-            bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('dataset', 'col2')) {
+        bus.send(trainTextLabelModel, null, headers(dataset: dataset)) {
+            bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'This text contains some foo and lorem')), headers(dataset: dataset)) {
                 def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isGreaterThan(0.9d)
                 assertThat(result['lorem'] as double).isGreaterThan(0.9d)
@@ -153,7 +153,7 @@ class MachineLearningServiceTest {
     void shouldLoadTwitter(TestContext context) {
         def async = context.async()
         bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', dataset)) {
-            bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('dataset', dataset)) {
+            bus.send(trainTextLabelModel, null, headers(dataset: dataset)) {
                 bus.send(predictTextLabel, encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('dataset', dataset)) {
                     assertThat((decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
                     bus.send(predictTextLabel, encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('dataset', dataset)) {
@@ -171,7 +171,7 @@ class MachineLearningServiceTest {
         bus.send('document.save', encode([text: 'internet of things, cloud solutions and connected devices']), headers(collection: "ml_content_text_${dataset}")) {
             bus.send('document.save', encode([text: 'cat and dogs are nice animals but smells nasty']), headers(collection: "ml_content_text_${dataset}")) {
                 bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', dataset)) {
-                    bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('dataset', dataset)) {
+                    bus.send(trainTextLabelModel, null, headers(dataset: dataset)) {
                         bus.send(labelAllTextContent, null, headers(collection: dataset)) {
                             bus.send('document.find', encode([:]), headers(collection: "ml_content_text_${dataset}")) {
                                 def documents = decodeValue(it.result().body() as String, Map[])
