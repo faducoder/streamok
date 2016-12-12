@@ -7,10 +7,10 @@ final class EventBuses {
     private EventBuses() {
     }
 
-    static DeliveryOptions headers(Map<String, String> headers) {
+    static DeliveryOptions headers(Map<String, Object> headers) {
         def options = new DeliveryOptions()
         headers.entrySet().each {
-            options.addHeader(it.key, it.value)
+            options.addHeader(it.key, it.value.toString())
         }
         options
     }

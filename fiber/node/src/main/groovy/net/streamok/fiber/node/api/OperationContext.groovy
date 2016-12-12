@@ -1,5 +1,6 @@
 package net.streamok.fiber.node.api
 
+import io.vertx.core.Handler
 import io.vertx.core.Vertx
 
 interface OperationContext {
@@ -24,6 +25,11 @@ interface OperationContext {
 
     void debug(String message)
 
+    def <T> void send(String address, Object body, Map<String, Object> headers, Class<T> responseType, Handler<T> responseHandler)
+
+    void send(String address, Object body, Map<String, Object> headers)
+
+    @Deprecated
     Vertx vertx()
 
 }

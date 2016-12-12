@@ -1,5 +1,6 @@
 package net.streamok.fiber.node.vertx
 
+import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 import net.streamok.fiber.node.api.FiberNode
@@ -8,6 +9,8 @@ import net.streamok.lib.conf.Conf
 import org.slf4j.LoggerFactory
 
 import static io.vertx.core.json.Json.decodeValue
+import static io.vertx.core.json.Json.encode
+import static net.streamok.lib.vertx.EventBuses.headers
 import static org.apache.commons.lang3.Validate.notBlank
 import static org.apache.commons.lang3.Validate.notNull
 
@@ -66,6 +69,25 @@ class VertxOperationContext implements OperationContext {
 
     void debug(String message) {
         LoggerFactory.getLogger("streamok.service.operation").debug(message)
+    }
+
+    @Override
+    def <T> void send(String address, Object body, Map<String, Object> headersMap, Class<T> responseType, Handler<T> responseHandler) {
+        fiberNode.vertx().eventBus().send(address, encode(body), headers(headersMap)) {
+            if(it.succeeded()) {
+                def response = decodeValue(it.result().body() as String, responseType)
+                responseHandler.handle(response)
+            } else {
+                fail(100, it.cause().message)
+            }
+        }
+    }
+
+    @Override
+    def void send(String address, Object body, Map<String, Object> headersMap) {
+        fiberNode.vertx().eventBus().send(address, encode(body), headers(headersMap)) {
+            reply(null)
+        }
     }
 
     Vertx vertx() {
