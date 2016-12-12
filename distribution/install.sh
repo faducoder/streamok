@@ -15,4 +15,4 @@ openshift/oc login https://localhost:8443 -u admin -p admin
 openshift/oc new-project streamok
 
 openshift/oc new-app mongo
-openshift/oc new-app streamok/node:0.0.3 -e XMX=512m -e SPARK_USER=root
+openshift/oc new-app streamok/node:0.0.4 -e XMX=512m -e SPARK_USER=root
