@@ -16,23 +16,31 @@
  */
 package net.streamok.lib.vertx
 
-import io.vertx.core.Handler
-import org.apache.commons.lang3.Validate
+import org.junit.Test
 
-import java.util.concurrent.CountDownLatch
+import static net.streamok.lib.vertx.Blocking.block
+import static org.assertj.core.api.Assertions.assertThat
 
-import static java.util.concurrent.TimeUnit.SECONDS
+class BlockingTest {
 
-class Blocking {
+    @Test
+    void shouldExecuteBlockAndThenTimeout() {
+        // Given
+        def blockExecuted = false
+        def blockTimedOut = false
 
-    static def block(int seconds, Handler<CountDownLatch> handler) {
-        def sempahore = new CountDownLatch(1)
-        handler.handle(sempahore)
-        Validate.isTrue(sempahore.await(seconds, SECONDS))
-    }
+        // When
+        try {
+            block(1) {
+                blockExecuted = true
+            }
+        } catch (Exception e) {
+            blockTimedOut = true
+        }
 
-    static def block(Handler<CountDownLatch> handler) {
-        block(15, handler)
+        // Then
+        assertThat(blockExecuted).isTrue()
+        assertThat(blockTimedOut).isTrue()
     }
 
 }
