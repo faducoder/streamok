@@ -1,3 +1,19 @@
+/**
+ * Licensed to the Streamok under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.streamok.service.machinelearning.operation.textlabel
 
 import net.streamok.fiber.node.api.OperationDefinition
@@ -29,7 +45,7 @@ class PredictTextLabel implements OperationDefinition {
             def models = operation.dependency(ModelCache)
 
             def collection = operation.nonBlankHeader('dataset')
-            def featureVector = operation.body(TextLabelFeatureVector)
+            def featureVector = operation.body()
 
             def labelConfidence = [:]
             def labels = models.labels(collection)
@@ -49,9 +65,8 @@ class PredictTextLabel implements OperationDefinition {
                 def predictions = regressionModel.transform(featuresDataFrame)
                 def prob = predictions.collectAsList().first().getAs(5)
 
-                labelConfidence[label] = (prob as DenseVector).values()[1]
+                labelConfidence[label] = ((prob as DenseVector).values()[1] * 100.0) as int
             }
-
             operation.reply(encode(labelConfidence))
         }
     }

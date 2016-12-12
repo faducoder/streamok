@@ -75,7 +75,7 @@ class MachineLearningServiceTest {
         bus.send(trainTextLabelModel, null, headers(dataset: dataset)) {
             bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'I love Logistic regression')), headers(dataset: dataset)) {
                 def result = decodeValue(it.result().body().toString(), Map)
-                assertThat(result['default'] as double).isGreaterThan(0.8d)
+                assertThat(result['default'] as int).isGreaterThan(80)
                 async.complete()
             }
         }
@@ -108,8 +108,8 @@ class MachineLearningServiceTest {
         bus.send(trainTextLabelModel, null, headers(dataset: dataset)) {
             bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'This text contains some foo and lorem')), headers(dataset: dataset)) {
                 def result = decodeValue(it.result().body().toString(), Map)
-                assertThat(result['foo'] as double).isGreaterThan(0.9d)
-                assertThat(result['lorem'] as double).isGreaterThan(0.9d)
+                assertThat(result['foo'] as int).isGreaterThan(90)
+                assertThat(result['lorem'] as int).isGreaterThan(90)
                 async.complete()
             }
         }
@@ -142,8 +142,8 @@ class MachineLearningServiceTest {
         bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('dataset', 'col3')) {
             bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('dataset', 'col3')) {
                 def result = decodeValue(it.result().body().toString(), Map)
-                assertThat(result['foo'] as double).isLessThan(0.7d)
-                assertThat(result['lorem'] as double).isLessThan(0.7d)
+                assertThat(result['foo'] as int).isLessThan(70)
+                assertThat(result['lorem'] as int).isLessThan(70)
                 async.complete()
             }
         }
@@ -155,9 +155,9 @@ class MachineLearningServiceTest {
         bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', dataset)) {
             bus.send(trainTextLabelModel, null, headers(dataset: dataset)) {
                 bus.send(predictTextLabel, encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('dataset', dataset)) {
-                    assertThat((decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
+                    assertThat((decodeValue(it.result().body().toString(), Map).iot as int)).isGreaterThan(0)
                     bus.send(predictTextLabel, encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('dataset', dataset)) {
-                        assertThat((decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
+                        assertThat((decodeValue(it.result().body().toString(), Map).iot as int)).isGreaterThan(0)
                         async.complete()
                     }
                 }
