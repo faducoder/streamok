@@ -24,7 +24,7 @@ class LabelTextContent implements OperationDefinition {
             def contentId = operation.nonBlankHeader('id')
             operation.vertx().eventBus().send('document.findOne', null, headers(collection: "ml_content_text_${collection}", id: contentId)) {
                 def document = Json.decodeValue(it.result().body() as String, Map)
-                operation.vertx().eventBus().send(predictTextLabel, encode(document), headers(collection: collection)) {
+                operation.vertx().eventBus().send(predictTextLabel, encode(document), headers(dataset: collection)) {
                     def labels = Json.decodeValue(it.result().body() as String, Map)
                     document.labels = labels
                     operation.vertx().eventBus().send('document.save', encode(document), headers(collection: "ml_content_text_${collection}")) {

@@ -31,7 +31,8 @@ class TrainTextLabelModel implements OperationDefinition {
         { operation ->
             def spark = operation.dependency(SparkSession)
             def models = operation.dependency(ModelCache)
-            def input = operation.nonBlankHeader('input')
+
+            def input = operation.nonBlankHeader('dataset')
 
             operation.vertx().eventBus().send('document.find', Json.encode([size: 2000]), new DeliveryOptions().addHeader('collection', 'training_texts_' + input)) {
                 def data = Json.decodeValue(it.result().body().toString(), TextLabelFeatureVector[]).toList()

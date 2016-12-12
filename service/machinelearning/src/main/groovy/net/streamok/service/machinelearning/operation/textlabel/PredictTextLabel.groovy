@@ -1,9 +1,8 @@
 package net.streamok.service.machinelearning.operation.textlabel
 
-import net.streamok.fiber.node.api.OperationHandler
 import net.streamok.fiber.node.api.OperationDefinition
+import net.streamok.fiber.node.api.OperationHandler
 import net.streamok.service.machinelearning.common.ModelCache
-import net.streamok.service.machinelearning.operation.textlabel.TextLabelFeatureVector
 import org.apache.spark.ml.linalg.DenseVector
 import org.apache.spark.sql.RowFactory
 import org.apache.spark.sql.SparkSession
@@ -29,7 +28,7 @@ class PredictTextLabel implements OperationDefinition {
             def spark = operation.dependency(SparkSession)
             def models = operation.dependency(ModelCache)
 
-            def collection = operation.header('collection').toString()
+            def collection = operation.nonBlankHeader('dataset')
             def featureVector = operation.body(TextLabelFeatureVector)
 
             def labelConfidence = [:]

@@ -23,7 +23,6 @@ import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.lib.mongo.EmbeddedMongo
 import net.streamok.service.document.DocumentService
 import net.streamok.service.machinelearning.operation.decision.DecisionFeatureVector
-import net.streamok.service.machinelearning.operation.textlabel.LabelAllTextContent
 import net.streamok.service.machinelearning.operation.textlabel.TextLabelFeatureVector
 import org.apache.commons.lang.Validate
 import org.junit.Test
@@ -51,7 +50,7 @@ class MachineLearningServiceTest {
     static
     def bus = new DefaultFiberNode().addSuite(new MachineLearningService()).addSuite(new DocumentService()).vertx().eventBus()
 
-    def input = randomUUID().toString()
+    def dataset = randomUUID().toString()
 
     // Tests
 
@@ -67,14 +66,14 @@ class MachineLearningServiceTest {
                             textFeatureVector('Logistic regression models are neat', true)]
         def semaphore = new CountDownLatch(trainingData.size())
         trainingData.each {
-            bus.send(documentSave, encode(it), headers(collection: "training_texts_${input}")) {
+            bus.send(documentSave, encode(it), headers(collection: "training_texts_${dataset}")) {
                 semaphore.countDown()
             }
         }
         semaphore.await(15, SECONDS)
 
-        bus.send(trainTextLabelModel, null, headers(input: input)) {
-            bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'I love Logistic regression')), headers(collection: input)) {
+        bus.send(trainTextLabelModel, null, headers(dataset: dataset)) {
+            bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'I love Logistic regression')), headers(dataset: dataset)) {
                 def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['default'] as double).isGreaterThan(0.8d)
                 async.complete()
@@ -106,8 +105,8 @@ class MachineLearningServiceTest {
             bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col2'))
         }
         Thread.sleep(5000)
-        bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('input', 'col2')) {
-            bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('collection', 'col2')) {
+        bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('dataset', 'col2')) {
+            bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'This text contains some foo and lorem')), new DeliveryOptions().addHeader('dataset', 'col2')) {
                 def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isGreaterThan(0.9d)
                 assertThat(result['lorem'] as double).isGreaterThan(0.9d)
@@ -140,8 +139,8 @@ class MachineLearningServiceTest {
             bus.send('document.save', encode(it), new DeliveryOptions().addHeader('collection', 'training_texts_' + 'col3'))
         }
         Thread.sleep(5000)
-        bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('input', 'col3')) {
-            bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('collection', 'col3')) {
+        bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('dataset', 'col3')) {
+            bus.send(predictTextLabel, encode(new TextLabelFeatureVector(text: 'I love Logistic regression')), new DeliveryOptions().addHeader('dataset', 'col3')) {
                 def result = decodeValue(it.result().body().toString(), Map)
                 assertThat(result['foo'] as double).isLessThan(0.7d)
                 assertThat(result['lorem'] as double).isLessThan(0.7d)
@@ -153,11 +152,11 @@ class MachineLearningServiceTest {
     @Test
     void shouldLoadTwitter(TestContext context) {
         def async = context.async()
-        bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', input)) {
-            bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('input', input)) {
-                bus.send(predictTextLabel, encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('collection', input)) {
+        bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', dataset)) {
+            bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('dataset', dataset)) {
+                bus.send(predictTextLabel, encode(textFeatureVector('internet of things, cloud solutions and connected devices', true)), new DeliveryOptions().addHeader('dataset', dataset)) {
                     assertThat((decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
-                    bus.send(predictTextLabel, encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('collection', input)) {
+                    bus.send(predictTextLabel, encode(textFeatureVector('cat and dogs are nice animals but smells nasty', true)), new DeliveryOptions().addHeader('dataset', dataset)) {
                         assertThat((decodeValue(it.result().body().toString(), Map).iot as double)).isGreaterThan(0.0d)
                         async.complete()
                     }
@@ -169,12 +168,12 @@ class MachineLearningServiceTest {
     @Test
     void shouldLabelAllContext(TestContext context) {
         def async = context.async()
-        bus.send('document.save', encode([text: 'internet of things, cloud solutions and connected devices']), headers(collection: "ml_content_text_${input}")) {
-            bus.send('document.save', encode([text: 'cat and dogs are nice animals but smells nasty']), headers(collection: "ml_content_text_${input}")) {
-                bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', input)) {
-                    bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('input', input)) {
-                        bus.send(labelAllTextContent, null, headers(collection: input)) {
-                            bus.send('document.find', encode([:]), headers(collection: "ml_content_text_${input}")) {
+        bus.send('document.save', encode([text: 'internet of things, cloud solutions and connected devices']), headers(collection: "ml_content_text_${dataset}")) {
+            bus.send('document.save', encode([text: 'cat and dogs are nice animals but smells nasty']), headers(collection: "ml_content_text_${dataset}")) {
+                bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', dataset)) {
+                    bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('dataset', dataset)) {
+                        bus.send(labelAllTextContent, null, headers(collection: dataset)) {
+                            bus.send('document.find', encode([:]), headers(collection: "ml_content_text_${dataset}")) {
                                 def documents = decodeValue(it.result().body() as String, Map[])
                                 assertThat(documents[0].labels as Map).hasSize(1)
                                 assertThat(documents[1].labels as Map).hasSize(1)
@@ -205,16 +204,16 @@ class MachineLearningServiceTest {
         ]
         def semaphore = new CountDownLatch(trainingData.size())
         trainingData.each {
-            bus.send(documentSave, encode(it), headers(collection: "training_decision_${input}")) {
+            bus.send(documentSave, encode(it), headers(collection: "training_decision_${dataset}")) {
                 semaphore.countDown()
             }
         }
         Validate.isTrue(semaphore.await(15, SECONDS))
 
-        bus.send('machineLearning.trainDecisionModel', null, headers(input: input)) {
+        bus.send('machineLearning.trainDecisionModel', null, headers(input: dataset)) {
             if (it.succeeded()) {
                 assertThat(decodeValue(it.result().body() as String, double)).isNotNegative()
-                bus.send('machineLearning.decide', encode([features: [200.0d, 2.0d]]), headers(input: input)) {
+                bus.send('machineLearning.decide', encode([features: [200.0d, 2.0d]]), headers(input: dataset)) {
                     assertThat(decodeValue(it.result().body().toString(), double)).isEqualTo(2.0d)
                     async.complete()
                 }
