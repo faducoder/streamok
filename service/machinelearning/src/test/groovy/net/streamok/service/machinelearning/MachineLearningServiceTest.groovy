@@ -23,6 +23,7 @@ import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.lib.mongo.EmbeddedMongo
 import net.streamok.service.document.DocumentService
 import net.streamok.service.machinelearning.operation.decision.DecisionFeatureVector
+import net.streamok.service.machinelearning.operation.textlabel.LabelAllTextContent
 import net.streamok.service.machinelearning.operation.textlabel.TextLabelFeatureVector
 import org.apache.commons.lang.Validate
 import org.junit.Test
@@ -37,6 +38,7 @@ import static java.util.concurrent.TimeUnit.SECONDS
 import static net.streamok.lib.vertx.EventBuses.headers
 import static net.streamok.service.document.operations.DocumentSave.documentSave
 import static TextLabelFeatureVector.textFeatureVector
+import static net.streamok.service.machinelearning.operation.textlabel.LabelAllTextContent.labelAllTextContent
 import static net.streamok.service.machinelearning.operation.textlabel.PredictTextLabel.predictTextLabel
 import static net.streamok.service.machinelearning.operation.textlabel.TrainTextLabelModel.trainTextLabelModel
 import static org.assertj.core.api.Assertions.assertThat
@@ -163,6 +165,29 @@ class MachineLearningServiceTest {
             }
         }
     }
+
+    @Test
+    void shouldLabelAllContext(TestContext context) {
+        def async = context.async()
+        bus.send('document.save', encode([text: 'internet of things, cloud solutions and connected devices']), headers(collection: "ml_content_text_${input}")) {
+            bus.send('document.save', encode([text: 'cat and dogs are nice animals but smells nasty']), headers(collection: "ml_content_text_${input}")) {
+                bus.send('machineLearning.ingestTrainingData', null, new DeliveryOptions().addHeader('source', 'twitter:iot').addHeader('collection', input)) {
+                    bus.send(trainTextLabelModel, null, new DeliveryOptions().addHeader('input', input)) {
+                        bus.send(labelAllTextContent, null, headers(collection: input)) {
+                            bus.send('document.find', encode([:]), headers(collection: "ml_content_text_${input}")) {
+                                def documents = decodeValue(it.result().body() as String, Map[])
+                                assertThat(documents[0].labels as Map).hasSize(1)
+                                assertThat(documents[1].labels as Map).hasSize(1)
+                                async.complete()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Decision trees
 
     @Test
     void shouldMakeDecision(TestContext context) {
