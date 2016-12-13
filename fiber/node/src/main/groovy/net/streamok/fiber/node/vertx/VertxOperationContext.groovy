@@ -5,11 +5,11 @@ import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 import net.streamok.fiber.node.api.FiberNode
 import net.streamok.fiber.node.api.OperationContext
-import net.streamok.lib.conf.Conf
 import org.slf4j.LoggerFactory
 
 import static io.vertx.core.json.Json.decodeValue
 import static io.vertx.core.json.Json.encode
+import static net.streamok.lib.conf.Conf.configuration
 import static net.streamok.lib.vertx.EventBuses.headers
 import static org.apache.commons.lang3.Validate.notBlank
 import static org.apache.commons.lang3.Validate.notNull
@@ -64,7 +64,7 @@ class VertxOperationContext implements OperationContext {
     }
 
     def String configurationString(String key, String defaultValue) {
-        Conf.configuration().instance().getString(key, defaultValue)
+        configuration().get().getString(key, defaultValue)
     }
 
     void debug(String message) {

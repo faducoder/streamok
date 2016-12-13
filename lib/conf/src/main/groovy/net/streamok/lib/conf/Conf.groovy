@@ -27,7 +27,7 @@ class Conf {
     // Constructors
 
     Conf() {
-        configuration = new CompositeConfiguration()
+        configuration = new EnvFriendlyConfiguration()
         configuration.addConfiguration(new MapConfiguration([:]), true)
         configuration.addConfiguration(new SystemConfiguration())
         configuration.addConfiguration(new EnvironmentConfiguration())
@@ -47,7 +47,7 @@ class Conf {
     }
 
     Configuration memory() {
-        configuration.inMemoryConfiguration
+        configuration.getInMemoryConfiguration()
     }
 
 }
