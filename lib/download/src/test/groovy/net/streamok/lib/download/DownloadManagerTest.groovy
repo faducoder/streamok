@@ -63,8 +63,20 @@ class DownloadManagerTest {
         assertThat(uncompressedDirectory).isGreaterThan(0L);
     }
 
+    @Test
+    void shouldAccessDirectoryFromExtractedTarGz() {
+        // When
+        downloadManager.download(new BinaryCoordinates(
+                new File("src/test/compressedDirectory.tar.gz").toURI().toURL(),
+                "compressedDirectory.tar.gz", "compressedDirectory"));
+
+        // Then
+        def directoryInExtractedDirectory = downloadManager.fileFromExtractedDirectory('compressedDirectory', 'compressedDirectory')
+        assertThat(directoryInExtractedDirectory).exists()
+    }
+
     @Test(expected = UnsupportedCompressionFormatException)
-    void shouldHandleUnsupportedCompressionFormat() throws MalformedURLException {
+    void shouldHandleUnsupportedCompressionFormat() {
         // When
         downloadManager.download(new BinaryCoordinates(new File("src/test/invalidCompressionFormat.xyz").toURI().toURL(),
                 "invalidCompressionFormat.xyz", "invalidCompressionFormat"));
