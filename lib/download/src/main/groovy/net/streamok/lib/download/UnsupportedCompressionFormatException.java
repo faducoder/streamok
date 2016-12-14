@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.lib.download;
+package net.streamok.lib.download;
 
-public class FileExtractionException extends RuntimeException {
+public class UnsupportedCompressionFormatException extends RuntimeException {
 
-    public FileExtractionException(String filename, Throwable cause) {
-        super("Cannot extract file: " + filename, cause);
+    public UnsupportedCompressionFormatException(String filename) {
+        super(String.format("Cannot extract file - %s . Unsupported compression format.", filename));
     }
 
 }

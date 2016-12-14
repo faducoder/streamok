@@ -14,12 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.lib.download.spring
+package net.streamok.lib.download
 
-import net.smolok.lib.download.DownloadManager
-import net.smolok.lib.download.DownloadManager.BinaryCoordinates
-import net.smolok.lib.download.FileDownloadException
-import net.smolok.lib.download.UnsupportedCompressionFormatException
+import net.streamok.lib.download.DownloadManager.BinaryCoordinates
 import net.streamok.lib.process.DefaultProcessManager
 import org.junit.Test
 

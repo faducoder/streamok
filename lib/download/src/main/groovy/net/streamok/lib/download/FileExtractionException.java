@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.lib.download;
+package net.streamok.lib.download;
 
-public class FileDownloadException extends RuntimeException {
+public class FileExtractionException extends RuntimeException {
 
-    public FileDownloadException(String filename, Throwable cause) {
-        super("Cannot download file: " + filename, cause);
+    public FileExtractionException(String filename, Throwable cause) {
+        super("Cannot extract file: " + filename, cause);
     }
 
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.lib.download
+package net.streamok.lib.download
 
 import groovy.transform.ToString
 import net.streamok.lib.process.ProcessManager
