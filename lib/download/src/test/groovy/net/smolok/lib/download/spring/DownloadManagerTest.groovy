@@ -31,16 +31,23 @@ class DownloadManagerTest {
 
     // Fixtures
 
-    def downloadManager = new DownloadManager(new DefaultProcessManager(), createTempDir())
+    def downloadDirectory = createTempDir()
+
+    def downloadManager = new DownloadManager(new DefaultProcessManager(), downloadDirectory)
 
     // Tests
+
+    @Test
+    void shouldReturnDownloadDirectory() {
+        assertThat(downloadManager.downloadDirectory()).isEqualTo(downloadDirectory)
+    }
 
     @Test
     void shouldDownloadFile() {
         // When
         downloadManager.download(new BinaryCoordinates(
                 new URL("http://search.maven.org/remotecontent?filepath=org/wildfly/swarm/guava/1.0.0.Alpha8/guava-1.0.0.Alpha8.jar"),
-                "guava.jar"))
+                'guava.jar'))
 
         // Then
         def guavaSize = downloadManager.downloadedFile("guava.jar").length()
@@ -59,7 +66,7 @@ class DownloadManagerTest {
         assertThat(uncompressedDirectory).isGreaterThan(0L);
     }
 
-    @Test(expected = UnsupportedCompressionFormatException.class)
+    @Test(expected = UnsupportedCompressionFormatException)
     void shouldHandleUnsupportedCompressionFormat() throws MalformedURLException {
         // When
         downloadManager.download(new BinaryCoordinates(new File("src/test/invalidCompressionFormat.xyz").toURI().toURL(),

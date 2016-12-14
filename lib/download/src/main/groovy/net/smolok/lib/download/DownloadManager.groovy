@@ -24,6 +24,7 @@ import org.apache.commons.lang3.Validate
 import java.nio.file.Paths
 import java.util.zip.ZipInputStream
 
+import static java.io.File.createTempFile
 import static net.streamok.lib.process.Command.cmd
 import static org.apache.commons.io.IOUtils.copyLarge
 import static org.slf4j.LoggerFactory.getLogger
@@ -64,7 +65,7 @@ class DownloadManager {
         def targetFile = downloadedFile(coordinates.fileName)
         if(!targetFile.exists()) {
             LOG.debug('File {} does not exist - downloading...', targetFile.absolutePath)
-            def tmpFile = File.createTempFile('smolok', 'download')
+            def tmpFile = createTempFile('smolok', 'download')
             try {
                 copyLarge(coordinates.source().openStream(), new FileOutputStream(tmpFile))
             } catch (UnknownHostException e) {
