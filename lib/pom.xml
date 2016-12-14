@@ -23,6 +23,7 @@
 
     <modules>
         <module>common</module>
+        <module>download</module>
         <module>vertx</module>
         <module>vertx-test</module>
         <module>conf</module>
