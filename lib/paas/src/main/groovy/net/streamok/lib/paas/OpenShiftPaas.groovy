@@ -81,12 +81,19 @@ class OpenShiftPaas implements Paas {
         ocPath = downloadManager.fileFromExtractedDirectory("${OPENSHIFT_DISTRO}/${OPENSHIFT_DISTRO}", 'oc').absolutePath
     }
 
-    // Platform operations
+    OpenShiftPaas(DownloadManager downloadManager, ProcessManager processManager) {
+        this(downloadManager, processManager, [])
+    }
 
-    void init() {
+    // Initialization
+
+    OpenShiftPaas init() {
         openshiftHome.mkdirs()
         downloadManager.download(new DownloadManager.BinaryCoordinates(OPENSHIFT_DOWNLOAD_URL, OPENSHIFT_DISTRO_ARCHIVE, OPENSHIFT_DISTRO))
+        this
     }
+
+    // Platform operations
 
     @Override
     boolean isProvisioned() {

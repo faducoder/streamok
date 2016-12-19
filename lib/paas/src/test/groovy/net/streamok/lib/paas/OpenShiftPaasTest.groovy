@@ -33,11 +33,10 @@ class OpenShiftPaasTest {
 
     def processManager = new DefaultProcessManager()
 
-    def paas = new OpenShiftPaas(new DownloadManager(processManager, createTempDir()), processManager, [])
+    def paas = new OpenShiftPaas(new DownloadManager(processManager, createTempDir()), processManager).init()
 
     @Before
     void before() {
-        paas.init()
         paas.reset()
         paas.start()
     }
