@@ -25,6 +25,7 @@ import org.junit.Test
 import static OpenShiftPaas.condition
 import static com.jayway.awaitility.Awaitility.await
 import static java.util.concurrent.TimeUnit.MINUTES
+import static org.assertj.core.api.Assertions.assertThat
 
 class OpenShiftPaasConfigurationTest {
 
@@ -46,18 +47,18 @@ class OpenShiftPaasConfigurationTest {
     @Test
     void shouldStartAndStop() {
         // Should start
-        org.assertj.core.api.Assertions.assertThat(paas.started).isTrue()
-        org.assertj.core.api.Assertions.assertThat(paas.provisioned).isTrue()
+        assertThat(paas.started).isTrue()
+        assertThat(paas.provisioned).isTrue()
 
         // Should start service
         paas.startService('mongo')
         await().atMost(1, MINUTES).until condition {paas.services().find { it.name == 'mongo' } != null}
         def mongoService = paas.services().find { it.name == 'mongo' }
-        org.assertj.core.api.Assertions.assertThat(mongoService).isNotNull()
+        assertThat(mongoService).isNotNull()
 
         // Should stop
         paas.stop()
-        org.assertj.core.api.Assertions.assertThat(paas.started).isFalse()
+        assertThat(paas.started).isFalse()
     }
 
     @Test
@@ -66,7 +67,7 @@ class OpenShiftPaasConfigurationTest {
         paas.reset()
 
         // Then
-        org.assertj.core.api.Assertions.assertThat(paas.started).isFalse()
+        assertThat(paas.started).isFalse()
     }
 
 }
