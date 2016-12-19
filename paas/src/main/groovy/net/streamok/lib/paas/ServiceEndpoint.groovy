@@ -14,31 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.paas
+package net.streamok.lib.paas
+
+import groovy.transform.CompileStatic
+import groovy.transform.Immutable
+import groovy.transform.ToString
 
 /**
- * Point of contact with PaaS implementation capable of starting and managing containers.
+ * Represents a value of the metric.
  */
-interface Paas {
+@CompileStatic
+@Immutable
+@ToString(includeNames=true, includeFields=true)
+class ServiceEndpoint {
 
-    boolean isProvisioned()
+    String name
 
-    boolean isStarted()
+    String host
 
-    /**
-     * Starts PaaS platform and event bus on the top of it. Before the method call ends, both PaaS and event bus must be
-     * up and running.
-     *
-     * Nothing happens if this method is called while platform bus is started already.
-     */
-    void start()
-
-    void stop()
-
-    void reset()
-
-    List<ServiceEndpoint> services()
-
-    void startService(String serviceLocator)
+    int port
 
 }

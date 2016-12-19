@@ -14,13 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.paas.openshift
+package net.streamok.lib.paas
 
 import com.jayway.awaitility.core.ConditionTimeoutException
-import net.smolok.paas.ImageLocatorResolver
-import net.smolok.paas.Paas
-import net.smolok.paas.ServiceConfiguration
-import net.smolok.paas.ServiceEndpoint
 import net.streamok.lib.download.DownloadManager
 import net.streamok.lib.process.ProcessManager
 import org.apache.commons.lang3.SystemUtils

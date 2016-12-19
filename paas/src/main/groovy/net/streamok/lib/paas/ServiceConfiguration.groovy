@@ -1,4 +1,4 @@
-package net.smolok.paas
+package net.streamok.lib.paas
 
 class ServiceConfiguration {
 

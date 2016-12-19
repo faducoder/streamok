@@ -14,19 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.paas.openshift.spring
+package net.streamok.lib.paas
 
 import com.google.common.io.Files
-import net.smolok.paas.openshift.OpenShiftPaas
 import net.streamok.lib.download.DownloadManager
 import net.streamok.lib.process.DefaultProcessManager
 import org.junit.Before
 import org.junit.Test
 
+import static OpenShiftPaas.condition
 import static com.jayway.awaitility.Awaitility.await
 import static java.util.concurrent.TimeUnit.MINUTES
-import static net.smolok.paas.openshift.OpenShiftPaas.condition
-import static org.assertj.core.api.Assertions.assertThat
 
 class OpenShiftPaasConfigurationTest {
 
@@ -48,18 +46,18 @@ class OpenShiftPaasConfigurationTest {
     @Test
     void shouldStartAndStop() {
         // Should start
-        assertThat(paas.started).isTrue()
-        assertThat(paas.provisioned).isTrue()
+        org.assertj.core.api.Assertions.assertThat(paas.started).isTrue()
+        org.assertj.core.api.Assertions.assertThat(paas.provisioned).isTrue()
 
         // Should start service
         paas.startService('mongo')
         await().atMost(1, MINUTES).until condition {paas.services().find { it.name == 'mongo' } != null}
         def mongoService = paas.services().find { it.name == 'mongo' }
-        assertThat(mongoService).isNotNull()
+        org.assertj.core.api.Assertions.assertThat(mongoService).isNotNull()
 
         // Should stop
         paas.stop()
-        assertThat(paas.started).isFalse()
+        org.assertj.core.api.Assertions.assertThat(paas.started).isFalse()
     }
 
     @Test
@@ -68,7 +66,7 @@ class OpenShiftPaasConfigurationTest {
         paas.reset()
 
         // Then
-        assertThat(paas.started).isFalse()
+        org.assertj.core.api.Assertions.assertThat(paas.started).isFalse()
     }
 
 }

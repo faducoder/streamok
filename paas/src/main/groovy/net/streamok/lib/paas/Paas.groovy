@@ -14,12 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.paas
+package net.streamok.lib.paas
 
-interface ImageLocatorResolver {
+/**
+ * Point of contact with PaaS implementation capable of starting and managing containers.
+ */
+interface Paas {
 
-    boolean canResolveImage(String imageLocator)
+    boolean isProvisioned()
 
-    List<ServiceConfiguration> resolveImage(String imageLocator)
+    boolean isStarted()
+
+    /**
+     * Starts PaaS platform and event bus on the top of it. Before the method call ends, both PaaS and event bus must be
+     * up and running.
+     *
+     * Nothing happens if this method is called while platform bus is started already.
+     */
+    void start()
+
+    void stop()
+
+    void reset()
+
+    List<ServiceEndpoint> services()
+
+    void startService(String serviceLocator)
 
 }

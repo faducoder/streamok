@@ -14,24 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.smolok.paas
+package net.streamok.lib.paas
 
-import groovy.transform.CompileStatic
-import groovy.transform.Immutable
-import groovy.transform.ToString
+interface ImageLocatorResolver {
 
-/**
- * Represents a value of the metric.
- */
-@CompileStatic
-@Immutable
-@ToString(includeNames=true, includeFields=true)
-class ServiceEndpoint {
+    boolean canResolveImage(String imageLocator)
 
-    String name
-
-    String host
-
-    int port
+    List<ServiceConfiguration> resolveImage(String imageLocator)
 
 }
