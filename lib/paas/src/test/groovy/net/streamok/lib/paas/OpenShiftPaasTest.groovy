@@ -16,13 +16,13 @@
  */
 package net.streamok.lib.paas
 
-import com.google.common.io.Files
 import net.streamok.lib.download.DownloadManager
 import net.streamok.lib.process.DefaultProcessManager
 import org.junit.Before
 import org.junit.Test
 
 import static OpenShiftPaas.condition
+import static com.google.common.io.Files.createTempDir
 import static com.jayway.awaitility.Awaitility.await
 import static java.util.concurrent.TimeUnit.MINUTES
 import static org.assertj.core.api.Assertions.assertThat
@@ -33,7 +33,7 @@ class OpenShiftPaasTest {
 
     def processManager = new DefaultProcessManager()
 
-    def paas = new OpenShiftPaas(new DownloadManager(processManager, Files.createTempDir()), processManager, [])
+    def paas = new OpenShiftPaas(new DownloadManager(processManager, createTempDir()), processManager, [])
 
     @Before
     void before() {
@@ -58,7 +58,7 @@ class OpenShiftPaasTest {
 
         // Should stop
         paas.stop()
-        assertThat(paas.started).isFalse()
+        await().until condition { !paas.started }
     }
 
     @Test
