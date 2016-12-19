@@ -5,11 +5,11 @@
 
     <parent>
         <groupId>net.streamok</groupId>
-        <artifactId>streamok-bom</artifactId>
+        <artifactId>streamok-lib</artifactId>
         <version>0.0.5-SNAPSHOT</version>
-        <relativePath>../bom</relativePath>
+        <relativePath>..</relativePath>
     </parent>
-    <artifactId>streamok-paas</artifactId>
+    <artifactId>streamok-lib-paas</artifactId>
     <name>${project.artifactId}</name>
 
     <licenses>
@@ -24,7 +24,6 @@
         <dependency>
             <groupId>net.streamok</groupId>
             <artifactId>streamok-lib-download</artifactId>
-            <version>0.0.5-SNAPSHOT</version>
         </dependency>
 
         <!-- External dependencies -->

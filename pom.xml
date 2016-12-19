@@ -24,7 +24,6 @@
         <module>lib</module>
         <module>fiber</module>
         <module>service</module>
-        <module>paas</module>
         <module>distribution</module>
     </modules>
 

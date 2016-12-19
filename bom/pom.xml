@@ -66,6 +66,11 @@
             </dependency>
             <dependency>
                 <groupId>net.streamok</groupId>
+                <artifactId>streamok-lib-download</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
                 <artifactId>streamok-lib-mongo</artifactId>
                 <version>${streamok.version}</version>
             </dependency>
