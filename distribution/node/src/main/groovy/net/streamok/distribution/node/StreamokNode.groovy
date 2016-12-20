@@ -7,6 +7,7 @@ import net.streamok.service.configuration.ConfigurationSuite
 import net.streamok.service.document.DocumentService
 import net.streamok.service.machinelearning.MachineLearningService
 import net.streamok.service.metrics.MetricsSuite
+import net.streamok.service.speech.SpeechService
 
 class StreamokNode {
 
@@ -16,6 +17,7 @@ class StreamokNode {
             addSuite(new ConfigurationSuite()).
             addSuite(new DocumentService()).
             addSuite(new MachineLearningService()).
+            addSuite(new SpeechService()).
             start()
 
     FiberNode fiberNode() {

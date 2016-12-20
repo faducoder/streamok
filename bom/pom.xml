@@ -107,6 +107,11 @@
             </dependency>
             <dependency>
                 <groupId>net.streamok</groupId>
+                <artifactId>streamok-service-speech</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
                 <artifactId>streamok-service-metrics</artifactId>
                 <version>${streamok.version}</version>
             </dependency>

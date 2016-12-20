@@ -46,6 +46,10 @@
             <groupId>net.streamok</groupId>
             <artifactId>streamok-service-machinelearning</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.streamok</groupId>
+            <artifactId>streamok-service-speech</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
