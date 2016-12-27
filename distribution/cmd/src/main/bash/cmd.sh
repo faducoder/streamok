@@ -19,15 +19,28 @@ fi
 nohup openshift/openshift start &
 sleep 10
 
-export KUBECONFIG="$(pwd)"/openshift.local.config/master/admin.kubeconfig
-export CURL_CA_BUNDLE="$(pwd)"/openshift.local.config/master/ca.crt
-chmod +r "$(pwd)"/openshift.local.config/master/admin.kubeconfig
 
-openshift/oc login -u system:admin
-openshift/oc new-project streamok
+echo 'export KUBECONFIG=/root/openshift.local.config/master/admin.kubeconfig' >> /root/.bashrc
+echo 'export CURL_CA_BUNDLE=/root/openshift.local.config/master/ca.crt' >> /root/.bashrc
+echo 'export OC_HOME=/root/openshift' >> /root/.bashrc
+echo 'export PATH=$PATH:$OC_HOME' >> /root/.bashrc
 
-openshift/oadm policy add-scc-to-user anyuid -z default
-openshift/oadm policy add-role-to-user admin admin -n streamok
+. bash
+echo '.bashrc reloaded'
 
-openshift/oc new-app mongo
-openshift/oc new-app streamok/node:0.0.4 -e XMX=512m
+chmod +r /root/openshift.local.config/master/admin.kubeconfig
+
+oc login -u system:admin
+oc new-project streamok
+
+oadm policy add-scc-to-user anyuid -z default
+oadm policy add-role-to-user admin admin -n streamok
+
+oc new-app mongo
+oc new-app streamok/node -e XMX=512m
+
+# Configure and create router
+oadm policy add-scc-to-user hostnetwork system:serviceaccount:streamok:router
+oadm policy add-cluster-role-to-user system:router system:serviceaccount:streamok:router
+oadm router streamok-router --service-account=router
+oc expose service node --name=node-route --hostname=46.101.209.237
