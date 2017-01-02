@@ -1,7 +1,9 @@
-package net.streamok.fiber.node
+package net.streamok.adapter.rest
 
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
+import net.streamok.fiber.node.DefaultFiberNode
+import net.streamok.fiber.node.FiberDefinitionFactory
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -9,14 +11,14 @@ import org.junit.runner.RunWith
 class RestEndpointTest {
 
     @Test
-    void shouldInvokeFiberViaRestEndpoint(TestContext context) {
+    void shouldInvokeOperationViaRestEndpoint(TestContext context) {
         def async = context.async()
         def fiberNode = new DefaultFiberNode()
         def fiberDefinition = [type: 'groovy', address: 'echo', closure: '{it -> it.reply(it.body())}']
         fiberNode.addFiber(new FiberDefinitionFactory().build(fiberDefinition))
         fiberNode.addEndpoint(new RestEndpoint())
 
-        fiberNode.vertx.createHttpClient().getNow(8080, 'localhost', '/echo') {
+        fiberNode.vertx().createHttpClient().getNow(8080, 'localhost', '/echo') {
             it.bodyHandler {
                 context.assertEquals(it.toString(), 'null')
                 async.complete()

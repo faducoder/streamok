@@ -47,6 +47,11 @@
             <!-- Internal dependencies -->
             <dependency>
                 <groupId>net.streamok</groupId>
+                <artifactId>streamok-adapter-rest</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
                 <artifactId>streamok-distribution-node</artifactId>
                 <version>${streamok.version}</version>
             </dependency>

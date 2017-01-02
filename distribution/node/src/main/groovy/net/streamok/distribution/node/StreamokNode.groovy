@@ -1,7 +1,7 @@
 package net.streamok.distribution.node
 
+import net.streamok.adapter.rest.RestEndpoint
 import net.streamok.fiber.node.DefaultFiberNode
-import net.streamok.fiber.node.RestEndpoint
 import net.streamok.fiber.node.api.FiberNode
 import net.streamok.service.configuration.ConfigurationSuite
 import net.streamok.service.document.DocumentService

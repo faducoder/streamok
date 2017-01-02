@@ -28,6 +28,10 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>net.streamok</groupId>
+            <artifactId>streamok-adapter-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.streamok</groupId>
             <artifactId>streamok-fiber-node</artifactId>
         </dependency>
         <dependency>
