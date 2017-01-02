@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.streamok</groupId>
+        <artifactId>streamok-bom</artifactId>
+        <version>0.0.5-SNAPSHOT</version>
+        <relativePath>../bom</relativePath>
+    </parent>
+
+    <artifactId>streamok-kafka</artifactId>
+    <name>${project.artifactId}</name>
+
+    <properties>
+        <spring-kafka.version>1.1.1.RELEASE</spring-kafka.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.streamok</groupId>
+            <artifactId>streamok-lib-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${spring-kafka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -23,6 +23,7 @@
         <module>bom</module>
         <module>lib</module>
         <module>fiber</module>
+        <module>kafka</module>
         <module>service</module>
         <module>distribution</module>
     </modules>
