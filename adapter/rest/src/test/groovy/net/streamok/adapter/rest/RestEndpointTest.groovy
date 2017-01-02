@@ -4,23 +4,40 @@ import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
 import net.streamok.fiber.node.DefaultFiberNode
 import net.streamok.fiber.node.FiberDefinitionFactory
+import net.streamok.fiber.node.api.FiberNode
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+
+import static net.streamok.lib.common.Networks.findAvailableTcpPort
+import static net.streamok.lib.conf.Conf.configuration
 
 @RunWith(VertxUnitRunner)
 class RestEndpointTest {
 
+    int port = findAvailableTcpPort()
+
+    FiberNode fiberNode
+
+    @Before
+    void before() {
+        configuration().memory().setProperty('adapter.rest.port', port)
+        fiberNode = new DefaultFiberNode().addEndpoint(new RestEndpoint())
+    }
+
+    @After
+    void after() {
+        fiberNode.close()
+    }
+
     @Test
     void shouldInvokeOperationViaRestEndpoint(TestContext context) {
         def async = context.async()
-        def fiberNode = new DefaultFiberNode()
         def fiberDefinition = [type: 'groovy', address: 'echo', closure: '{it -> it.reply(it.body())}']
         fiberNode.addFiber(new FiberDefinitionFactory().build(fiberDefinition))
-        fiberNode.addEndpoint(new RestEndpoint())
-
-        fiberNode.vertx().createHttpClient().getNow(8080, 'localhost', '/echo') {
+        fiberNode.vertx().createHttpClient().getNow(port, 'localhost', '/echo') {
             it.bodyHandler {
-                fiberNode.vertx().close()
                 context.assertEquals(it.toString(), 'null')
                 async.complete()
             }
@@ -30,14 +47,10 @@ class RestEndpointTest {
     @Test
     void shouldCopyParameterToHeader(TestContext context) {
         def async = context.async()
-        def fiberNode = new DefaultFiberNode()
         def fiberDefinition = [type: 'groovy', address: 'echo', closure: '{it -> it.reply(it.nonBlankHeader("foo"))}']
         fiberNode.addFiber(new FiberDefinitionFactory().build(fiberDefinition))
-        fiberNode.addEndpoint(new RestEndpoint())
-
-        fiberNode.vertx().createHttpClient().getNow(8080, 'localhost', '/echo?foo=bar') {
+        fiberNode.vertx().createHttpClient().getNow(port, 'localhost', '/echo?foo=bar') {
             it.bodyHandler {
-                fiberNode.vertx().close()
                 context.assertEquals(it.toString(), 'bar')
                 async.complete()
             }

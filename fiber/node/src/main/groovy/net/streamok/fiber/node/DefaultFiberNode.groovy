@@ -44,6 +44,12 @@ class DefaultFiberNode implements FiberNode {
     }
 
     @Override
+    FiberNode close() {
+        vertx.close()
+        this
+    }
+
+    @Override
     String id() {
         id
     }

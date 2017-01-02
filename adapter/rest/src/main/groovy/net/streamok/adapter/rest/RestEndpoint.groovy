@@ -21,12 +21,16 @@ import net.streamok.fiber.node.api.Endpoint
 import net.streamok.fiber.node.api.FiberNode
 import net.streamok.lib.vertx.EventBuses
 
+import static net.streamok.adapter.rest.RestBridge.restBridgeAddress
+import static net.streamok.lib.conf.Conf.configuration
+
 class RestEndpoint implements Endpoint {
 
     @Override
     void connect(FiberNode fiberNode) {
         def vertx = fiberNode.vertx()
         def server = vertx.createHttpServer()
+        new EventBusRestBridge().connect(vertx.eventBus())
 
         server.requestHandler { request ->
             def address = request.uri().substring(1).replaceAll('/', '.')
@@ -36,7 +40,7 @@ class RestEndpoint implements Endpoint {
             def headers = [streamok_address: address]
             headers = request.params().entries().inject(headers) { map, entry -> map[entry.key] = entry.value; map }
             request.bodyHandler {
-                vertx.eventBus().send(address, request.method() == HttpMethod.GET ? null : it.toString(), EventBuses.headers(headers)) {
+                vertx.eventBus().send(restBridgeAddress, request.method() == HttpMethod.GET ? null : it.toString(), EventBuses.headers(headers)) {
                     def response = request.response()
                     response.putHeader("content-type", "text/plain")
                     if(it.failed()) {
@@ -48,7 +52,7 @@ class RestEndpoint implements Endpoint {
             }
         }
 
-        server.listen(8080)
+        server.listen(configuration().get().getInt('adapter.rest.port', 8080))
     }
 
 }

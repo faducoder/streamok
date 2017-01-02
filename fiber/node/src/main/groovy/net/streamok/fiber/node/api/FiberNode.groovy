@@ -6,6 +6,8 @@ interface FiberNode {
 
     FiberNode start()
 
+    FiberNode close()
+
     String id()
 
     FiberNode addFiber(OperationDefinition fiberDefinition)
