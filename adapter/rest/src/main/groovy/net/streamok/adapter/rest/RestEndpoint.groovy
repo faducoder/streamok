@@ -16,11 +16,10 @@
  */
 package net.streamok.adapter.rest
 
-import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.http.HttpMethod
-import io.vertx.core.http.HttpServerResponse
 import net.streamok.fiber.node.api.Endpoint
 import net.streamok.fiber.node.api.FiberNode
+import net.streamok.lib.vertx.EventBuses
 
 class RestEndpoint implements Endpoint {
 
@@ -34,11 +33,11 @@ class RestEndpoint implements Endpoint {
             if(address.indexOf('?') != -1) {
                 address = address.substring(0, address.indexOf('?'))
             }
-            def dd = new DeliveryOptions()
-            request.params().entries().each { dd.addHeader(it.key, it.value) }
+            def headers = [streamok_address: address]
+            headers = request.params().entries().inject(headers) { map, entry -> map[entry.key] = entry.value; map }
             request.bodyHandler {
-                vertx.eventBus().send(address, request.method() == HttpMethod.GET ? null : it.toString(), dd) {
-                    HttpServerResponse response = request.response()
+                vertx.eventBus().send(address, request.method() == HttpMethod.GET ? null : it.toString(), EventBuses.headers(headers)) {
+                    def response = request.response()
                     response.putHeader("content-type", "text/plain")
                     if(it.failed()) {
                         response.end(it.cause().message)
