@@ -3,39 +3,29 @@ package net.streamok.kafka
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.utils.Bytes
+
+import static net.streamok.kafka.DataStreamProducer.dataStreamProducer
 
 class DataStreamTest {
 
     public static void main(String[] args) {
-        def props2 = new Properties()
-        props2.put("acks", "all");
-        props2.put("retries", 0);
-        props2.put("batch.size", 16384);
-        props2.put("linger.ms", 1);
-        props2.put("buffer.memory", 33554432);
-        props2.put("bootstrap.servers", "localhost:9092")
-        props2.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-        props2.put("value.serializer", "org.apache.kafka.common.serialization.BytesSerializer")
-
-        def prod = new KafkaProducer(props2)
-        def producer = new DataStreamProducer(prod)
+        def producer = dataStreamProducer()
         (1..100).each {
-            producer.send(new Event(type: 'foo', payload: 'hello!', entityId: 'xxx'))
+            producer.send(new Event(type: 'foo', payload: 'hello!'))
         }
-        prod.close()
+        producer.close()
 
-        Properties consProp = new Properties()
-        consProp.put("bootstrap.servers", "localhost:9092")
-        consProp.put("group.id", "testxxxxy");
-        consProp.put("enable.auto.commit", "false");
-        consProp.put("auto.commit.interval.ms", "10");
-        consProp.put("session.timeout.ms", "30000");
-        consProp.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-        consProp.put("value.deserializer", "org.apache.kafka.common.serialization.BytesDeserializer")
-        def cons = new KafkaConsumer<>(consProp)
+        def config = new Properties()
+        config.put("bootstrap.servers", "localhost:9092")
+        config.put("group.id", "testxxxxy");
+        config.put("enable.auto.commit", "false");
+        config.put("auto.commit.interval.ms", "10");
+        config.put("session.timeout.ms", "30000");
+        config.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+        config.put("value.deserializer", "org.apache.kafka.common.serialization.BytesDeserializer")
+        def cons = new KafkaConsumer<>(config)
 //        cons.subscribe(['page_visitsx'])
         cons.assign([new TopicPartition('events.foo', 0)])
         cons.seekToBeginning([new TopicPartition('events.foo', 0)])
