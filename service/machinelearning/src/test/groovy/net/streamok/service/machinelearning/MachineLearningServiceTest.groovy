@@ -19,7 +19,7 @@ package net.streamok.service.machinelearning
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
-import net.streamok.fiber.node.DefaultFiberNode
+import net.streamok.fiber.node.DefaultServicesNode
 import net.streamok.lib.mongo.EmbeddedMongo
 import net.streamok.service.document.DocumentService
 import net.streamok.service.machinelearning.operation.decision.DecisionFeatureVector
@@ -48,7 +48,7 @@ class MachineLearningServiceTest {
     static def mongo = new EmbeddedMongo().start()
 
     static
-    def bus = new DefaultFiberNode().addSuite(new MachineLearningService()).addSuite(new DocumentService()).vertx().eventBus()
+    def bus = new DefaultServicesNode().addSuite(new MachineLearningService()).addSuite(new DocumentService()).vertx().eventBus()
 
     def dataset = randomUUID().toString()
 

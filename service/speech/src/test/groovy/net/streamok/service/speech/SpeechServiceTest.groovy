@@ -2,7 +2,7 @@ package net.streamok.service.speech
 
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
-import net.streamok.fiber.node.DefaultFiberNode
+import net.streamok.fiber.node.DefaultServicesNode
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,7 +14,7 @@ import static org.junit.Assume.assumeTrue
 @RunWith(VertxUnitRunner)
 class SpeechServiceTest {
 
-    def bus = new DefaultFiberNode().addSuite(new SpeechService()).vertx().eventBus()
+    def bus = new DefaultServicesNode().addSuite(new SpeechService()).vertx().eventBus()
 
     @Test
     void shouldRecognizeSpeech(TestContext context) {

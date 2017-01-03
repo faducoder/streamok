@@ -18,7 +18,7 @@ package net.streamok.adapter.rest
 
 import io.vertx.core.http.HttpMethod
 import net.streamok.fiber.node.api.Endpoint
-import net.streamok.fiber.node.api.FiberNode
+import net.streamok.fiber.node.api.ServicesNode
 import net.streamok.lib.vertx.EventBuses
 
 import static net.streamok.adapter.rest.RestBridge.restBridgeAddress
@@ -27,7 +27,7 @@ import static net.streamok.lib.conf.Conf.configuration
 class RestEndpoint implements Endpoint {
 
     @Override
-    void connect(FiberNode fiberNode) {
+    void connect(ServicesNode fiberNode) {
         def vertx = fiberNode.vertx()
         def server = vertx.createHttpServer()
         new EventBusRestBridge().connect(vertx.eventBus())

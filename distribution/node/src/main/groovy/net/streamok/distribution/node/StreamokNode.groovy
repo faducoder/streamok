@@ -1,8 +1,8 @@
 package net.streamok.distribution.node
 
 import net.streamok.adapter.rest.RestEndpoint
-import net.streamok.fiber.node.DefaultFiberNode
-import net.streamok.fiber.node.api.FiberNode
+import net.streamok.fiber.node.DefaultServicesNode
+import net.streamok.fiber.node.api.ServicesNode
 import net.streamok.service.configuration.ConfigurationSuite
 import net.streamok.service.document.DocumentService
 import net.streamok.service.machinelearning.MachineLearningService
@@ -11,7 +11,7 @@ import net.streamok.service.speech.SpeechService
 
 class StreamokNode {
 
-    def fiberNode = new DefaultFiberNode().
+    def fiberNode = new DefaultServicesNode().
             addEndpoint(new RestEndpoint()).
             addSuite(new MetricsSuite()).
             addSuite(new ConfigurationSuite()).
@@ -20,7 +20,7 @@ class StreamokNode {
             addSuite(new SpeechService()).
             start()
 
-    FiberNode fiberNode() {
+    ServicesNode fiberNode() {
         fiberNode
     }
 

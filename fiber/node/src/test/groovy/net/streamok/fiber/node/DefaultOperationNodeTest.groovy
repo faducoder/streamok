@@ -12,7 +12,7 @@ class DefaultOperationNodeTest {
     @Test
     void shouldInvokeGroovyClosureFiber(TestContext context) {
         def async = context.async()
-        def fiberNode = new DefaultFiberNode().start()
+        def fiberNode = new DefaultServicesNode().start()
         def fiberDefinition = [type: 'groovy', address: 'echo', closure: '{it -> it.reply(it.body(String))}']
         fiberNode.addFiber(new FiberDefinitionFactory().build(fiberDefinition))
         fiberNode.vertx().eventBus().send('echo', Json.encode('foo')) {

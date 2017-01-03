@@ -25,7 +25,7 @@ import static java.lang.System.currentTimeMillis
 import static java.util.UUID.randomUUID
 import static org.apache.commons.lang3.SystemUtils.javaIoTmpDir
 
-class DefaultFiberNode implements FiberNode {
+class DefaultServicesNode implements ServicesNode {
 
     private final def Vertx vertx
 
@@ -33,18 +33,18 @@ class DefaultFiberNode implements FiberNode {
 
     def dependencies = [:]
 
-    DefaultFiberNode() {
+    DefaultServicesNode() {
         System.setProperty('vertx.cacheDirBase', javaIoTmpDir.absolutePath)
         vertx = Vertx.vertx()
     }
 
-    FiberNode start() {
+    ServicesNode start() {
         vertx.eventBus().send('metrics.put', null, new DeliveryOptions().addHeader('key', "fiber.node.${id}.started").addHeader('value', "${currentTimeMillis()}"))
         this
     }
 
     @Override
-    FiberNode close() {
+    ServicesNode close() {
         vertx.close()
         this
     }
@@ -54,7 +54,7 @@ class DefaultFiberNode implements FiberNode {
         id
     }
 
-    DefaultFiberNode addFiber(OperationDefinition fiberDefinition) {
+    DefaultServicesNode addFiber(OperationDefinition fiberDefinition) {
         vertx.eventBus().consumer(fiberDefinition.address()) {
             try {
                 fiberDefinition.handler().handle(new VertxOperationContext(it, this))
@@ -65,12 +65,12 @@ class DefaultFiberNode implements FiberNode {
         this
     }
 
-    DefaultFiberNode addEndpoint(Endpoint endpoint) {
+    DefaultServicesNode addEndpoint(Endpoint endpoint) {
         endpoint.connect(this)
         this
     }
 
-    DefaultFiberNode addSuite(Service fiberSuite) {
+    DefaultServicesNode addSuite(Service fiberSuite) {
         if(fiberSuite instanceof FiberNodeAware) {
             fiberSuite.fiberNode(this)
         }
@@ -82,7 +82,7 @@ class DefaultFiberNode implements FiberNode {
 
     // Dependency injection
 
-    DefaultFiberNode addDependency(DependencyProvider dependencyProvider) {
+    DefaultServicesNode addDependency(DependencyProvider dependencyProvider) {
         dependencies[dependencyProvider.key()] = dependencyProvider.dependency()
         this
     }

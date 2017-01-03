@@ -1,7 +1,7 @@
 package net.streamok.fiber.node
 
 import net.streamok.fiber.node.api.Endpoint
-import net.streamok.fiber.node.api.FiberNode
+import net.streamok.fiber.node.api.ServicesNode
 
 class TimerEndpoint implements Endpoint {
 
@@ -23,7 +23,7 @@ class TimerEndpoint implements Endpoint {
     }
 
     @Override
-    void connect(FiberNode fiberNode) {
+    void connect(ServicesNode fiberNode) {
         fiberNode.vertx().setPeriodic(delay) {
             def ev = event()
             fiberNode.vertx().eventBus().send(this.address, ev.body, ev.deliveryOptions)

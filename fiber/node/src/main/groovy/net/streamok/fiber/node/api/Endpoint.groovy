@@ -2,6 +2,6 @@ package net.streamok.fiber.node.api
 
 interface Endpoint {
 
-    void connect(FiberNode fiberNode)
+    void connect(ServicesNode fiberNode)
 
 }

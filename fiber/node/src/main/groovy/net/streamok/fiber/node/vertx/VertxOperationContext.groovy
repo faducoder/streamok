@@ -3,7 +3,7 @@ package net.streamok.fiber.node.vertx
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
-import net.streamok.fiber.node.api.FiberNode
+import net.streamok.fiber.node.api.ServicesNode
 import net.streamok.fiber.node.api.OperationContext
 import org.slf4j.LoggerFactory
 
@@ -18,9 +18,9 @@ class VertxOperationContext implements OperationContext {
 
     private final Message message
 
-    private final FiberNode fiberNode
+    private final ServicesNode fiberNode
 
-    VertxOperationContext(Message message, FiberNode fiberNode) {
+    VertxOperationContext(Message message, ServicesNode fiberNode) {
         this.message = message
         this.fiberNode = fiberNode
     }

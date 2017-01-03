@@ -30,7 +30,7 @@ class ConfigurationSuite implements Service, FiberNodeAware {
     }
 
     @Override
-    void fiberNode(FiberNode fiberNode) {
+    void fiberNode(ServicesNode fiberNode) {
         vertx = fiberNode.vertx()
     }
 

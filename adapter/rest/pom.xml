@@ -10,14 +10,16 @@
     </parent>
 
     <artifactId>streamok-adapter-rest</artifactId>
-    <name>${artifactId}</name>
+    <name>${project.artifactId}</name>
 
     <dependencies>
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>net.streamok</groupId>
             <artifactId>streamok-fiber-node</artifactId>
         </dependency>
 
+        <!-- Internal testing dependencies -->
         <dependency>
             <groupId>net.streamok</groupId>
             <artifactId>streamok-lib-vertx-test</artifactId>

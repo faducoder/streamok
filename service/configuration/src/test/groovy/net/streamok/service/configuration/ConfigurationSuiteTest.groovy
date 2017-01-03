@@ -4,7 +4,7 @@ import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.eventbus.EventBus
 import io.vertx.ext.unit.TestContext
 import io.vertx.ext.unit.junit.VertxUnitRunner
-import net.streamok.fiber.node.DefaultFiberNode
+import net.streamok.fiber.node.DefaultServicesNode
 import net.streamok.lib.conf.Conf
 import net.streamok.lib.mongo.EmbeddedMongo
 import org.junit.BeforeClass
@@ -21,7 +21,7 @@ class ConfigurationSuiteTest {
     @BeforeClass
     static void beforeClass() {
         Conf.configuration().instance().addProperty('MONGO_SERVICE_PORT', mongoPort)
-        bus = new DefaultFiberNode().addSuite(new ConfigurationSuite()).vertx().eventBus()
+        bus = new DefaultServicesNode().addSuite(new ConfigurationSuite()).vertx().eventBus()
     }
 
     static def mongo = new EmbeddedMongo().start(mongoPort)
