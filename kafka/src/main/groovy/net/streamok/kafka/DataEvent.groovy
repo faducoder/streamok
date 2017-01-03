@@ -1,6 +1,6 @@
 package net.streamok.kafka
 
-class Event {
+class DataEvent {
 
     String type
 
@@ -11,5 +11,9 @@ class Event {
     String entityId
 
     String partitionKey
+
+    // Kafka message properties
+
+    long offset
 
 }

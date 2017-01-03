@@ -1,7 +1,6 @@
 package net.streamok.kafka
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import net.streamok.lib.common.Uuids
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -29,7 +28,7 @@ class DataStreamProducer {
         new DataStreamProducer(kafkaProducer)
     }
 
-    void send(Event event) {
+    void send(DataEvent event) {
         if(event.entityId == null) {
             event.entityId = uuid()
         }

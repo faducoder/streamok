@@ -1,19 +1,19 @@
 package net.streamok.kafka
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.apache.kafka.clients.consumer.ConsumerRecords
+import org.apache.commons.lang3.RandomStringUtils
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.common.utils.Bytes
 
+import static net.streamok.kafka.DataStreamConsumer.dataStreamConsumer
 import static net.streamok.kafka.DataStreamProducer.dataStreamProducer
 
 class DataStreamTest {
 
     public static void main(String[] args) {
+        def topic = RandomStringUtils.randomAlphabetic(5)
+
         def producer = dataStreamProducer()
-        (1..100).each {
-            producer.send(new Event(type: 'foo', payload: 'hello!'))
+        (1..5).each {
+            producer.send(new DataEvent(type: topic, payload: 'hello!'))
         }
         producer.close()
 
@@ -25,18 +25,10 @@ class DataStreamTest {
         config.put("session.timeout.ms", "30000");
         config.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
         config.put("value.deserializer", "org.apache.kafka.common.serialization.BytesDeserializer")
+        config.put("auto.offset.reset", "earliest")
         def cons = new KafkaConsumer<>(config)
-//        cons.subscribe(['page_visitsx'])
-        cons.assign([new TopicPartition('events.foo', 0)])
-        cons.seekToBeginning([new TopicPartition('events.foo', 0)])
-        ConsumerRecords<String, Bytes> records = cons.poll(10000);
-        println records.size()
-//            for (ConsumerRecord<String, String> record : records)
-        cons.commitSync()
-        def first = records.toList().first()
-        def last = records.toList().last()
-        println new ObjectMapper().readValue(first.value().get(), Map)
-        println new ObjectMapper().readValue(last.value().get(), Map)
+
+        dataStreamConsumer(cons, topic){ println it }.start()
     }
 
 }
