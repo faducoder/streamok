@@ -12,7 +12,7 @@ class DataStreamTest {
 
         def producer = dataStreamProducer()
         (1..5).each {
-            producer.send(new DataEvent(type: topic, payload: 'hello!'))
+            producer.send(topic, new DataEvent(payload: 'hello!'))
         }
         producer.close()
 

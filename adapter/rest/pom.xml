@@ -19,6 +19,13 @@
             <artifactId>streamok-fiber-node</artifactId>
         </dependency>
 
+        <!-- Optional dependencies -->
+        <dependency>
+            <groupId>net.streamok</groupId>
+            <artifactId>streamok-lib-kafka</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Internal testing dependencies -->
         <dependency>
             <groupId>net.streamok</groupId>

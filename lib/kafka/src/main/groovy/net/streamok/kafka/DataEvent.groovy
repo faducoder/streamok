@@ -2,8 +2,6 @@ package net.streamok.kafka
 
 class DataEvent {
 
-    String type
-
     Object payload
 
     String operationType

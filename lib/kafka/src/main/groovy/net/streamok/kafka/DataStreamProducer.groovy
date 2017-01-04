@@ -28,14 +28,14 @@ class DataStreamProducer {
         new DataStreamProducer(kafkaProducer)
     }
 
-    void send(DataEvent event) {
+    void send(String type, DataEvent event) {
         if(event.entityId == null) {
             event.entityId = uuid()
         }
 
         def key = event.partitionKey ?: event.entityId.hashCode() % 10 as String
         def payload = new Bytes(new ObjectMapper().writeValueAsBytes(event))
-        kafkaProducer.send(new ProducerRecord<String, Bytes>("events.${event.type}", key, payload))
+        kafkaProducer.send(new ProducerRecord<String, Bytes>("events.${type}", key, payload))
     }
 
     def close() {
