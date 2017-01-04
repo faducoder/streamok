@@ -31,6 +31,7 @@
         <groovy.version>2.4.7</groovy.version>
         <guava.version>20.0</guava.version>
         <junit.version>4.12</junit.version>
+        <kafka.version>0.10.1.1</kafka.version>
         <logback.version>1.1.7</logback.version>
         <slf4j.version>1.7.21</slf4j.version>
         <spark.version>2.0.2</spark.version>
@@ -176,6 +177,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.spark</groupId>
