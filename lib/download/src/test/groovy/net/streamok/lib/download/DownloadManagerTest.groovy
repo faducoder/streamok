@@ -16,7 +16,6 @@
  */
 package net.streamok.lib.download
 
-import net.streamok.lib.download.DownloadManager.BinaryCoordinates
 import net.streamok.lib.process.DefaultProcessManager
 import org.junit.Test
 

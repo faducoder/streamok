@@ -36,7 +36,7 @@ class DownloadManager {
 
     // Logger
 
-    private final static LOG = getLogger(DownloadManager.class)
+    private final static LOG = getLogger(DownloadManager)
 
     // Collaborators
 
@@ -52,6 +52,10 @@ class DownloadManager {
         this.processManager = processManager
         this.downloadDirectory = downloadDirectory
 
+        initialize()
+    }
+
+    private initialize() {
         downloadDirectory.mkdirs()
     }
 
@@ -65,7 +69,7 @@ class DownloadManager {
         def targetFile = downloadedFile(coordinates.fileName)
         if(!targetFile.exists()) {
             LOG.debug('File {} does not exist - downloading...', targetFile.absolutePath)
-            def tmpFile = createTempFile('smolok', 'download')
+            def tmpFile = createTempFile('streamok', 'download')
             try {
                 copyLarge(coordinates.source().openStream(), new FileOutputStream(tmpFile))
             } catch (UnknownHostException e) {
@@ -109,42 +113,6 @@ class DownloadManager {
 
     File fileFromExtractedDirectory(String extractedDirectoryName, String filename) {
         Paths.get(downloadedFile(extractedDirectoryName).absolutePath, filename).toFile()
-    }
-
-    // Inner classes
-
-    @ToString
-    static class BinaryCoordinates {
-
-        private final URL source
-
-        private final String fileName
-
-        private final String extractedFileName
-
-        BinaryCoordinates(URL source, String fileName, String extractedFileName) {
-            this.source = source
-            this.fileName = fileName
-            this.extractedFileName = extractedFileName
-        }
-
-        BinaryCoordinates(URL source, String fileName) {
-            this(source, fileName, null)
-        }
-
-
-        URL source() {
-            source
-        }
-
-        String fileName() {
-            fileName
-        }
-
-        String extractedFileName() {
-            extractedFileName
-        }
-
     }
 
 }

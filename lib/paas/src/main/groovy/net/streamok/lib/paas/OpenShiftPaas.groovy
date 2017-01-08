@@ -17,6 +17,7 @@
 package net.streamok.lib.paas
 
 import com.jayway.awaitility.core.ConditionTimeoutException
+import net.streamok.lib.download.BinaryCoordinates
 import net.streamok.lib.download.DownloadManager
 import net.streamok.lib.process.ProcessManager
 import org.apache.commons.lang3.SystemUtils
@@ -89,7 +90,7 @@ class OpenShiftPaas implements Paas {
 
     OpenShiftPaas init() {
         openshiftHome.mkdirs()
-        downloadManager.download(new DownloadManager.BinaryCoordinates(OPENSHIFT_DOWNLOAD_URL, OPENSHIFT_DISTRO_ARCHIVE, OPENSHIFT_DISTRO))
+        downloadManager.download(new BinaryCoordinates(OPENSHIFT_DOWNLOAD_URL, OPENSHIFT_DISTRO_ARCHIVE, OPENSHIFT_DISTRO))
         this
     }
 
