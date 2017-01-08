@@ -22,7 +22,7 @@ class DocumentFindMany implements OperationDefinition {
     @Override
     OperationHandler handler() {
         { fiberContext ->
-            def collection = fiberContext.header('collection').toString()
+            def collection = fiberContext.header('collection')
             def documentIds = fiberContext.body(String[])
             def mongo = fiberContext.dependency(MongoClient)
 
