@@ -88,6 +88,11 @@
             </dependency>
             <dependency>
                 <groupId>net.streamok</groupId>
+                <artifactId>streamok-lib-paas</artifactId>
+                <version>${streamok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.streamok</groupId>
                 <artifactId>streamok-lib-process</artifactId>
                 <version>${streamok.version}</version>
             </dependency>
