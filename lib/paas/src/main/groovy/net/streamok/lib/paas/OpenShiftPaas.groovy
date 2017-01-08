@@ -62,7 +62,7 @@ class OpenShiftPaas implements Paas {
 
     private final List<ImageLocatorResolver> imageLocatorResolvers
 
-    private final def openshiftHome = Paths.get(SystemUtils.getUserHome().absolutePath, '.smolok', 'openshift').toFile()
+    private final def openshiftHome = Paths.get(SystemUtils.getUserHome().absolutePath, '.streamok', 'openshift').toFile()
 
     // Cached variables
 
@@ -119,7 +119,7 @@ class OpenShiftPaas implements Paas {
                     await('OpenShift server is ready to login').atMost(60, SECONDS).until(condition { openShiftServerIsReadyToLogin() })
                     def newProjectOutput
                     try {
-                        newProjectOutput = oc('new-project smolok')
+                        newProjectOutput = oc('new-project streamok')
                         await('OpenShift project has been set.').atMost(60, SECONDS).until(condition { isProjectSet() })
                     } catch (ConditionTimeoutException e) {
                         new RuntimeException("Cannot create new project. Output: ${newProjectOutput}", e)

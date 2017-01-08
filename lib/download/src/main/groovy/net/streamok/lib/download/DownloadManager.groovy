@@ -16,7 +16,6 @@
  */
 package net.streamok.lib.download
 
-import groovy.transform.ToString
 import net.streamok.lib.process.ProcessManager
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.Validate
