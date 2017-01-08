@@ -27,7 +27,7 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>net.streamok</groupId>
-            <artifactId>streamok-lib-process</artifactId>
+            <artifactId>streamok-lib-paas</artifactId>
         </dependency>
 
         <!-- Runtime dependencies -->
