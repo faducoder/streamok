@@ -101,6 +101,19 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.servicemix.tooling</groupId>
+                    <artifactId>depends-maven-plugin</artifactId>
+                    <version>${depends-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>generate-depends-file</id>
+                            <goals>
+                                <goal>generate-depends-file</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -172,19 +185,6 @@
                                     <test-profile>docker</test-profile>
                                 </systemProperties>
                             </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.servicemix.tooling</groupId>
-                            <artifactId>depends-maven-plugin</artifactId>
-                            <version>${depends-maven-plugin.version}</version>
-                            <executions>
-                                <execution>
-                                    <id>generate-depends-file</id>
-                                    <goals>
-                                        <goal>generate-depends-file</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
                         </plugin>
                     </plugins>
                 </pluginManagement>

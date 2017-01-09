@@ -1,8 +1,11 @@
 package net.streamok.distribution.cmd
 
+import net.streamok.lib.common.Mavens
 import net.streamok.lib.download.DownloadManager
 import net.streamok.lib.paas.OpenShiftPaas
 import net.streamok.lib.process.DefaultProcessManager
+
+import static net.streamok.lib.common.Mavens.artifactVersionFromDependenciesProperties
 
 class StreamokCmd {
 
@@ -15,7 +18,8 @@ class StreamokCmd {
             paas.start()
             println 'OpenShift started.'
             paas.startService('mongo')
-            paas.startService('streamok/node:0.0.4 -e XMX=512m')
+            def streamokVersion = artifactVersionFromDependenciesProperties('net.streamok', 'streamok-lib-common').get()
+            paas.startService("streamok/node:${streamokVersion} -e XMX=512m")
         } else if(args.first() == 'reset') {
             paas.reset()
         }
