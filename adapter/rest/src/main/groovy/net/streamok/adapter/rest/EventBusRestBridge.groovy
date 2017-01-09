@@ -2,6 +2,7 @@ package net.streamok.adapter.rest
 
 import io.vertx.core.eventbus.DeliveryOptions
 import io.vertx.core.eventbus.EventBus
+import io.vertx.core.eventbus.ReplyException
 
 class EventBusRestBridge implements RestBridge {
 
@@ -13,7 +14,8 @@ class EventBusRestBridge implements RestBridge {
                 if(it.succeeded()) {
                     message.reply(it.result().body())
                 } else {
-                    message.fail(100, it.cause().message)
+                    int failureCode = (it.cause() as ReplyException).failureCode() ?: 100
+                    message.fail(failureCode, it.cause().message)
                 }
             }
         }

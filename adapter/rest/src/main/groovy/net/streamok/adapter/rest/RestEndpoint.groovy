@@ -16,6 +16,7 @@
  */
 package net.streamok.adapter.rest
 
+import io.vertx.core.eventbus.ReplyException
 import io.vertx.core.http.HttpMethod
 import net.streamok.fiber.node.api.Endpoint
 import net.streamok.fiber.node.api.ServicesNode
@@ -26,6 +27,8 @@ import static net.streamok.lib.conf.Conf.configuration
 
 class RestEndpoint implements Endpoint {
 
+    String prefix = configuration().get().getString('adapter.rest.address.prefix', 'api')
+
     @Override
     void connect(ServicesNode fiberNode) {
         def vertx = fiberNode.vertx()
@@ -33,10 +36,8 @@ class RestEndpoint implements Endpoint {
         new EventBusRestBridge().connect(vertx.eventBus())
 
         server.requestHandler { request ->
-            def address = request.uri().substring(1).replaceAll('/', '.')
-            if(address.indexOf('?') != -1) {
-                address = address.substring(0, address.indexOf('?'))
-            }
+            def address = request.path().substring(1).replaceAll('/', '.')
+            address = address.replaceFirst("${prefix}.", '')
             def headers = [streamok_address: address]
             headers = request.params().entries().inject(headers) { map, entry -> map[entry.key] = entry.value; map }
             request.bodyHandler {
@@ -44,6 +45,10 @@ class RestEndpoint implements Endpoint {
                     def response = request.response()
                     response.putHeader("content-type", "text/plain")
                     if(it.failed()) {
+                        int failureCode = (it.cause() as ReplyException).failureCode() ?: 100
+                        if (failureCode != 100) {
+                            response.setStatusCode(failureCode)
+                        }
                         response.end(it.cause().message)
                     } else {
                         response.end(it.result().body().toString())

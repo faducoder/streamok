@@ -26,6 +26,7 @@
         <module>configuration</module>
         <module>document</module>
         <module>machinelearning</module>
+        <module>machinelearningrest</module>
         <module>speech</module>
     </modules>
 

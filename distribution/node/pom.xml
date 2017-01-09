@@ -52,6 +52,10 @@
         </dependency>
         <dependency>
             <groupId>net.streamok</groupId>
+            <artifactId>streamok-service-machinelearning-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.streamok</groupId>
             <artifactId>streamok-service-speech</artifactId>
         </dependency>
 
