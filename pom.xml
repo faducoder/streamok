@@ -12,7 +12,7 @@
 
     <groupId>net.streamok</groupId>
     <artifactId>streamok</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.5</version>
     <packaging>pom</packaging>
 
     <name>${artifactId}</name>
@@ -333,7 +333,7 @@
         <connection>scm:git:git@github.com:streamok/streamok.git</connection>
         <developerConnection>scm:git:git@github.com:streamok/streamok.git</developerConnection>
         <url>git@github.com:streamok/streamok.git</url>
-        <tag>HEAD</tag>
+        <tag>streamok-0.0.5</tag>
     </scm>
 
     <distributionManagement>
