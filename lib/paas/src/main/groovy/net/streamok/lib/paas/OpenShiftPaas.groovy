@@ -17,6 +17,7 @@
 package net.streamok.lib.paas
 
 import com.jayway.awaitility.core.ConditionTimeoutException
+import net.streamok.lib.common.Initable
 import net.streamok.lib.download.BinaryCoordinates
 import net.streamok.lib.download.DownloadManager
 import net.streamok.lib.process.ProcessManager
@@ -34,7 +35,7 @@ import static net.streamok.lib.process.CommandBuilder.cmd
 import static net.streamok.lib.process.CommandBuilder.sudo
 import static org.slf4j.LoggerFactory.getLogger
 
-class OpenShiftPaas implements Paas {
+class OpenShiftPaas implements Paas, Initable<OpenShiftPaas> {
 
     // Logging
 

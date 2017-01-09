@@ -1,16 +1,29 @@
 package net.streamok.distribution.cmd
 
-import net.streamok.lib.common.Mavens
+import net.streamok.lib.common.Closeable
+import net.streamok.lib.common.Initable
 import net.streamok.lib.download.DownloadManager
 import net.streamok.lib.paas.OpenShiftPaas
 import net.streamok.lib.process.DefaultProcessManager
 
+import static net.streamok.lib.common.Home.home
 import static net.streamok.lib.common.Mavens.artifactVersionFromDependenciesProperties
 
 class StreamokCmd {
 
     static void main(String... args) {
-        def paas = new OpenShiftPaas(new DownloadManager(new DefaultProcessManager(), new File("/tmp/download")), new DefaultProcessManager()).init()
+        def services = []
+
+        def streamokHome = home()
+
+        def processManager = new DefaultProcessManager()
+        services << processManager
+
+        def paas = new OpenShiftPaas(new DownloadManager(processManager, new File(streamokHome.root(), 'downloads')), processManager)
+        services << paas
+
+        services.each { if(it instanceof Initable) it.init() }
+
         if(args.first() == 'install' || args.first() == 'start') {
             new DockerInstall().execute()
 
@@ -23,6 +36,8 @@ class StreamokCmd {
         } else if(args.first() == 'reset') {
             paas.reset()
         }
+
+        services.each { if(it instanceof Closeable) it.close() }
     }
 
 }

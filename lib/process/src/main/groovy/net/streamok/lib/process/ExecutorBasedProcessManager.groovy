@@ -1,5 +1,6 @@
 package net.streamok.lib.process
 
+import net.streamok.lib.common.Closeable
 import org.slf4j.Logger
 
 import java.util.concurrent.Callable;
@@ -12,7 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Base process manager using JDK Executor Framework for handling asynchronous command invocations.
  */
-abstract class ExecutorBasedProcessManager implements ProcessManager {
+abstract class ExecutorBasedProcessManager implements ProcessManager, Closeable<ExecutorBasedProcessManager> {
 
     protected final Logger log = getLogger(getClass())
 
@@ -33,8 +34,9 @@ abstract class ExecutorBasedProcessManager implements ProcessManager {
         executor.submit({execute(command)} as Callable<List<String>>)
     }
 
-    void close() {
+    ExecutorBasedProcessManager close() {
         executor.shutdown()
+        this
     }
 
     static String[] command(String command) {
