@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-STREAMOK_VERSION=0.0.4
+STREAMOK_VERSION=0.0.5
 
 mkdir -p ~/.streamok/downloads
 
