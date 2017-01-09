@@ -4,11 +4,13 @@ class CommandBuilder {
 
     private final List<String> command
 
-    File workingDirectory
+    private File workingDirectory
 
-    boolean sudo = false
+    private Map<String, String> environment
 
-    String sudoPassword
+    private boolean sudo = false
+
+    private String sudoPassword
 
     // Constructors
 
@@ -37,13 +39,18 @@ class CommandBuilder {
     // Build methods
 
     Command build() {
-        new Command(command, workingDirectory, sudo, sudoPassword)
+        new Command(command, workingDirectory, environment, sudo, sudoPassword)
     }
 
     // Setters
 
     CommandBuilder workingDirectory(File workingDirectory) {
         this.workingDirectory = workingDirectory
+        this
+    }
+
+    CommandBuilder environment(Map<String, String> environment) {
+        this.environment = environment
         this
     }
 

@@ -9,7 +9,7 @@
         <version>0.0.6-SNAPSHOT</version>
     </parent>
     <artifactId>streamok-lib-process</artifactId>
-    <name>${artifactId}</name>
+    <name>${project.version}</name>
 
     <dependencies>
         <!-- Internal dependencies -->
@@ -22,7 +22,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>

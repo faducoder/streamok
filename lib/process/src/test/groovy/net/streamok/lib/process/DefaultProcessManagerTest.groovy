@@ -94,4 +94,16 @@ class DefaultProcessManagerTest {
         assertThat(output).contains(tempFile.name)
     }
 
+    @Test
+    void shouldAddEnvironmentVariable() {
+        // Given
+        def command = new CommandBuilder('env').environment(FOO: 'bar').build()
+
+        // When
+        def fooValue = processManager.execute(command).find{ it.startsWith('FOO=') }
+
+        // Then
+        assertThat(fooValue).isEqualTo('FOO=bar')
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * Licensed to the Smolok under one or more
+ * Licensed to the Streamok under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The licenses this file to You under the Apache License, Version 2.0
@@ -22,17 +22,24 @@ import net.streamok.lib.conf.Conf
 @ToString(includeNames = true, includeFields = true)
 class Command {
 
+    // Members
+
     private final List<String> command
 
     private final File workingDirectory
+
+    private final Map<String, String> environment
 
     private final boolean sudo
 
     private final String sudoPassword
 
-    Command(List<String> command, File workingDirectory, boolean sudo, String sudoPassword) {
+    // Constructors
+
+    Command(List<String> command, File workingDirectory, Map<String, String> environment, boolean sudo, String sudoPassword) {
         this.command = command
         this.workingDirectory = workingDirectory
+        this.environment = environment
         this.sudo = sudo
         this.sudoPassword = sudoPassword
     }
@@ -41,7 +48,7 @@ class Command {
         if(command.length == 1 && command[0] =~ /\s+/) {
             cmd(sudo, command[0].split(/\s+(?=([^"]*"[^"]*")*[^"]*$)/)) // don't split values by whitespaces inside " "
         } else {
-            new Command(command.toList(), null, sudo, null)
+            new Command(command.toList(), null, null, sudo, null)
         }
     }
 
@@ -61,6 +68,10 @@ class Command {
 
     File workingDirectory() {
         workingDirectory
+    }
+
+    Map<String, String> environment() {
+        environment
     }
 
     boolean sudo() {

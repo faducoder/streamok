@@ -35,6 +35,9 @@ class DefaultProcessManager extends ExecutorBasedProcessManager {
                 log.debug('Changing working directory to: {}', command.workingDirectory().absolutePath)
                 processBuilder.directory(command.workingDirectory())
             }
+            if(command.environment() != null) {
+                processBuilder.environment().putAll(command.environment())
+            }
             def process = processBuilder.start()
             def output = readLines(process.getInputStream())
             if(log.isDebugEnabled()) {
