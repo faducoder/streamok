@@ -1,6 +1,6 @@
 # Streamok - data streams for connected devices
 
-[![Version](https://img.shields.io/badge/streamok-0.0.5-blue.svg)](https://github.com/streamok/streamok/releases)
+[![Version](https://img.shields.io/badge/streamok-0.0.6-blue.svg)](https://github.com/streamok/streamok/releases)
 [![Build](https://api.travis-ci.org/streamok/streamok.svg)](https://travis-ci.org/streamok/streamok/)
 
 Streamok is a data stream platform for connected devices, where device can be a piece of the IoT (Internet Of Things) hardware, smart phone, tablet, web browser or external IT system.

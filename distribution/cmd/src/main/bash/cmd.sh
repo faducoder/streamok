@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -z "${STREAMOK_VERSION}" ]; then
-  STREAMOK_VERSION=0.0.5
+  STREAMOK_VERSION=0.0.6
 fi
 
 mkdir -p ~/.streamok/downloads
