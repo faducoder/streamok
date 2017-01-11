@@ -33,6 +33,7 @@ class StreamokCmd {
             paas.startService('mongo')
             def streamokVersion = artifactVersionFromDependenciesProperties('net.streamok', 'streamok-lib-common').get()
             paas.startService("streamok/node:${streamokVersion} -e XMX=512m")
+            paas.startService('streamok/keycloak')
         } else if(args.first() == 'reset') {
             paas.reset()
         }
