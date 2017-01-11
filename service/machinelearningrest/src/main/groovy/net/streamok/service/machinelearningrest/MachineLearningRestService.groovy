@@ -22,11 +22,12 @@ import net.streamok.fiber.node.api.OperationDefinition
 import net.streamok.fiber.node.api.Service
 import net.streamok.service.machinelearningrest.operation.CreateLabelContent
 import net.streamok.service.machinelearningrest.operation.GetLabelForContent
+import net.streamok.service.machinelearningrest.operation.MultiTrain
 
 class MachineLearningRestService implements Service {
     @Override
     List<OperationDefinition> operations() {
-        [new CreateLabelContent(), new GetLabelForContent()]
+        [new CreateLabelContent(), new GetLabelForContent(), new MultiTrain()]
     }
 
     @Override

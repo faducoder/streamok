@@ -75,8 +75,12 @@ class VertxOperationContext implements OperationContext {
     def <T> void send(String address, Object body, Map<String, Object> headersMap, Class<T> responseType, Handler<T> responseHandler) {
         fiberNode.vertx().eventBus().send(address, encode(body), headers(headersMap)) {
             if(it.succeeded()) {
-                def response = decodeValue(it.result().body() as String, responseType)
-                responseHandler.handle(response)
+                if (Void.class.equals(responseType)) {
+                    responseHandler.handle(null)
+                } else {
+                    def response = decodeValue(it.result().body() as String, responseType)
+                    responseHandler.handle(response)
+                }
             } else {
                 fail(100, it.cause().message)
             }
