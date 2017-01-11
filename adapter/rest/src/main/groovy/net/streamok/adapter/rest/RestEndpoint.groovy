@@ -46,7 +46,7 @@ class RestEndpoint implements Endpoint {
                     response.putHeader("content-type", "text/plain")
                     if(it.failed()) {
                         int failureCode = (it.cause() as ReplyException).failureCode() ?: 100
-                        if (failureCode != 100) {
+                        if (failureCode == 404) {
                             response.setStatusCode(failureCode)
                         }
                         response.end(it.cause().message)
