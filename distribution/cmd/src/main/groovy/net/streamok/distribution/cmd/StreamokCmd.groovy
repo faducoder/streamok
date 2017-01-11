@@ -35,7 +35,9 @@ class StreamokCmd {
             paas.startService("streamok/node:${streamokVersion} -e XMX=512m")
             paas.startService('streamok/keycloak')
         } else if(args.first() == 'reset') {
+            println 'Resetting OpenShift installation...'
             paas.reset()
+            println 'Done.'
         }
 
         services.each { if(it instanceof Closeable) it.close() }
