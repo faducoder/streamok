@@ -26,7 +26,7 @@ class DocumentFind implements OperationDefinition {
     OperationHandler handler() {
         { operation ->
             def collection = operation.nonBlankHeader('collection')
-            def queryBuilder = operation.body(QueryBuilder)
+            def queryBuilder = operation.body(QueryBuilder) ?: new QueryBuilder()
             def mongo = operation.dependency(MongoClient)
 
             mongo.findWithOptions(collection, new JsonObject(new MongodbMapper().mongoQuery(queryBuilder.query)), new FindOptions().setLimit(queryBuilder.size).
