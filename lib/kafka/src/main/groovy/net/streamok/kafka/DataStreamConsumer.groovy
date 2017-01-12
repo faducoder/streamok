@@ -44,7 +44,7 @@ class DataStreamConsumer {
     static DataStreamConsumer dataStreamConsumer(String eventType, DataEventProcessor eventProcessor) {
         def config = new Properties()
         config.put('bootstrap.servers', configuration().get().getString('datastream.bootstrap.servers', 'localhost:9092'))
-        config.put("group.id", "consumerGroup")
+        config.put('group.id', 'consumerGroup')
         config.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
         config.put("value.deserializer", "org.apache.kafka.common.serialization.BytesDeserializer")
         config.put("enable.auto.commit", "false")

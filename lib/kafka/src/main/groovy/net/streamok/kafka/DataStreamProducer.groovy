@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.utils.Bytes
 
 import static net.streamok.lib.common.Uuids.uuid
+import static net.streamok.lib.conf.Conf.configuration
 
 class DataStreamProducer {
 
@@ -18,10 +19,10 @@ class DataStreamProducer {
 
     static DataStreamProducer dataStreamProducer() {
         def config = new Properties()
-        config.put("acks", "all");
-        config.put("retries", 0);
+        config.put('acks', 'all')
+        config.put('retries', 5)
         config.put("linger.ms", 1);
-        config.put("bootstrap.servers", "localhost:9092")
+        config.put('bootstrap.servers', configuration().get().getString('datastream.bootstrap.servers', 'localhost:9092'))
         config.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
         config.put("value.serializer", "org.apache.kafka.common.serialization.BytesSerializer")
         def kafkaProducer = new KafkaProducer(config)
