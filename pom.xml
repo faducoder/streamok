@@ -21,6 +21,7 @@
 
     <modules>
         <module>bom</module>
+        <module>docker</module>
         <module>lib</module>
         <module>fiber</module>
         <module>adapter</module>
@@ -81,22 +82,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring-boot.version}</version>
-                    <executions>
-                        <execution>
-                            <configuration>
-                                <classifier>fat</classifier>
-                                <mainClass>${mainClass}</mainClass>
-                            </configuration>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
@@ -110,6 +95,22 @@
                             <id>generate-depends-file</id>
                             <goals>
                                 <goal>generate-depends-file</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <configuration>
+                                <classifier>fat</classifier>
+                                <mainClass>${mainClass}</mainClass>
+                            </configuration>
+                            <goals>
+                                <goal>repackage</goal>
                             </goals>
                         </execution>
                     </executions>
