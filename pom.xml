@@ -15,7 +15,7 @@
     <version>0.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>${artifactId}</name>
+    <name>${project.version}</name>
     <description>streamok</description>
     <url>https://github.com/streamok/streamok</url>
 
