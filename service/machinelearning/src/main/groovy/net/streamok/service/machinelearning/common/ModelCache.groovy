@@ -16,7 +16,7 @@ class ModelCache {
     }
 
     List<String> labels(String collection) {
-        models.keySet().findAll{ it.split('_').first() == collection }.collect{ it.split('_').last() }
+        models.keySet().collect{ it.split('_') }.findAll{ it.first() == collection }.collect{ it.last() }
     }
 
     private def key = {String collection, String label -> "${collection}_${label}" }

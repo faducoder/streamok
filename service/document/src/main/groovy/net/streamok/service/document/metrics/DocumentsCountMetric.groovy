@@ -16,7 +16,7 @@ class DocumentsCountMetric extends PeriodicOperationDefinition {
     DocumentsCountMetric(Vertx vertx) {
         super(vertx,
                 'document.metrics.count',
-                configuration().instance().getInt('DOCUMENT_METRIC_COUNT_INTERVAL', 15000))
+                configuration().get().getInt('DOCUMENT_METRIC_COUNT_INTERVAL', 15000))
     }
 
     @Override

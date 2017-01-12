@@ -16,8 +16,8 @@ class MongoClientFactory {
     }
 
     MongoClient mongoClient(Vertx vertx) {
-        def host = configuration().instance().getString('MONGO_SERVICE_HOST', 'localhost')
-        def port = configuration().instance().getInt('MONGO_SERVICE_PORT', 27017)
+        def host = configuration().get().getString('MONGO_SERVICE_HOST', 'localhost')
+        def port = configuration().get().getInt('MONGO_SERVICE_PORT', 27017)
         mongoClient(vertx, host, port)
     }
 
