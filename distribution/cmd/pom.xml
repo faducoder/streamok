@@ -13,7 +13,7 @@
     <parent>
         <groupId>net.streamok</groupId>
         <artifactId>streamok-distribution</artifactId>
-        <version>0.0.7-SNAPSHOT</version>
+        <version>0.0.7</version>
     </parent>
 
     <artifactId>streamok-distribution-cmd</artifactId>
