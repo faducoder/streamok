@@ -43,11 +43,11 @@ class OpenShiftPaas implements Paas, Initable<OpenShiftPaas> {
 
     // Constants
 
-    private static final OPENSHIFT_DISTRO = 'openshift-origin-server-v1.3.0-rc1-ac0bb1bf6a629e0c262f04636b8cf2916b16098c-linux-64bit'
+    private static final OPENSHIFT_DISTRO = 'openshift-origin-server-v1.3.2-ac1d579-linux-64bit'
 
     private static final OPENSHIFT_DISTRO_ARCHIVE = "${OPENSHIFT_DISTRO}.tar.gz"
 
-    private static final OPENSHIFT_DOWNLOAD_URL = new URL("https://github.com/openshift/origin/releases/download/v1.3.0-rc1/${OPENSHIFT_DISTRO_ARCHIVE}")
+    private static final OPENSHIFT_DOWNLOAD_URL = new URL("https://github.com/openshift/origin/releases/download/v1.3.2/${OPENSHIFT_DISTRO_ARCHIVE}")
 
     // OpenShift commands constants
 
