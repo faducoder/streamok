@@ -31,9 +31,11 @@ class StreamokCmd {
             paas.start()
             println 'OpenShift started.'
             paas.startService('mongo')
+            paas.startService('streamok/keycloak')
+            paas.startService('streamok/kafka-zookeeper')
+            paas.startService('streamok/kafka-broker')
             def streamokVersion = artifactVersionFromDependenciesProperties('net.streamok', 'streamok-lib-common').get()
             paas.startService("streamok/node:${streamokVersion} -e XMX=512m")
-            paas.startService('streamok/keycloak')
         } else if(args.first() == 'reset') {
             println 'Resetting OpenShift installation...'
             paas.reset()
