@@ -9,7 +9,7 @@ class TagLoadingSuite implements Service {
 
     @Override
     List<OperationDefinition> operations() {
-        return [new TagLoadingOperation()]
+        return [new TagLoadingOperation(), new TagSavingOperation()]
     }
 
     @Override
